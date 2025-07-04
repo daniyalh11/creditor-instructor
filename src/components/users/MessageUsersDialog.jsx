@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,26 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 import { useToast } from '@/hooks/use-toast';
 
-type MessageUsersDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedUsers: User[];
-  onClearSelection: () => void;
-};
-
-export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearSelection }: MessageUsersDialogProps) => {
+export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearSelection }) => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       toast({
@@ -42,7 +33,7 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
     }, 1000);
   };
 
-  const removeUser = (userId: number) => {
+  const removeUser = (userId) => {
     // This would normally remove from selection
     console.log('Remove user:', userId);
   };
@@ -86,7 +77,7 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
               )}
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="subject">Subject</Label>
             <Input
@@ -97,7 +88,7 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="message">Message</Label>
             <div className="border rounded-md">
@@ -124,7 +115,7 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
               />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

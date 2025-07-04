@@ -1,23 +1,29 @@
-
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { MessageSquare, Mail, Phone, MapPin, Calendar, BookOpen, Award, Users } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
+import {
+  MessageSquare,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  BookOpen,
+  Award,
+  Users
+} from 'lucide-react';
 import { MessageUserDialog } from './MessageUserDialog';
 
-interface UserDetailDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  user: User | null;
-}
-
-export const UserDetailDialog = ({ open, onOpenChange, user }: UserDetailDialogProps) => {
+export const UserDetailDialog = ({ open, onOpenChange, user }) => {
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
 
   if (!user) return null;

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,16 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 import { toast } from '@/hooks/use-toast';
 
-interface MessageUserDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  user: User | null;
-}
-
-export const MessageUserDialog = ({ open, onOpenChange, user }: MessageUserDialogProps) => {
+export const MessageUserDialog = ({ open, onOpenChange, user }) => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 

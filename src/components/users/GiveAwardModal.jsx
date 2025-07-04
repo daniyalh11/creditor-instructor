@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -12,15 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { X, Trophy } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 
-interface GiveAwardModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedUsers: User[];
-}
-
-export const GiveAwardModal = ({ open, onOpenChange, selectedUsers }: GiveAwardModalProps) => {
+export const GiveAwardModal = ({ open, onOpenChange, selectedUsers }) => {
   const [awardType, setAwardType] = useState('');
   const [awardTitle, setAwardTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -28,7 +20,6 @@ export const GiveAwardModal = ({ open, onOpenChange, selectedUsers }: GiveAwardM
   const handleGiveAward = () => {
     console.log('Giving award:', { awardType, awardTitle, description, users: selectedUsers });
     onOpenChange(false);
-    // Reset form
     setAwardType('');
     setAwardTitle('');
     setDescription('');
@@ -36,7 +27,6 @@ export const GiveAwardModal = ({ open, onOpenChange, selectedUsers }: GiveAwardM
 
   const handleCancel = () => {
     onOpenChange(false);
-    // Reset form
     setAwardType('');
     setAwardTitle('');
     setDescription('');

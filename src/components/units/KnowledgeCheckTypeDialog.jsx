@@ -1,28 +1,17 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { 
-  CheckSquare, 
-  CheckCircle, 
-  Link, 
-  ToggleLeft 
+import {
+  CheckSquare,
+  CheckCircle,
+  Link,
+  ToggleLeft
 } from 'lucide-react';
 
-interface KnowledgeCheckTypeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: string) => void;
-}
-
-export const KnowledgeCheckTypeDialog = ({ 
-  open, 
-  onOpenChange, 
-  onSelectType 
-}: KnowledgeCheckTypeDialogProps) => {
+export const KnowledgeCheckTypeDialog = ({ open, onOpenChange, onSelectType }) => {
   const [selectedMultipleChoice, setSelectedMultipleChoice] = useState('second');
   const [multipleResponseChecked, setMultipleResponseChecked] = useState({
     first: true,
@@ -32,7 +21,7 @@ export const KnowledgeCheckTypeDialog = ({
   const [fillInBlank, setFillInBlank] = useState('blue');
   const [trueFalse, setTrueFalse] = useState('true');
 
-  const handleTypeSelect = (type: string) => {
+  const handleTypeSelect = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };
@@ -62,27 +51,27 @@ export const KnowledgeCheckTypeDialog = ({
       <h4 className="font-medium text-gray-900 mb-3">Multiple response</h4>
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
-          <Checkbox 
+          <Checkbox
             checked={multipleResponseChecked.first}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               setMultipleResponseChecked(prev => ({ ...prev, first: !!checked }))
             }
           />
           <label className="text-gray-600">This is correct</label>
         </div>
         <div className="flex items-center space-x-3">
-          <Checkbox 
+          <Checkbox
             checked={multipleResponseChecked.second}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               setMultipleResponseChecked(prev => ({ ...prev, second: !!checked }))
             }
           />
           <label className="text-gray-600">This is also correct</label>
         </div>
         <div className="flex items-center space-x-3">
-          <Checkbox 
+          <Checkbox
             checked={multipleResponseChecked.third}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               setMultipleResponseChecked(prev => ({ ...prev, third: !!checked }))
             }
           />
@@ -97,7 +86,7 @@ export const KnowledgeCheckTypeDialog = ({
       <h4 className="font-medium text-gray-900 mb-3">Fill in the blank</h4>
       <div className="text-gray-600">
         <p>The sky is the color{' '}
-          <Input 
+          <Input
             value={fillInBlank}
             onChange={(e) => setFillInBlank(e.target.value)}
             className="inline-block w-20 h-8 text-center mx-1"
@@ -136,7 +125,7 @@ export const KnowledgeCheckTypeDialog = ({
     },
     {
       id: 'multiple-response',
-      title: 'Multiple Response', 
+      title: 'Multiple Response',
       description: 'Multiple correct answers can be selected',
       icon: <CheckSquare className="h-5 w-5" />,
       preview: <MultipleResponsePreview />
@@ -163,7 +152,7 @@ export const KnowledgeCheckTypeDialog = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Choose Knowledge Check Type</DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           {knowledgeCheckTypes.map((type) => (
             <div key={type.id} className="space-y-4">
@@ -182,7 +171,6 @@ export const KnowledgeCheckTypeDialog = ({
                   {type.description}
                 </div>
               </Button>
-              
               {type.preview}
             </div>
           ))}
