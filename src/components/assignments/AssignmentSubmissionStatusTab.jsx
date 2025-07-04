@@ -1,38 +1,13 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Search, CheckCircle, Clock, XCircle } from 'lucide-react';
 
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  description: string;
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
-
-type EnrolledUser = {
-  id: string;
-  name: string;
-  email: string;
-  status: 'completed' | 'not-attempted';
-  submittedAt?: string;
-  score?: number;
-};
-
-type AssignmentSubmissionStatusTabProps = {
-  assignment: Assignment;
-};
-
-export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissionStatusTabProps) => {
+const AssignmentSubmissionStatusTab = ({ assignment }) => {
   const [searchTerm, setSearchTerm] = useState('');
   
-  const [enrolledUsers] = useState<EnrolledUser[]>([
+  const [enrolledUsers] = useState([
     {
       id: '1',
       name: 'John Smith',
@@ -115,7 +90,7 @@ export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissi
   const completedUsers = enrolledUsers.filter(user => user.status === 'completed');
   const notAttemptedUsers = enrolledUsers.filter(user => user.status === 'not-attempted');
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
         return <CheckCircle className="h-4 w-4 text-green-600" />;
@@ -126,7 +101,7 @@ export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissi
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800';
       case 'not-attempted': return 'bg-red-100 text-red-800';
@@ -134,7 +109,7 @@ export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissi
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -144,7 +119,7 @@ export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissi
     });
   };
 
-  const getScoreColor = (score: number) => {
+  const getScoreColor = (score) => {
     const percentage = (score / assignment.maxScore) * 100;
     if (percentage >= 90) return 'text-green-600';
     if (percentage >= 80) return 'text-blue-600';
@@ -292,3 +267,5 @@ export const AssignmentSubmissionStatusTab = ({ assignment }: AssignmentSubmissi
     </div>
   );
 };
+
+export default AssignmentSubmissionStatusTab;

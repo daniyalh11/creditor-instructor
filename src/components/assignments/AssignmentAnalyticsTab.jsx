@@ -1,25 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, Users, Target, Clock, Award } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  description: string;
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
-
-type AssignmentAnalyticsTabProps = {
-  assignment: Assignment;
-};
-
-export const AssignmentAnalyticsTab = ({ assignment }: AssignmentAnalyticsTabProps) => {
+const AssignmentAnalyticsTab = ({ assignment }) => {
   // Sample analytics data
   const scoreDistribution = [
     { range: '0-20', count: 1 },
@@ -44,7 +28,7 @@ export const AssignmentAnalyticsTab = ({ assignment }: AssignmentAnalyticsTabPro
     passRate: 93.3
   };
 
-  const StatCard = ({ title, value, change, icon: Icon, color }: any) => (
+  const StatCard = ({ title, value, change, icon: Icon, color }) => (
     <Card>
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
@@ -180,3 +164,5 @@ export const AssignmentAnalyticsTab = ({ assignment }: AssignmentAnalyticsTabPro
     </div>
   );
 };
+
+export default AssignmentAnalyticsTab;

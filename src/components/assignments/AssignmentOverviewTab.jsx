@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,24 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Edit, Save, X, Clock, Target, Plus, Minus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  description: string;
-  instructions?: string[];
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
-
-type AssignmentOverviewTabProps = {
-  assignment: Assignment;
-  onUpdate: (assignment: Assignment) => void;
-};
-
-export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOverviewTabProps) => {
+export const AssignmentOverviewTab = ({ assignment, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     ...assignment,
@@ -74,14 +56,14 @@ export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOvervi
     });
   };
 
-  const removeInstruction = (index: number) => {
+  const removeInstruction = (index) => {
     setEditData({
       ...editData,
-      instructions: editData.instructions.filter((_: any, i: number) => i !== index)
+      instructions: editData.instructions.filter((_, i) => i !== index)
     });
   };
 
-  const updateInstruction = (index: number, value: string) => {
+  const updateInstruction = (index, value) => {
     const newInstructions = [...editData.instructions];
     newInstructions[index] = value;
     setEditData({
@@ -90,7 +72,7 @@ export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOvervi
     });
   };
 
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case 'Easy': return 'bg-green-100 text-green-800';
       case 'Medium': return 'bg-yellow-100 text-yellow-800';
@@ -181,7 +163,7 @@ export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOvervi
                 <label className="block text-sm font-medium mb-2">Difficulty Level</label>
                 <Select 
                   value={editData.difficulty} 
-                  onValueChange={(value: 'Easy' | 'Medium' | 'Hard') => setEditData({ ...editData, difficulty: value })}
+                  onValueChange={(value) => setEditData({ ...editData, difficulty: value })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -203,7 +185,7 @@ export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOvervi
                   Add Instruction
                 </Button>
               </div>
-              {editData.instructions.map((instruction: string, index: number) => (
+              {editData.instructions.map((instruction, index) => (
                 <div key={index} className="flex items-start gap-3 mb-3">
                   <span className="text-sm font-medium text-gray-500 mt-2 min-w-[20px]">{index + 1}.</span>
                   <Textarea
@@ -286,14 +268,13 @@ export const AssignmentOverviewTab = ({ assignment, onUpdate }: AssignmentOvervi
             </CardContent>
           </Card>
 
-          {/* Instructions Section */}
           <Card>
             <CardHeader>
               <CardTitle>Instructions</CardTitle>
             </CardHeader>
             <CardContent>
               <ol className="space-y-3">
-                {currentInstructions.map((instruction: string, index: number) => (
+                {currentInstructions.map((instruction, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="text-sm font-medium text-blue-600 min-w-[20px]">{index + 1}.</span>
                     <p className="text-gray-700">{instruction}</p>

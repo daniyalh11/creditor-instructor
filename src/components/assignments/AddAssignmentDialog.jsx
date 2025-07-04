@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -20,21 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
-type AddAssignmentFormData = {
-  title: string;
-  description: string;
-  dueDate: string;
-};
+export function AddAssignmentDialog({ open, onOpenChange }) {
+  const form = useForm();
 
-type AddAssignmentDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
-
-export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogProps) {
-  const form = useForm<AddAssignmentFormData>();
-
-  const onSubmit = (data: AddAssignmentFormData) => {
+  const onSubmit = (data) => {
     console.log("Assignment created:", data);
     toast({
       title: "Assignment created",

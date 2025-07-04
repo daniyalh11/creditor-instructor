@@ -1,44 +1,17 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Eye, Edit, Save, X } from 'lucide-react';
+import { ExternalLink, Eye, Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  description: string;
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
-
-type Submission = {
-  id: string;
-  studentName: string;
-  studentEmail: string;
-  submittedAt: string;
-  score: number | null;
-  status: 'graded' | 'pending' | 'in-review';
-  responseLink: string;
-  feedback?: string;
-};
-
-type AssignmentScoresTabProps = {
-  assignment: Assignment;
-};
-
-export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) => {
+export const AssignmentScoresTab = ({ assignment }) => {
   const navigate = useNavigate();
-  const [submissions, setSubmissions] = useState<Submission[]>([
+  const [submissions, setSubmissions] = useState([
     {
       id: '1',
       studentName: 'John Smith',
@@ -89,12 +62,12 @@ export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) =>
     }
   ]);
 
-  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [score, setScore] = useState('');
   const [feedback, setFeedback] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleGradeSubmission = (submission: Submission) => {
+  const handleGradeSubmission = (submission) => {
     setSelectedSubmission(submission);
     setScore(submission.score?.toString() || '');
     setFeedback(submission.feedback || '');
@@ -109,13 +82,11 @@ export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) =>
               ...sub,
               score: parseInt(score) || 0,
               feedback,
-              status: 'graded' as const
+              status: 'graded'
             }
           : sub
       );
       setSubmissions(updatedSubmissions);
-      
-      // Close dialog and reset form
       setIsDialogOpen(false);
       setSelectedSubmission(null);
       setScore('');
@@ -130,7 +101,7 @@ export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) =>
     setFeedback('');
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'graded': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -139,7 +110,7 @@ export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) =>
     }
   };
 
-  const getScoreColor = (score: number) => {
+  const getScoreColor = (score) => {
     const percentage = (score / assignment.maxScore) * 100;
     if (percentage >= 90) return 'text-green-600';
     if (percentage >= 80) return 'text-blue-600';
@@ -147,7 +118,7 @@ export const AssignmentScoresTab = ({ assignment }: AssignmentScoresTabProps) =>
     return 'text-red-600';
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

@@ -5,33 +5,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FileText, Clock, Target, TrendingUp, Plus } from 'lucide-react';
 
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  description?: string;
-};
-
-type AssignmentListingProps = {
-  moduleId: string;
-};
-
-export const AssignmentListing = ({ moduleId }: AssignmentListingProps) => {
+const AssignmentListing = ({ moduleId }) => {
   const navigate = useNavigate();
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
     // Load assignments from localStorage or use sample data
     const savedAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-    const moduleAssignments = savedAssignments.filter((a: Assignment) => a.id.includes(moduleId)) || [];
+    const moduleAssignments = savedAssignments.filter((a) => a.id.includes(moduleId)) || [];
     
     // If no assignments exist, use sample data
     if (moduleAssignments.length === 0) {
-      const sampleAssignments: Assignment[] = [
+      const sampleAssignments = [
         {
           id: `${moduleId}-assignment-1`,
           name: 'Assignment 1',
@@ -70,7 +55,7 @@ export const AssignmentListing = ({ moduleId }: AssignmentListingProps) => {
     }
   }, [moduleId]);
 
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case 'Easy': return 'bg-green-100 text-green-800';
       case 'Medium': return 'bg-yellow-100 text-yellow-800';
@@ -79,7 +64,7 @@ export const AssignmentListing = ({ moduleId }: AssignmentListingProps) => {
     }
   };
 
-  const handleViewAssignment = (assignmentId: string) => {
+  const handleViewAssignment = (assignmentId) => {
     navigate(`/courses/modules/${moduleId}/assignments/${assignmentId}`);
   };
 
@@ -149,3 +134,5 @@ export const AssignmentListing = ({ moduleId }: AssignmentListingProps) => {
     </div>
   );
 };
+
+export default AssignmentListing;

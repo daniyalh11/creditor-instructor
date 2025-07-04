@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,31 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-type Question = {
-  id: string;
-  text: string;
-  points: number;
-  type: string;
-};
-
-type Assignment = {
-  id: string;
-  name: string;
-  topic: string;
-  description: string;
-  totalQuestions: number;
-  timeLimit: number;
-  maxScore: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
-
-type AssignmentQuestionsTabProps = {
-  assignment: Assignment;
-  onUpdate: (assignment: Assignment) => void;
-};
-
-export const AssignmentQuestionsTab = ({ assignment, onUpdate }: AssignmentQuestionsTabProps) => {
-  const [questions, setQuestions] = useState<Question[]>([
+export const AssignmentQuestionsTab = ({ assignment, onUpdate }) => {
+  const [questions, setQuestions] = useState([
     { id: '1', text: 'Analyze the financial ratios for Company XYZ and provide insights on liquidity.', points: 15, type: 'Essay' },
     { id: '2', text: 'Calculate the working capital and explain its significance.', points: 10, type: 'Calculation' },
     { id: '3', text: 'Compare the debt-to-equity ratios of the past three years and analyze trends.', points: 20, type: 'Analysis' },
@@ -42,13 +18,13 @@ export const AssignmentQuestionsTab = ({ assignment, onUpdate }: AssignmentQuest
     { id: '8', text: 'Assess the impact of economic factors on the company\'s performance.', points: 20, type: 'Essay' }
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState(null);
   const [newQuestion, setNewQuestion] = useState({ text: '', points: 10 });
 
   const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
 
   const handleAddQuestion = () => {
-    const question: Question = {
+    const question = {
       id: Date.now().toString(),
       text: newQuestion.text,
       points: newQuestion.points,
@@ -63,7 +39,7 @@ export const AssignmentQuestionsTab = ({ assignment, onUpdate }: AssignmentQuest
     onUpdate(updatedAssignment);
   };
 
-  const handleEditQuestion = (question: Question) => {
+  const handleEditQuestion = (question) => {
     setEditingQuestion(question);
     setNewQuestion({ text: question.text, points: question.points });
     setIsDialogOpen(true);
@@ -82,7 +58,7 @@ export const AssignmentQuestionsTab = ({ assignment, onUpdate }: AssignmentQuest
     }
   };
 
-  const handleDeleteQuestion = (questionId: string) => {
+  const handleDeleteQuestion = (questionId) => {
     setQuestions(questions.filter(q => q.id !== questionId));
     
     // Update assignment with new question count
