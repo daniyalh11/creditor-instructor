@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,26 +6,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Upload, Mic, Save } from 'lucide-react';
 
-interface MultimediaEditorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  content: any;
-  onSave: (content: any) => void;
-}
-
-export const MultimediaEditor = ({ open, onOpenChange, content, onSave }: MultimediaEditorProps) => {
+export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
   const [title, setTitle] = useState(content?.title || '');
   const [description, setDescription] = useState(content?.description || '');
   const [url, setUrl] = useState(content?.url || '');
   const [embeddedCode, setEmbeddedCode] = useState(content?.embeddedCode || '');
   const [isRecording, setIsRecording] = useState(false);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as string;
+        const result = event.target?.result;
         setUrl(result);
       };
       reader.readAsDataURL(file);
@@ -38,10 +30,7 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }: Multim
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         setIsRecording(true);
-        // In a real implementation, you would handle the recording here
         console.log('Recording started...');
-        
-        // Stop recording after 5 seconds for demo
         setTimeout(() => {
           setIsRecording(false);
           stream.getTracks().forEach(track => track.stop());
@@ -73,7 +62,7 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }: Multim
         <DialogHeader>
           <DialogTitle>Edit {content?.multimediaType || 'Media'}</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 mt-4">
           <div>
             <Label htmlFor="title">Title</Label>
@@ -113,7 +102,13 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }: Multim
               <div className="relative">
                 <input
                   type="file"
-                  accept={content?.multimediaType === 'audio' ? 'audio/*' : content?.multimediaType === 'video' ? 'video/*' : '*/*'}
+                  accept={
+                    content?.multimediaType === 'audio'
+                      ? 'audio/*'
+                      : content?.multimediaType === 'video'
+                      ? 'video/*'
+                      : '*/*'
+                  }
                   onChange={handleFileUpload}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   id="file-upload"
@@ -140,12 +135,15 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }: Multim
             </div>
           )}
 
-          {((content?.multimediaType !== 'embedded' && url) || (content?.multimediaType === 'embedded' && embeddedCode)) && (
+          {((content?.multimediaType !== 'embedded' && url) ||
+            (content?.multimediaType === 'embedded' && embeddedCode)) && (
             <div>
               <Label>Preview</Label>
               <div className="bg-gray-50 p-3 rounded border">
                 <p className="text-sm text-gray-600">
-                  {content?.multimediaType === 'embedded' ? 'Embedded content added successfully' : 'File uploaded successfully'}
+                  {content?.multimediaType === 'embedded'
+                    ? 'Embedded content added successfully'
+                    : 'File uploaded successfully'}
                 </p>
               </div>
             </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -29,39 +28,18 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { useUserFilter, UserRole } from "@/contexts/UserFilterContext";
+import { useUserFilter } from "@/contexts/UserFilterContext";
 import { Plus, Trash2, Upload } from "lucide-react";
 
-type SingleUserFormData = {
-  name: string;
-  email: string;
-  phone: string;
-};
-
-type BulkUserFormData = {
-  users: Array<{
-    name: string;
-    email: string;
-    phone: string;
-    password?: string;
-  }>;
-  autoGeneratePasswords: boolean;
-};
-
-type AddUserDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
-
-export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
+export function AddUserDialog({ open, onOpenChange }) {
   const { addUser, selectedRole, users } = useUserFilter();
-  const [activeTab, setActiveTab] = useState<"single" | "multiple">("single");
-  
-  const singleUserForm = useForm<SingleUserFormData>({
+  const [activeTab, setActiveTab] = useState("single");
+
+  const singleUserForm = useForm({
     defaultValues: {}
   });
 
-  const bulkUserForm = useForm<BulkUserFormData>({
+  const bulkUserForm = useForm({
     defaultValues: {
       users: [{ name: "", email: "", phone: "" }],
       autoGeneratePasswords: true,
@@ -73,8 +51,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
     name: "users"
   });
 
-  const handleSingleUserSubmit = (data: SingleUserFormData) => {
-    // Check for duplicate email
+  const handleSingleUserSubmit = (data) => {
     const existingUser = users.find(user => user.email.toLowerCase() === data.email.toLowerCase());
     if (existingUser) {
       toast({
@@ -88,27 +65,27 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
     const newUser = {
       name: data.name,
       email: data.email,
-      role: ["learner" as UserRole], // Explicitly cast as UserRole
+      role: ["learner"],
       avatar: "/lovable-uploads/b22d4431-7c74-430d-aa30-15d8739a7fbf.png",
       lastVisited: "Just added",
       groups: 0,
       courses: 0,
     };
-    
+
     addUser(newUser);
-    
+
     toast({
       title: "User created",
       description: `${data.name} has been added as a learner.`,
     });
-    
+
     singleUserForm.reset();
     onOpenChange(false);
   };
 
-  const handleBulkUserSubmit = (data: BulkUserFormData) => {
+  const handleBulkUserSubmit = (data) => {
     const validUsers = data.users.filter(user => user.name && user.email);
-    
+
     if (validUsers.length === 0) {
       toast({
         title: "No valid users",
@@ -118,10 +95,9 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       return;
     }
 
-    // Check for duplicate emails within the form
     const emails = validUsers.map(user => user.email.toLowerCase());
     const duplicateEmails = emails.filter((email, index) => emails.indexOf(email) !== index);
-    
+
     if (duplicateEmails.length > 0) {
       toast({
         title: "Duplicate emails found",
@@ -131,7 +107,6 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       return;
     }
 
-    // Check for existing emails in the system
     const existingEmails = validUsers
       .map(user => user.email.toLowerCase())
       .filter(email => users.some(existingUser => existingUser.email.toLowerCase() === email));
@@ -145,12 +120,11 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       return;
     }
 
-    // Create all valid users
     validUsers.forEach(userData => {
       const newUser = {
         name: userData.name,
         email: userData.email,
-        role: ["learner" as UserRole], // Explicitly cast as UserRole
+        role: ["learner"],
         avatar: "/lovable-uploads/b22d4431-7c74-430d-aa30-15d8739a7fbf.png",
         lastVisited: "Just added",
         groups: 0,
@@ -175,26 +149,25 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
     append({ name: "", email: "", phone: "" });
   };
 
-  const removeUserRow = (index: number) => {
+  const removeUserRow = (index) => {
     if (fields.length > 1) {
       remove(index);
     }
   };
 
-  const handleCSVUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCSVUpload = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const text = e.target?.result as string;
+      const text = e.target?.result;
       const lines = text.split('\n').filter(line => line.trim());
-      
-      // Skip header row if it exists
+
       const dataLines = lines.slice(1);
-      
+
       const csvUsers = dataLines.map(line => {
-        const [name, email, , phone] = line.split(',').map(item => item.trim()); // Skip role column
+        const [name, email, , phone] = line.split(',').map(item => item.trim());
         return {
           name: name || "",
           email: email || "",
@@ -211,8 +184,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       }
     };
     reader.readAsText(file);
-    
-    // Reset the input
+
     event.target.value = '';
   };
 
@@ -222,13 +194,14 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
         <DialogHeader>
           <DialogTitle>Add New Learner(s)</DialogTitle>
         </DialogHeader>
-        
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "single" | "multiple")}>
+
+        <Tabs value={activeTab} onValueChange={value => setActiveTab(value)}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="single">Single Learner</TabsTrigger>
             <TabsTrigger value="multiple">Multiple Learners</TabsTrigger>
           </TabsList>
-          
+
+          {/* Single Learner Tab */}
           <TabsContent value="single" className="space-y-4">
             <Form {...singleUserForm}>
               <form onSubmit={singleUserForm.handleSubmit(handleSingleUserSubmit)} className="space-y-4">
@@ -288,7 +261,8 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
               </form>
             </Form>
           </TabsContent>
-          
+
+          {/* Multiple Learners Tab */}
           <TabsContent value="multiple" className="space-y-4">
             <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
               <div className="flex-1">
@@ -307,7 +281,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                 />
               </div>
             </div>
-            
+
             <Form {...bulkUserForm}>
               <form onSubmit={bulkUserForm.handleSubmit(handleBulkUserSubmit)} className="space-y-4">
                 <FormField
@@ -330,7 +304,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-medium">Learners to Add</h4>
@@ -339,7 +313,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                       Add Row
                     </Button>
                   </div>
-                  
+
                   <div className="space-y-3 max-h-60 overflow-y-auto">
                     {fields.map((field, index) => (
                       <div key={field.id} className="grid grid-cols-10 gap-2 items-end p-3 border rounded-lg">
@@ -358,7 +332,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                             )}
                           />
                         </div>
-                        
+
                         <div className="col-span-4">
                           <FormField
                             control={bulkUserForm.control}
@@ -374,7 +348,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                             )}
                           />
                         </div>
-                        
+
                         <div className="col-span-1">
                           {fields.length > 1 && (
                             <Button
@@ -392,13 +366,18 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                     ))}
                   </div>
                 </div>
-                
+
                 <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                     Cancel
                   </Button>
                   <Button type="submit">
-                    Add {fields.filter(f => bulkUserForm.getValues(`users.${fields.indexOf(f)}.name`) && bulkUserForm.getValues(`users.${fields.indexOf(f)}.email`)).length} Learner(s)
+                    Add {
+                      fields.filter(f =>
+                        bulkUserForm.getValues(`users.${fields.indexOf(f)}.name`) &&
+                        bulkUserForm.getValues(`users.${fields.indexOf(f)}.email`)
+                      ).length
+                    } Learner(s)
                   </Button>
                 </DialogFooter>
               </form>

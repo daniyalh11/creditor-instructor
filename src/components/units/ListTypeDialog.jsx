@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,19 +6,9 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { List, ListOrdered, CheckSquare, Plus, Trash2 } from 'lucide-react';
 
-type ListType = 'bullet' | 'numbered' | 'checklist';
-
-type ListTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType?: (type: ListType) => void;
-  currentContent?: any;
-  onSave?: (content: any) => void;
-};
-
 const listTypes = [
   {
-    id: 'bullet' as ListType,
+    id: 'bullet',
     name: 'Bullet List',
     description: 'Unordered list with bullets',
     icon: <List className="h-6 w-6" />,
@@ -32,7 +21,7 @@ const listTypes = [
     )
   },
   {
-    id: 'numbered' as ListType,
+    id: 'numbered',
     name: 'Numbered List',
     description: 'Ordered list with numbers',
     icon: <ListOrdered className="h-6 w-6" />,
@@ -45,23 +34,23 @@ const listTypes = [
     )
   },
   {
-    id: 'checklist' as ListType,
+    id: 'checklist',
     name: 'Checklist',
     description: 'Interactive checklist',
     icon: <CheckSquare className="h-6 w-6" />,
     preview: (
       <div className="space-y-1">
         <div className="flex items-center"><input type="checkbox" className="mr-3 rounded" />Task item 1</div>
-        <div className="flex items-center"><input type="checkbox" checked className="mr-3 rounded" />Task item 2</div>
+        <div className="flex items-center"><input type="checkbox" checked className="mr-3 rounded" readOnly />Task item 2</div>
         <div className="flex items-center"><input type="checkbox" className="mr-3 rounded" />Task item 3</div>
       </div>
     )
   }
 ];
 
-export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }: ListTypeDialogProps) => {
-  const [selectedType, setSelectedType] = useState<ListType>(currentContent?.listType || 'bullet');
-  const [items, setItems] = useState<string[]>(currentContent?.items || ['List item 1', 'List item 2', 'List item 3']);
+export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }) => {
+  const [selectedType, setSelectedType] = useState(currentContent?.listType || 'bullet');
+  const [items, setItems] = useState(currentContent?.items || ['List item 1', 'List item 2', 'List item 3']);
 
   useEffect(() => {
     if (currentContent) {
@@ -70,7 +59,7 @@ export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     }
   }, [currentContent]);
 
-  const handleSelectType = (type: ListType) => {
+  const handleSelectType = (type) => {
     setSelectedType(type);
     if (onSelectType && !currentContent) {
       onSelectType(type);
@@ -81,11 +70,11 @@ export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     setItems([...items, 'New item']);
   };
 
-  const handleRemoveItem = (index: number) => {
+  const handleRemoveItem = (index) => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  const handleItemChange = (index: number, value: string) => {
+  const handleItemChange = (index, value) => {
     const updatedItems = [...items];
     updatedItems[index] = value;
     setItems(updatedItems);
@@ -101,9 +90,6 @@ export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
   };
 
   const renderPreview = () => {
-    const selectedTypeConfig = listTypes.find(type => type.id === selectedType);
-    if (!selectedTypeConfig) return null;
-
     switch (selectedType) {
       case 'bullet':
         return (
@@ -145,7 +131,6 @@ export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     }
   };
 
-  // If we have currentContent, show the editor interface
   if (currentContent && onSave) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -228,7 +213,6 @@ export const ListTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     );
   }
 
-  // Original type selection interface
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">

@@ -1,25 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { User, UserRole } from '@/contexts/UserFilterContext';
+import { useUserFilter } from '@/contexts/UserFilterContext';
 import { useToast } from '@/hooks/use-toast';
 
-type EditUserDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  user: User | null;
-  onSave: (user: User) => void;
-};
-
-export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDialogProps) => {
+export const EditUserDialog = ({ open, onOpenChange, user, onSave }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    roles: [] as UserRole[]
+    roles: []
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -34,21 +26,20 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
     }
   }, [user]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) return;
-    
+
     setIsSubmitting(true);
-    
-    // Simulate API call
+
     setTimeout(() => {
-      const updatedUser: User = {
+      const updatedUser = {
         ...user,
         name: formData.name,
         email: formData.email,
         role: formData.roles
       };
-      
+
       onSave(updatedUser);
       toast({
         title: "User updated successfully!",
@@ -60,7 +51,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
     }, 1000);
   };
 
-  const handleRoleChange = (role: UserRole, checked: boolean) => {
+  const handleRoleChange = (role, checked) => {
     if (checked) {
       setFormData(prev => ({
         ...prev,
@@ -74,7 +65,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
     }
   };
 
-  const roleOptions: UserRole[] = ['learner', 'instructor', 'manager', 'administrator'];
+  const roleOptions = ['learner', 'instructor'];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -92,7 +83,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -103,7 +94,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label>Roles</Label>
             <div className="space-y-2">
@@ -112,7 +103,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
                   <Checkbox
                     id={role}
                     checked={formData.roles.includes(role)}
-                    onCheckedChange={(checked) => handleRoleChange(role, checked as boolean)}
+                    onCheckedChange={(checked) => handleRoleChange(role, checked)}
                   />
                   <Label htmlFor={role} className="capitalize">
                     {role}
@@ -121,7 +112,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onSave }: EditUserDia
               ))}
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

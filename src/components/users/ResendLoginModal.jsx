@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Dialog,
@@ -8,15 +7,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 
-interface ResendLoginModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedUsers: User[];
-}
-
-export const ResendLoginModal = ({ open, onOpenChange, selectedUsers }: ResendLoginModalProps) => {
+export const ResendLoginModal = ({ open, onOpenChange, selectedUsers }) => {
   const handleSendNow = () => {
     console.log('Sending login information to:', selectedUsers);
     onOpenChange(false);
@@ -44,7 +36,7 @@ export const ResendLoginModal = ({ open, onOpenChange, selectedUsers }: ResendLo
             <X className="h-4 w-4" />
           </Button>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div>
             <p className="text-gray-600 mb-4">Login information will be sent to the following users:</p>

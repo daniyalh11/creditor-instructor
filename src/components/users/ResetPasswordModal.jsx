@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -10,15 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 
-interface ResetPasswordModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedUsers: User[];
-}
-
-export const ResetPasswordModal = ({ open, onOpenChange, selectedUsers }: ResetPasswordModalProps) => {
+export const ResetPasswordModal = ({ open, onOpenChange, selectedUsers }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -52,7 +44,7 @@ export const ResetPasswordModal = ({ open, onOpenChange, selectedUsers }: ResetP
             <X className="h-4 w-4" />
           </Button>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div>
             <p className="text-sm text-gray-600 mb-4">Password reset links will be sent to:</p>

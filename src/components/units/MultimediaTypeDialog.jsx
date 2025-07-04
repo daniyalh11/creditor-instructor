@@ -1,16 +1,9 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Volume2, Video, Code, Paperclip } from 'lucide-react';
 
-interface MultimediaTypeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: string) => void;
-}
-
-export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }: MultimediaTypeDialogProps) => {
+export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }) => {
   const multimediaTypes = [
     {
       id: 'audio',
@@ -21,7 +14,7 @@ export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }: Multi
     },
     {
       id: 'video',
-      title: 'Video', 
+      title: 'Video',
       description: 'Add a video file with playback controls',
       icon: Video,
       color: 'text-blue-600'
@@ -42,7 +35,7 @@ export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }: Multi
     }
   ];
 
-  const handleTypeSelect = (type: string) => {
+  const handleTypeSelect = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };
@@ -53,10 +46,10 @@ export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }: Multi
         <DialogHeader>
           <DialogTitle>Choose Media Type</DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-2 gap-4 mt-4">
           {multimediaTypes.map((type) => (
-            <Card 
+            <Card
               key={type.id}
               className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-300"
               onClick={() => handleTypeSelect(type.id)}

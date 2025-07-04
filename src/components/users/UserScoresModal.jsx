@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Dialog,
@@ -10,16 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { X } from 'lucide-react';
-import { User } from '@/contexts/UserFilterContext';
 
-interface UserScoresModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedUsers: User[];
-}
-
-export const UserScoresModal = ({ open, onOpenChange, selectedUsers }: UserScoresModalProps) => {
-  // Mock data for demonstration - in real app this would come from props or API
+export const UserScoresModal = ({ open, onOpenChange, selectedUsers }) => {
   const mockScores = [
     {
       title: 'Legal Terminology Quiz',
@@ -59,7 +50,7 @@ export const UserScoresModal = ({ open, onOpenChange, selectedUsers }: UserScore
     onOpenChange(false);
   };
 
-  const user = selectedUsers[0]; // Show for first selected user
+  const user = selectedUsers[0];
   const overallAverage = 85;
 
   return (
@@ -78,7 +69,6 @@ export const UserScoresModal = ({ open, onOpenChange, selectedUsers }: UserScore
         </DialogHeader>
         
         <div className="space-y-6">
-          {/* User Header */}
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-lg font-semibold">{user?.name}</h3>
@@ -90,7 +80,6 @@ export const UserScoresModal = ({ open, onOpenChange, selectedUsers }: UserScore
             </div>
           </div>
 
-          {/* Scores List */}
           <div className="space-y-4">
             {mockScores.map((item, index) => (
               <div key={index} className="border rounded-lg p-4 space-y-2">
@@ -121,7 +110,6 @@ export const UserScoresModal = ({ open, onOpenChange, selectedUsers }: UserScore
             ))}
           </div>
 
-          {/* Overall Progress */}
           <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-2">
               <span className="font-medium">Overall Progress</span>

@@ -1,16 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUserFilter, UserRole } from '@/contexts/UserFilterContext';
+import { useUserFilter } from '@/contexts/UserFilterContext';
 import { 
   Users, Archive, User, UserCog, BookOpen, Users2
 } from 'lucide-react';
-
-type FilterOption = {
-  label: string;
-  value: UserRole;
-  icon: React.ReactNode;
-  count?: number;
-};
 
 export const UserFilterMenu = () => {
   const { 
@@ -22,10 +15,9 @@ export const UserFilterMenu = () => {
     users
   } = useUserFilter();
   
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef(null);
   
-  // Filter options with icons (removed managers)
-  const filterOptions: FilterOption[] = [
+  const filterOptions = [
     { 
       label: 'Administrators', 
       value: 'administrator', 
@@ -55,19 +47,12 @@ export const UserFilterMenu = () => {
       value: 'instructor', 
       icon: <BookOpen size={18} />,
       count: users.filter(user => user.role.includes('instructor')).length
-    },
-    { 
-      label: 'All', 
-      value: 'all', 
-      icon: <Users size={18} />,
-      count: users.length
     }
   ];
 
-  // Close menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsFilterMenuOpen(false);
       }
     };
@@ -78,7 +63,7 @@ export const UserFilterMenu = () => {
     };
   }, [setIsFilterMenuOpen]);
   
-  const handleSelectRole = (role: UserRole) => {
+  const handleSelectRole = (role) => {
     setSelectedRole(role);
     setIsFilterMenuOpen(false);
   };
