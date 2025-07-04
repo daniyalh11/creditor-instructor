@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -14,17 +13,9 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 
-type InteractiveType = 'accordion' | 'tabs' | 'process' | 'flashcard' | 'timeline' | 'labeled-graphic' | 'scenario' | 'sorting-activity';
-
-type InteractiveTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: InteractiveType) => void;
-};
-
 const interactiveTypes = [
   {
-    id: 'accordion' as InteractiveType,
+    id: 'accordion',
     name: 'Accordion',
     description: 'Collapsible content sections',
     icon: <ChevronDown className="h-6 w-6" />,
@@ -42,7 +33,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'tabs' as InteractiveType,
+    id: 'tabs',
     name: 'Tabs',
     description: 'Tabbed content interface',
     icon: <Folder className="h-6 w-6" />,
@@ -62,7 +53,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'labeled-graphic' as InteractiveType,
+    id: 'labeled-graphic',
     name: 'Labeled Graphic',
     description: 'Interactive image with hotspots',
     icon: <MapPin className="h-6 w-6" />,
@@ -77,7 +68,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'process' as InteractiveType,
+    id: 'process',
     name: 'Process',
     description: 'Step-by-step process flow',
     icon: <ArrowRight className="h-6 w-6" />,
@@ -95,7 +86,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'flashcard' as InteractiveType,
+    id: 'flashcard',
     name: 'Flashcard',
     description: 'Interactive flashcards with front/back content',
     icon: <CreditCard className="h-6 w-6" />,
@@ -109,7 +100,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'timeline' as InteractiveType,
+    id: 'timeline',
     name: 'Timeline',
     description: 'Interactive timeline component',
     icon: <Clock className="h-6 w-6" />,
@@ -129,7 +120,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'scenario' as InteractiveType,
+    id: 'scenario',
     name: 'Scenario',
     description: 'Interactive scenario-based learning',
     icon: <Users className="h-6 w-6" />,
@@ -146,7 +137,7 @@ const interactiveTypes = [
     )
   },
   {
-    id: 'sorting-activity' as InteractiveType,
+    id: 'sorting-activity',
     name: 'Sorting Activity',
     description: 'Drag and drop sorting exercise',
     icon: <ArrowUpDown className="h-6 w-6" />,
@@ -168,8 +159,8 @@ const interactiveTypes = [
   }
 ];
 
-export const InteractiveTypeDialog = ({ open, onOpenChange, onSelectType }: InteractiveTypeDialogProps) => {
-  const handleSelectType = (type: InteractiveType) => {
+export const InteractiveTypeDialog = ({ open, onOpenChange, onSelectType }) => {
+  const handleSelectType = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };

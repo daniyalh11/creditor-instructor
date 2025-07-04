@@ -55,30 +55,6 @@ import { FlashcardGridPreview } from './interactive/FlashcardGridPreview';
 import { SortingActivityPreview } from './interactive/SortingActivityPreview';
 import { ScenarioPreview } from './interactive/ScenarioPreview';
 
-type Block = {
-  id: string;
-  type: string;
-  content: any;
-  order: number;
-};
-
-type ContentBlockProps = {
-  block: Block;
-  onUpdate: (content: any) => void;
-  onDelete: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  canMoveUp: boolean;
-  canMoveDown: boolean;
-  settings?: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-};
-
 export const ContentBlock = ({ 
   block, 
   onUpdate, 
@@ -88,7 +64,7 @@ export const ContentBlock = ({
   canMoveUp, 
   canMoveDown,
   settings 
-}: ContentBlockProps) => {
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showKnowledgeCheckEditor, setShowKnowledgeCheckEditor] = useState(false);
   const [showChartEditor, setShowChartEditor] = useState(false);
@@ -103,12 +79,12 @@ export const ContentBlock = ({
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as string;
+        const result = event.target?.result;
         handleSave({ ...block.content, url: result, alt: file.name });
       };
       reader.readAsDataURL(file);
@@ -269,64 +245,64 @@ export const ContentBlock = ({
     }
   };
 
-  const handleSave = (content: any) => {
+  const handleSave = (content) => {
     onUpdate(content);
     setIsEditing(false);
   };
 
-  const handleKnowledgeCheckSave = (content: any) => {
+  const handleKnowledgeCheckSave = (content) => {
     onUpdate(content);
     setShowKnowledgeCheckEditor(false);
   };
 
-  const handleChartSave = (content: any) => {
+  const handleChartSave = (content) => {
     onUpdate(content);
     setShowChartEditor(false);
   };
 
-  const handleDividerSave = (content: any) => {
+  const handleDividerSave = (content) => {
     onUpdate(content);
     setShowDividerEditor(false);
   };
 
-  const handleInteractiveSave = (content: any) => {
+  const handleInteractiveSave = (content) => {
     onUpdate(content);
     setShowInteractiveEditor(false);
   };
 
-  const handleMultimediaSave = (content: any) => {
+  const handleMultimediaSave = (content) => {
     onUpdate(content);
     setShowMultimediaEditor(false);
   };
 
-  const handleImageSave = (content: any) => {
+  const handleImageSave = (content) => {
     onUpdate(content);
     setShowImageEditor(false);
   };
 
-  const handleTextTypeSelect = (textType: string) => {
+  const handleTextTypeSelect = (textType) => {
     const newContent = { ...block.content, textType };
     onUpdate(newContent);
     setShowTextTypeDialog(false);
   };
 
-  const handleListSave = (content: any) => {
+  const handleListSave = (content) => {
     onUpdate(content);
     setShowListTypeDialog(false);
   };
 
-  const handleGallerySave = (content: any) => {
+  const handleGallerySave = (content) => {
     onUpdate(content);
     setShowGalleryTypeDialog(false);
   };
 
-  const handleStatementTypeSelect = (statementType: string) => {
+  const handleStatementTypeSelect = (statementType) => {
     const newContent = { ...block.content, statementType };
     onUpdate(newContent);
     setShowStatementTypeDialog(false);
   };
 
-  const handleQuoteTypeSelect = (quoteType: string) => {
+  const handleQuoteTypeSelect = (quoteType) => {
     const newContent = { ...block.content, quoteType };
     onUpdate(newContent);
     setShowQuoteTypeDialog(false);
@@ -347,7 +323,7 @@ export const ContentBlock = ({
       case 'bullet':
         return (
           <ul className="space-y-2 pl-6">
-            {items.map((item: string, index: number) => (
+            {items.map((item, index) => (
               <li key={index} className="flex items-start">
                 <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                 <span>{item}</span>
@@ -359,7 +335,7 @@ export const ContentBlock = ({
       case 'numbered':
         return (
           <ol className="space-y-2">
-            {items.map((item: string, index: number) => (
+            {items.map((item, index) => (
               <li key={index} className="flex items-start">
                 <span className="w-6 h-6 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
                   {index + 1}
@@ -373,7 +349,7 @@ export const ContentBlock = ({
       case 'checklist':
         return (
           <div className="space-y-2">
-            {items.map((item: any, index: number) => (
+            {items.map((item, index) => (
               <div key={index} className="flex items-center">
                 <input 
                   type="checkbox" 
@@ -478,7 +454,7 @@ export const ContentBlock = ({
         const gridClass = `grid grid-cols-${columns} gap-4`;
         return (
           <div className={gridClass}>
-            {images.map((image: any, index: number) => (
+            {images.map((image, index) => (
               <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center">
                   <img 
@@ -516,7 +492,6 @@ export const ContentBlock = ({
 
   const renderChart = () => {
     const { chartType, title, data } = block.content;
-    // Updated blue color palette
     const colors = ['#3b82f6', '#1d4ed8', '#1e40af', '#2563eb', '#60a5fa', '#93c5fd'];
 
     if (!data || data.length === 0) {
@@ -550,7 +525,7 @@ export const ContentBlock = ({
                   fill="#8884d8" 
                   dataKey="value"
                 >
-                  {data.map((entry: any, index: number) => (
+                  {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                   ))}
                 </Pie>
@@ -634,7 +609,7 @@ export const ContentBlock = ({
           
           {knowledgeCheckType === 'multiple-choice' && options && (
             <div className="space-y-1">
-              {options.slice(0, 3).map((option: string, index: number) => (
+              {options.slice(0, 3).map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 text-sm">
                   <span className={`w-2 h-2 rounded-full ${index === correctAnswer ? 'bg-green-500' : 'bg-gray-300'}`}></span>
                   <span className={index === correctAnswer ? 'font-medium' : 'text-gray-600'}>
@@ -650,7 +625,7 @@ export const ContentBlock = ({
           
           {knowledgeCheckType === 'multiple-response' && options && (
             <div className="space-y-1">
-              {options.slice(0, 3).map((option: string, index: number) => (
+              {options.slice(0, 3).map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 text-sm">
                   <span className={`w-2 h-2 rounded-sm ${correctAnswers?.includes(index) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
                   <span className={correctAnswers?.includes(index) ? 'font-medium' : 'text-gray-600'}>
@@ -761,7 +736,7 @@ export const ContentBlock = ({
     switch (interactiveType) {
       case 'scenario':
         const scenarioData = {
-          interactiveType: 'scenario' as const,
+          interactiveType: 'scenario',
           title: block.content.title || 'Scenario',
           description: block.content.description || 'Interactive scenario',
           backgroundImage: block.content.backgroundImage,
@@ -944,7 +919,7 @@ export const ContentBlock = ({
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-50">
-                  {tableData.headers.map((header: string, index: number) => (
+                  {tableData.headers.map((header, index) => (
                     <th key={index} className="border border-gray-300 px-4 py-2 text-left font-medium">
                       {header}
                     </th>
@@ -952,9 +927,9 @@ export const ContentBlock = ({
                 </tr>
               </thead>
               <tbody>
-                {tableData.rows.map((row: string[], rowIndex: number) => (
+                {tableData.rows.map((row, rowIndex) => (
                   <tr key={rowIndex}>
-                    {row.map((cell: string, cellIndex: number) => (
+                    {row.map((cell, cellIndex) => (
                       <td key={cellIndex} className="border border-gray-300 px-4 py-2">
                         {cell}
                       </td>
@@ -1215,10 +1190,9 @@ export const ContentBlock = ({
     }
   };
 
-  const renderEmbeddedContent = (url: string) => {
+  const renderEmbeddedContent = (url) => {
     if (!url) return null;
 
-    // Check if it's an iframe HTML string
     if (url.includes('<iframe') && url.includes('</iframe>')) {
       return (
         <div 
@@ -1228,7 +1202,6 @@ export const ContentBlock = ({
       );
     }
 
-    // Check if it's a YouTube URL and convert to embed
     const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
     if (youtubeMatch) {
       const videoId = youtubeMatch[1];
@@ -1246,7 +1219,6 @@ export const ContentBlock = ({
       );
     }
 
-    // For other URLs, try to embed as iframe
     return (
       <iframe
         src={url}

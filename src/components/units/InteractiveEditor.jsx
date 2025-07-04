@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,16 +10,6 @@ import { LabeledGraphicEditor } from './interactive/LabeledGraphicEditor';
 import { ScenarioEditor } from './interactive/ScenarioEditor';
 import { SortingActivityEditor } from './interactive/SortingActivityEditor';
 
-type InteractiveEditorProps = {
-  isOpen?: boolean;
-  open?: boolean;
-  onClose: () => void;
-  onOpenChange?: (open: boolean) => void;
-  onSave: (data: any) => void;
-  initialData?: any;
-  content?: any;
-};
-
 export const InteractiveEditor = ({ 
   isOpen, 
   open, 
@@ -29,7 +18,7 @@ export const InteractiveEditor = ({
   onSave, 
   initialData, 
   content 
-}: InteractiveEditorProps) => {
+}) => {
   const isDialogOpen = isOpen || open;
   const handleClose = () => {
     onClose();
@@ -127,3 +116,5 @@ export const InteractiveEditor = ({
     </>
   );
 };
+
+export default InteractiveEditor;

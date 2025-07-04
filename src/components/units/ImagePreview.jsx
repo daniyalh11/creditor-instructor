@@ -1,15 +1,7 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
-type ImagePreviewProps = {
-  content: any;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  showActions?: boolean;
-};
-
-export const ImagePreview = ({ content, onEdit, onDelete, showActions = true }: ImagePreviewProps) => {
+export const ImagePreview = ({ content, onEdit, onDelete, showActions = true }) => {
   const { imageType, url, alt, caption, text, overlayText } = content;
 
   const renderImageContent = () => {
@@ -48,7 +40,7 @@ export const ImagePreview = ({ content, onEdit, onDelete, showActions = true }: 
             </div>
             <div className="space-y-3">
               <div className="prose prose-sm">
-                {text?.split('\n').map((paragraph: string, index: number) => (
+                {text?.split('\n').map((paragraph, index) => (
                   <p key={index} className="text-gray-700 leading-relaxed">
                     {paragraph}
                   </p>
@@ -71,7 +63,7 @@ export const ImagePreview = ({ content, onEdit, onDelete, showActions = true }: 
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center">
               <div className="text-center px-6">
-                {overlayText?.split('\n').map((line: string, index: number) => (
+                {overlayText?.split('\n').map((line, index) => (
                   <p key={index} className="text-white text-lg font-semibold leading-relaxed drop-shadow-lg">
                     {line}
                   </p>
@@ -118,3 +110,5 @@ export const ImagePreview = ({ content, onEdit, onDelete, showActions = true }: 
     </div>
   );
 };
+
+export default ImagePreview;

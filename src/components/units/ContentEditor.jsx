@@ -5,29 +5,6 @@ import { Plus } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ContentBlock } from './ContentBlock';
 
-type Block = {
-  id: string;
-  type: string;
-  content: any;
-  order: number;
-};
-
-type ContentEditorProps = {
-  onSave: (blocks: Block[], title: string) => void;
-  onPreview: () => void;
-  settings?: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-  initialBlocks?: Block[];
-  unitTitle: string;
-  onTitleChange: (title: string) => void;
-  onTemplateSelect?: (templateBlocks: Block[]) => void;
-};
-
 export const ContentEditor = ({ 
   onSave, 
   onPreview, 
@@ -36,8 +13,8 @@ export const ContentEditor = ({
   unitTitle,
   onTitleChange,
   onTemplateSelect
-}: ContentEditorProps) => {
-  const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
+}) => {
+  const [blocks, setBlocks] = useState(initialBlocks);
   const [blockCount, setBlockCount] = useState(initialBlocks.length);
 
   useEffect(() => {
@@ -47,7 +24,6 @@ export const ContentEditor = ({
     }
   }, [initialBlocks]);
 
-  // Save blocks to parent component whenever blocks change
   useEffect(() => {
     if (blocks.length > 0 || initialBlocks.length > 0) {
       onSave(blocks, unitTitle);
@@ -55,13 +31,13 @@ export const ContentEditor = ({
   }, [blocks, unitTitle]);
 
   useEffect(() => {
-    (window as any).addBlockToEditor = addBlock;
-    (window as any).loadTemplate = loadTemplate;
-    (window as any).getPreviewContent = () => ({ blocks, unitTitle, settings });
+    window.addBlockToEditor = addBlock;
+    window.loadTemplate = loadTemplate;
+    window.getPreviewContent = () => ({ blocks, unitTitle, settings });
   }, [blockCount, blocks.length, blocks, unitTitle, settings]);
 
-  const addBlock = (type: string) => {
-    const newBlock: Block = {
+  const addBlock = (type) => {
+    const newBlock = {
       id: `block_${Date.now()}`,
       type,
       content: getDefaultContent(type),
@@ -71,7 +47,7 @@ export const ContentEditor = ({
     setBlockCount(blockCount + 1);
   };
 
-  const loadTemplate = (templateBlocks: Block[]) => {
+  const loadTemplate = (templateBlocks) => {
     const processedBlocks = templateBlocks.map((block, index) => ({
       ...block,
       id: `block_${Date.now()}_${index}`,
@@ -84,8 +60,7 @@ export const ContentEditor = ({
     }
   };
 
-  const getDefaultContent = (type: string) => {
-    // Image Types
+  const getDefaultContent = (type) => {
     if (type.startsWith('image-')) {
       const imageType = type.replace('image-', '');
       
@@ -121,7 +96,6 @@ export const ContentEditor = ({
       }
     }
 
-    // Multimedia Types
     if (type.startsWith('multimedia-')) {
       const multimediaType = type.replace('multimedia-', '');
       
@@ -162,7 +136,6 @@ export const ContentEditor = ({
       }
     }
 
-    // Chart Types
     if (type.startsWith('chart-')) {
       const chartType = type.replace('chart-', '');
       return {
@@ -176,7 +149,6 @@ export const ContentEditor = ({
       };
     }
 
-    // Divider Types
     if (type.startsWith('divider-')) {
       const dividerType = type.replace('divider-', '');
       
@@ -208,7 +180,6 @@ export const ContentEditor = ({
       }
     }
 
-    // Knowledge Check Types
     if (type.startsWith('knowledge-check-')) {
       const knowledgeCheckType = type.replace('knowledge-check-', '');
       
@@ -273,7 +244,6 @@ export const ContentEditor = ({
       }
     }
 
-    // Interactive Types - Updated to include labeled-graphic
     if (type.startsWith('interactive-')) {
       const interactiveType = type.replace('interactive-', '');
       
@@ -425,7 +395,6 @@ export const ContentEditor = ({
       }
     }
 
-    // Quote Types
     if (type.startsWith('quote-')) {
       const quoteType = type.replace('quote-', '');
       
@@ -477,7 +446,6 @@ export const ContentEditor = ({
     }
 
     switch (type) {
-      // Text Types
       case 'text-paragraph':
         return { 
           text: 'Enter your paragraph text here. You can format and style this content.',
@@ -505,7 +473,6 @@ export const ContentEditor = ({
           textType: 'table'
         };
       
-      // List Types
       case 'list-bullet':
         return { 
           items: ['List item 1', 'List item 2', 'List item 3'],
@@ -526,7 +493,6 @@ export const ContentEditor = ({
           listType: 'checklist'
         };
       
-      // Statement Types
       case 'statement-italic':
         return { 
           text: 'This is an important statement in italic style.',
@@ -548,7 +514,6 @@ export const ContentEditor = ({
           statementType: 'highlighted'
         };
 
-      // Gallery Types
       case 'gallery-carousel':
         return {
           images: [
@@ -594,7 +559,6 @@ export const ContentEditor = ({
           galleryType: 'grid-4'
         };
 
-      // Legacy types for backward compatibility
       case 'text':
         return { text: 'Enter your text here. You can format it using the toolbar above.' };
       case 'statement':
@@ -622,18 +586,18 @@ export const ContentEditor = ({
     }
   };
 
-  const updateBlock = (id: string, content: any) => {
+  const updateBlock = (id, content) => {
     const updatedBlocks = blocks.map(block => 
       block.id === id ? { ...block, content } : block
     );
     setBlocks(updatedBlocks);
   };
 
-  const deleteBlock = (id: string) => {
+  const deleteBlock = (id) => {
     setBlocks(blocks.filter(block => block.id !== id));
   };
 
-  const moveBlock = (id: string, direction: 'up' | 'down') => {
+  const moveBlock = (id, direction) => {
     const blockIndex = blocks.findIndex(block => block.id === id);
     if (blockIndex === -1) return;
 
@@ -644,7 +608,6 @@ export const ContentEditor = ({
       [newBlocks[blockIndex], newBlocks[blockIndex + 1]] = [newBlocks[blockIndex + 1], newBlocks[blockIndex]];
     }
 
-    // Update order property
     newBlocks.forEach((block, index) => {
       block.order = index;
     });

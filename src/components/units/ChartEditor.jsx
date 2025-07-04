@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,14 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, X, BarChart3, PieChart, TrendingUp } from 'lucide-react';
 
-interface ChartEditorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  content: any;
-  onSave: (content: any) => void;
-}
-
-export const ChartEditor = ({ open, onOpenChange, content, onSave }: ChartEditorProps) => {
+export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
   const [chartType, setChartType] = useState(content?.chartType || 'bar');
   const [title, setTitle] = useState(content?.title || 'Chart Title');
   const [data, setData] = useState(content?.data || [
@@ -39,13 +31,13 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }: ChartEditor
     setData([...data, { label: `Item ${data.length + 1}`, value: 0 }]);
   };
 
-  const removeDataPoint = (index: number) => {
+  const removeDataPoint = (index) => {
     if (data.length > 1) {
       setData(data.filter((_, i) => i !== index));
     }
   };
 
-  const updateDataPoint = (index: number, field: string, value: any) => {
+  const updateDataPoint = (index, field, value) => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
     setData(newData);
@@ -179,3 +171,5 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }: ChartEditor
     </Dialog>
   );
 };
+
+export default ChartEditor;

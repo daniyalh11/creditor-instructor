@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,26 +7,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Images, RotateCcw, Grid2X2, Grid3X3, TableProperties, Plus, Trash2, Upload } from 'lucide-react';
 
-type GalleryType = 'carousel' | 'grid-2' | 'grid-3' | 'grid-4';
-
-type GalleryImage = {
-  id: string;
-  url: string;
-  caption: string;
-  description: string;
-};
-
-type GalleryTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType?: (type: GalleryType) => void;
-  currentContent?: any;
-  onSave?: (content: any) => void;
-};
-
 const galleryTypes = [
   {
-    id: 'carousel' as GalleryType,
+    id: 'carousel',
     name: 'Carousel Gallery',
     description: 'Sliding image carousel with navigation',
     icon: <RotateCcw className="h-6 w-6" />,
@@ -49,7 +31,7 @@ const galleryTypes = [
     )
   },
   {
-    id: 'grid-2' as GalleryType,
+    id: 'grid-2',
     name: '2 Column Grid',
     description: 'Two column image grid layout',
     icon: <Grid2X2 className="h-6 w-6" />,
@@ -71,7 +53,7 @@ const galleryTypes = [
     )
   },
   {
-    id: 'grid-3' as GalleryType,
+    id: 'grid-3',
     name: '3 Column Grid',
     description: 'Three column image grid layout',
     icon: <Grid3X3 className="h-6 w-6" />,
@@ -93,7 +75,7 @@ const galleryTypes = [
     )
   },
   {
-    id: 'grid-4' as GalleryType,
+    id: 'grid-4',
     name: '4 Column Grid',
     description: 'Four column image grid layout',
     icon: <TableProperties className="h-6 w-6" />,
@@ -116,7 +98,7 @@ const galleryTypes = [
   }
 ];
 
-const defaultImages: GalleryImage[] = [
+const defaultImages = [
   {
     id: '1',
     url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
@@ -137,10 +119,10 @@ const defaultImages: GalleryImage[] = [
   }
 ];
 
-export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }: GalleryTypeDialogProps) => {
-  const [selectedType, setSelectedType] = useState<GalleryType>(currentContent?.galleryType || 'carousel');
-  const [images, setImages] = useState<GalleryImage[]>(currentContent?.images || defaultImages);
-  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }) => {
+  const [selectedType, setSelectedType] = useState(currentContent?.galleryType || 'carousel');
+  const [images, setImages] = useState(currentContent?.images || defaultImages);
+  const fileInputRefs = useRef({});
 
   useEffect(() => {
     if (currentContent) {
@@ -149,7 +131,7 @@ export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentCon
     }
   }, [currentContent]);
 
-  const handleSelectType = (type: GalleryType) => {
+  const handleSelectType = (type) => {
     setSelectedType(type);
     if (onSelectType && !currentContent) {
       onSelectType(type);
@@ -157,7 +139,7 @@ export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentCon
   };
 
   const handleAddImage = () => {
-    const newImage: GalleryImage = {
+    const newImage = {
       id: Date.now().toString(),
       url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
       caption: 'New image',
@@ -166,29 +148,29 @@ export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentCon
     setImages([...images, newImage]);
   };
 
-  const handleRemoveImage = (id: string) => {
+  const handleRemoveImage = (id) => {
     setImages(images.filter(img => img.id !== id));
   };
 
-  const handleImageChange = (id: string, field: keyof GalleryImage, value: string) => {
+  const handleImageChange = (id, field, value) => {
     setImages(images.map(img => 
       img.id === id ? { ...img, [field]: value } : img
     ));
   };
 
-  const handleFileUpload = (imageId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (imageId, event) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string;
+        const result = e.target?.result;
         handleImageChange(imageId, 'url', result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const triggerFileUpload = (imageId: string) => {
+  const triggerFileUpload = (imageId) => {
     const fileInput = fileInputRefs.current[imageId];
     if (fileInput) {
       fileInput.click();
@@ -233,7 +215,6 @@ export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentCon
     );
   };
 
-  // If we have currentContent, show the editor interface
   if (currentContent && onSave) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -369,7 +350,6 @@ export const GalleryTypeDialog = ({ open, onOpenChange, onSelectType, currentCon
     );
   }
 
-  // Original type selection interface
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">

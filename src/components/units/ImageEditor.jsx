@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,26 +7,19 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Upload, Save } from 'lucide-react';
 
-interface ImageEditorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  content: any;
-  onSave: (content: any) => void;
-}
-
-export const ImageEditor = ({ open, onOpenChange, content, onSave }: ImageEditorProps) => {
+export const ImageEditor = ({ open, onOpenChange, content, onSave }) => {
   const [url, setUrl] = useState(content?.url || '');
   const [alt, setAlt] = useState(content?.alt || '');
   const [caption, setCaption] = useState(content?.caption || '');
   const [text, setText] = useState(content?.text || '');
   const [overlayText, setOverlayText] = useState(content?.overlayText || '');
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as string;
+        const result = event.target?.result;
         setUrl(result);
       };
       reader.readAsDataURL(file);
@@ -235,3 +227,5 @@ export const ImageEditor = ({ open, onOpenChange, content, onSave }: ImageEditor
     </Dialog>
   );
 };
+
+export default ImageEditor;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,26 +7,16 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileText, Heading1, Heading2, Table, Plus, X } from 'lucide-react';
 
-type TextType = 'paragraph' | 'heading-paragraph' | 'subheading-paragraph' | 'table';
-
-type TextTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType?: (type: TextType) => void;
-  currentContent?: any;
-  onSave?: (content: any) => void;
-};
-
 const textTypes = [
   {
-    id: 'paragraph' as TextType,
+    id: 'paragraph',
     name: 'Paragraph',
     description: 'Simple text paragraph',
     icon: <FileText className="h-6 w-6" />,
     preview: <p className="text-sm text-gray-700">This is a sample paragraph text that would appear in your lesson content.</p>
   },
   {
-    id: 'heading-paragraph' as TextType,
+    id: 'heading-paragraph',
     name: 'Heading + Paragraph',
     description: 'Main heading with content',
     icon: <Heading1 className="h-6 w-6" />,
@@ -39,7 +28,7 @@ const textTypes = [
     )
   },
   {
-    id: 'subheading-paragraph' as TextType,
+    id: 'subheading-paragraph',
     name: 'Subheading + Paragraph',
     description: 'Subheading with content',
     icon: <Heading2 className="h-6 w-6" />,
@@ -51,7 +40,7 @@ const textTypes = [
     )
   },
   {
-    id: 'table' as TextType,
+    id: 'table',
     name: 'Table',
     description: 'Data in table format',
     icon: <Table className="h-6 w-6" />,
@@ -74,8 +63,8 @@ const textTypes = [
   }
 ];
 
-export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }: TextTypeDialogProps) => {
-  const [selectedType, setSelectedType] = useState<TextType>(currentContent?.textType || 'paragraph');
+export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }) => {
+  const [selectedType, setSelectedType] = useState(currentContent?.textType || 'paragraph');
   const [text, setText] = useState(currentContent?.text || '');
   const [heading, setHeading] = useState(currentContent?.heading || '');
   const [subheading, setSubheading] = useState(currentContent?.subheading || '');
@@ -93,7 +82,7 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     }
   }, [currentContent]);
 
-  const handleSelectType = (type: TextType) => {
+  const handleSelectType = (type) => {
     setSelectedType(type);
     if (onSelectType && !currentContent) {
       onSelectType(type);
@@ -112,19 +101,19 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     setTableRows([...tableRows, newRow]);
   };
 
-  const updateTableHeader = (index: number, value: string) => {
+  const updateTableHeader = (index, value) => {
     const newHeaders = [...tableHeaders];
     newHeaders[index] = value;
     setTableHeaders(newHeaders);
   };
 
-  const updateTableCell = (rowIndex: number, cellIndex: number, value: string) => {
+  const updateTableCell = (rowIndex, cellIndex, value) => {
     const newRows = [...tableRows];
     newRows[rowIndex][cellIndex] = value;
     setTableRows(newRows);
   };
 
-  const removeTableColumn = (index: number) => {
+  const removeTableColumn = (index) => {
     if (tableHeaders.length > 1) {
       const newHeaders = tableHeaders.filter((_, i) => i !== index);
       const newRows = tableRows.map(row => row.filter((_, i) => i !== index));
@@ -133,7 +122,7 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     }
   };
 
-  const removeTableRow = (index: number) => {
+  const removeTableRow = (index) => {
     if (tableRows.length > 1) {
       const newRows = tableRows.filter((_, i) => i !== index);
       setTableRows(newRows);
@@ -141,7 +130,7 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
   };
 
   const handleSave = () => {
-    const content: any = {
+    const content = {
       textType: selectedType,
       text,
       heading,
@@ -306,7 +295,6 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     }
   };
 
-  // If we have currentContent, show the editor interface
   if (currentContent && onSave) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -356,7 +344,6 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     );
   }
 
-  // Original type selection interface
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">

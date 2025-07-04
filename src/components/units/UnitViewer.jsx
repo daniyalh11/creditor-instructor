@@ -1,44 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { ScormViewer } from './ScormViewer';
 
-type Block = {
-  id: string;
-  type: string;
-  content: any;
-  order: number;
-};
-
-type Unit = {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  status: string;
-  duration: string;
-  blocks: Block[];
-  settings: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-};
-
 export const UnitViewer = () => {
   const { courseId, moduleId, unitId } = useParams();
   const navigate = useNavigate();
-  const [unit, setUnit] = useState<Unit | null>(null);
+  const [unit, setUnit] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUnit = () => {
       const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
-      const foundUnit = savedUnits.find((u: Unit) => u.id === unitId);
+      const foundUnit = savedUnits.find((u) => u.id === unitId);
       
       if (foundUnit) {
         setUnit(foundUnit);
@@ -120,3 +95,5 @@ export const UnitViewer = () => {
     </div>
   );
 };
+
+export default UnitViewer;

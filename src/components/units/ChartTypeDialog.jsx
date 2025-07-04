@@ -1,16 +1,9 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { BarChart3, PieChart, TrendingUp } from 'lucide-react';
 
-interface ChartTypeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: string) => void;
-}
-
-export const ChartTypeDialog = ({ open, onOpenChange, onSelectType }: ChartTypeDialogProps) => {
+export const ChartTypeDialog = ({ open, onOpenChange, onSelectType }) => {
   const chartTypes = [
     {
       id: 'bar',
@@ -85,7 +78,7 @@ export const ChartTypeDialog = ({ open, onOpenChange, onSelectType }: ChartTypeD
     }
   ];
 
-  const handleSelectType = (type: string) => {
+  const handleSelectType = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };
@@ -120,3 +113,5 @@ export const ChartTypeDialog = ({ open, onOpenChange, onSelectType }: ChartTypeD
     </Dialog>
   );
 };
+
+export default ChartTypeDialog;

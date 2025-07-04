@@ -1,18 +1,11 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Image, Type, FileImage } from 'lucide-react';
 
-interface ImageTypeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: string) => void;
-}
-
-export const ImageTypeDialog = ({ open, onOpenChange, onSelectType }: ImageTypeDialogProps) => {
-  const handleTypeSelect = (type: string) => {
+export const ImageTypeDialog = ({ open, onOpenChange, onSelectType }) => {
+  const handleTypeSelect = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };
@@ -88,3 +81,5 @@ export const ImageTypeDialog = ({ open, onOpenChange, onSelectType }: ImageTypeD
     </Dialog>
   );
 };
+
+export default ImageTypeDialog;

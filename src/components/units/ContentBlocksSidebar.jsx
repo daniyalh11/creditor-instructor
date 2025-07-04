@@ -18,7 +18,7 @@ import { MultimediaTypeDialog } from './MultimediaTypeDialog';
 import { ImageTypeDialog } from './ImageTypeDialog';
 
 export const ContentBlocksSidebar = () => {
-  const [openSections, setOpenSections] = useState<string[]>(['text']);
+  const [openSections, setOpenSections] = useState(['text']);
   const [showTextDialog, setShowTextDialog] = useState(false);
   const [showListDialog, setShowListDialog] = useState(false);
   const [showStatementDialog, setShowStatementDialog] = useState(false);
@@ -30,7 +30,7 @@ export const ContentBlocksSidebar = () => {
   const [showMultimediaDialog, setShowMultimediaDialog] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
 
-  const toggleSection = (section: string) => {
+  const toggleSection = (section) => {
     setOpenSections(prev => 
       prev.includes(section) 
         ? prev.filter(s => s !== section)
@@ -38,9 +38,9 @@ export const ContentBlocksSidebar = () => {
     );
   };
 
-  const addBlock = (type: string, content: any = {}) => {
-    if ((window as any).addBlockToEditor) {
-      (window as any).addBlockToEditor(type, content);
+  const addBlock = (type, content = {}) => {
+    if (window.addBlockToEditor) {
+      window.addBlockToEditor(type, content);
     }
   };
 
@@ -123,7 +123,7 @@ export const ContentBlocksSidebar = () => {
     }
   ];
 
-  const handleCategoryClick = (categoryId: string) => {
+  const handleCategoryClick = (categoryId) => {
     switch (categoryId) {
       case 'text':
         setShowTextDialog(true);
@@ -154,7 +154,7 @@ export const ContentBlocksSidebar = () => {
     }
   };
 
-  const handleItemClick = (itemId: string) => {
+  const handleItemClick = (itemId) => {
     if (itemId === 'multimedia') {
       setShowMultimediaDialog(true);
     } else if (itemId === 'image') {
@@ -164,13 +164,13 @@ export const ContentBlocksSidebar = () => {
     }
   };
 
-  const handleTextSelect = (type: string) => {
+  const handleTextSelect = (type) => {
     const content = { textType: type };
     addBlock(`text-${type}`, content);
     setShowTextDialog(false);
   };
 
-  const handleListSelect = (type: string) => {
+  const handleListSelect = (type) => {
     const defaultItems = type === 'checklist' 
       ? [
           { text: 'First task', checked: false },
@@ -187,7 +187,7 @@ export const ContentBlocksSidebar = () => {
     setShowListDialog(false);
   };
 
-  const handleStatementSelect = (type: string) => {
+  const handleStatementSelect = (type) => {
     const content = { 
       statementType: type,
       text: 'This is an important statement that stands out from regular text.'
@@ -196,7 +196,7 @@ export const ContentBlocksSidebar = () => {
     setShowStatementDialog(false);
   };
 
-  const handleQuoteSelect = (type: string) => {
+  const handleQuoteSelect = (type) => {
     const content = { 
       quoteType: type,
       text: 'The only way to do great work is to love what you do.',
@@ -208,7 +208,7 @@ export const ContentBlocksSidebar = () => {
     setShowQuoteDialog(false);
   };
 
-  const handleGallerySelect = (type: string) => {
+  const handleGallerySelect = (type) => {
     const defaultImages = [
       {
         id: '1',
@@ -238,22 +238,22 @@ export const ContentBlocksSidebar = () => {
     setShowGalleryDialog(false);
   };
 
-  const handleInteractiveSelect = (type: string) => {
+  const handleInteractiveSelect = (type) => {
     addBlock(`interactive-${type}`);
     setShowInteractiveDialog(false);
   };
 
-  const handleChartSelect = (type: string) => {
+  const handleChartSelect = (type) => {
     addBlock(`chart-${type}`);
     setShowChartDialog(false);
   };
 
-  const handleDividerSelect = (type: string) => {
+  const handleDividerSelect = (type) => {
     addBlock(`divider-${type}`);
     setShowDividerDialog(false);
   };
 
-  const handleMultimediaSelect = (type: string) => {
+  const handleMultimediaSelect = (type) => {
     let content = {};
     
     switch (type) {
@@ -295,7 +295,7 @@ export const ContentBlocksSidebar = () => {
     setShowMultimediaDialog(false);
   };
 
-  const handleImageSelect = (type: string) => {
+  const handleImageSelect = (type) => {
     let content = {};
     
     switch (type) {
@@ -411,7 +411,6 @@ export const ContentBlocksSidebar = () => {
         </div>
       </ScrollArea>
 
-      {/* Dialogs */}
       <TextTypeDialog 
         open={showTextDialog} 
         onOpenChange={setShowTextDialog}

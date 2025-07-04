@@ -1,16 +1,9 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Minus, Play, Hash, Space } from 'lucide-react';
 
-interface DividerTypeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType: (type: string) => void;
-}
-
-export const DividerTypeDialog = ({ open, onOpenChange, onSelectType }: DividerTypeDialogProps) => {
+export const DividerTypeDialog = ({ open, onOpenChange, onSelectType }) => {
   const dividerTypes = [
     {
       id: 'continue',
@@ -80,7 +73,7 @@ export const DividerTypeDialog = ({ open, onOpenChange, onSelectType }: DividerT
     }
   ];
 
-  const handleSelectType = (type: string) => {
+  const handleSelectType = (type) => {
     onSelectType(type);
     onOpenChange(false);
   };
@@ -115,3 +108,5 @@ export const DividerTypeDialog = ({ open, onOpenChange, onSelectType }: DividerT
     </Dialog>
   );
 };
+
+export default DividerTypeDialog;

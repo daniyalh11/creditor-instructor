@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,40 +6,30 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Italic, Bold, Type, AlertCircle } from 'lucide-react';
 
-type StatementType = 'italic' | 'bold' | 'uppercase' | 'highlighted';
-
-type StatementTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType?: (type: StatementType) => void;
-  currentContent?: any;
-  onSave?: (content: any) => void;
-};
-
 const statementTypes = [
   {
-    id: 'italic' as StatementType,
+    id: 'italic',
     name: 'Statement Style 1',
     description: 'Emphasized italic text',
     icon: <Italic className="h-6 w-6" />,
     preview: <span className="italic text-blue-700">This is an important statement in italic style.</span>
   },
   {
-    id: 'bold' as StatementType,
+    id: 'bold',
     name: 'Statement Style 2',
     description: 'Strong bold text',
     icon: <Bold className="h-6 w-6" />,
     preview: <span className="font-bold text-gray-900">This is an important statement in bold style.</span>
   },
   {
-    id: 'uppercase' as StatementType,
+    id: 'uppercase',
     name: 'Statement Style 3',
     description: 'ALL CAPS TEXT',
     icon: <Type className="h-6 w-6" />,
     preview: <span className="uppercase font-semibold text-gray-800 tracking-wide">THIS IS AN IMPORTANT STATEMENT.</span>
   },
   {
-    id: 'highlighted' as StatementType,
+    id: 'highlighted',
     name: 'Statement Style 4',
     description: 'Important highlighted text',
     icon: <AlertCircle className="h-6 w-6" />,
@@ -48,8 +37,8 @@ const statementTypes = [
   }
 ];
 
-export const StatementTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }: StatementTypeDialogProps) => {
-  const [selectedType, setSelectedType] = useState<StatementType>(currentContent?.statementType || 'italic');
+export const StatementTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }) => {
+  const [selectedType, setSelectedType] = useState(currentContent?.statementType || 'italic');
   const [text, setText] = useState(currentContent?.text || 'This is an important statement.');
 
   useEffect(() => {
@@ -59,7 +48,7 @@ export const StatementTypeDialog = ({ open, onOpenChange, onSelectType, currentC
     }
   }, [currentContent]);
 
-  const handleSelectType = (type: StatementType) => {
+  const handleSelectType = (type) => {
     setSelectedType(type);
     if (onSelectType && !currentContent) {
       onSelectType(type);
@@ -200,3 +189,5 @@ export const StatementTypeDialog = ({ open, onOpenChange, onSelectType, currentC
     </Dialog>
   );
 };
+
+export default StatementTypeDialog;

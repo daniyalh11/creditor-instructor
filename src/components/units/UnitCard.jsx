@@ -1,31 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Eye, Play, FileText, Video, Package } from 'lucide-react';
 
-type Unit = {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  status: string;
-  duration: string;
-  blocks: any[];
-  settings: any;
-};
-
-type UnitCardProps = {
-  unit: Unit;
-  index: number;
-  onEdit: (unitId: string) => void;
-  onDelete: (unitId: string) => void;
-  onPreview: (unitId: string, event: React.MouseEvent) => void;
-  onView: (unitId: string) => void;
-};
-
-export const UnitCard = ({ unit, index, onEdit, onDelete, onPreview, onView }: UnitCardProps) => {
+export const UnitCard = ({ unit, index, onEdit, onDelete, onPreview, onView }) => {
   const getTypeIcon = () => {
     switch (unit.type) {
       case 'scorm':
@@ -37,7 +16,7 @@ export const UnitCard = ({ unit, index, onEdit, onDelete, onPreview, onView }: U
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'published':
         return 'bg-green-100 text-green-800';
