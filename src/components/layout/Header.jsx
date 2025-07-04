@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Bell, Search, User, Calendar, Inbox, Recycle, ExternalLink } from 'lucide-react';
@@ -16,38 +15,32 @@ import { ThemeToggle } from "../theme/ThemeToggle";
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-}
-
-export const Header = ({ onMenuClick }: HeaderProps) => {
+export const Header = ({ onMenuClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [userAvatar, setUserAvatar] = useState<string>('/lovable-uploads/b22d4431-7c74-430d-aa30-15d8739a7fbf.png');
-  const [avatarKey, setAvatarKey] = useState<number>(Date.now()); // Force re-render key
+  const [userAvatar, setUserAvatar] = useState('/lovable-uploads/b22d4431-7c74-430d-aa30-15d8739a7fbf.png');
+  const [avatarKey, setAvatarKey] = useState(Date.now());
   
-  // State for popup dialogs
   const [calendarDialogOpen, setCalendarDialogOpen] = useState(false);
   const [inboxDialogOpen, setInboxDialogOpen] = useState(false);
   const [recycleBinDialogOpen, setRecycleBinDialogOpen] = useState(false);
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
 
-  // Enhanced avatar update listening
   useEffect(() => {
-    const handleAvatarUpdate = (event: CustomEvent) => {
+    const handleAvatarUpdate = (event) => {
       console.log('Avatar update received in header:', event.detail);
       setUserAvatar(event.detail.avatar);
-      setAvatarKey(Date.now()); // Force re-render
+      setAvatarKey(Date.now());
     };
 
-    const handleForceRefresh = (event: CustomEvent) => {
+    const handleForceRefresh = (event) => {
       console.log('Force avatar refresh in header:', event.detail);
       setUserAvatar(event.detail.avatar);
       setAvatarKey(Date.now());
     };
 
-    const handleStorageChange = (event: StorageEvent) => {
+    const handleStorageChange = (event) => {
       if (event.key === 'userAvatar' && event.newValue) {
         console.log('Storage change detected for avatar:', event.newValue);
         setUserAvatar(event.newValue);
@@ -55,7 +48,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       }
     };
 
-    // Load initial avatar from localStorage with timestamp check
     const savedAvatar = localStorage.getItem('userAvatar');
     const savedTimestamp = localStorage.getItem('userAvatarTimestamp');
     
@@ -65,20 +57,17 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       setAvatarKey(Date.now());
     }
 
-    // Listen for multiple types of avatar update events
-    window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-    window.addEventListener('forceAvatarRefresh', handleForceRefresh as EventListener);
+    window.addEventListener('avatarUpdated', handleAvatarUpdate);
+    window.addEventListener('forceAvatarRefresh', handleForceRefresh);
     window.addEventListener('storage', handleStorageChange);
 
-    // Cleanup
     return () => {
-      window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-      window.removeEventListener('forceAvatarRefresh', handleForceRefresh as EventListener);
+      window.removeEventListener('avatarUpdated', handleAvatarUpdate);
+      window.removeEventListener('forceAvatarRefresh', handleForceRefresh);
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
-  // Navigation handlers
   const handleAthenaLMSClick = () => {
     navigate('/');
     toast({
@@ -104,23 +93,18 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
     setNotificationDialogOpen(true);
   };
 
-  const handleJoinMeeting = (eventTitle: string) => {
-    // Simulate joining a meeting - in real app this would open the meeting link
+  const handleJoinMeeting = (eventTitle) => {
     toast({
       title: "Joining Meeting",
       description: `Opening ${eventTitle}...`,
       duration: 3000,
     });
-    
-    // Here you would typically open the meeting URL
-    // window.open('https://zoom.us/j/meeting-id', '_blank');
   };
 
   return (
     <>
       <header className="px-4 h-16 flex items-center justify-between bg-white shadow-sm z-40 border-b border-gray-100">
         <div className="flex items-center">
-          {/* Mobile menu button only - removed desktop sidebar toggle */}
           <Button
             variant="ghost"
             size="icon"
@@ -150,7 +134,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             />
           </div>
 
-          {/* Quick Navigation Icons */}
           <div className="flex items-center gap-2 mr-2">
             <Button 
               variant="ghost" 
@@ -240,7 +223,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </div>
       </header>
 
-      {/* Calendar Dialog */}
       <Dialog open={calendarDialogOpen} onOpenChange={setCalendarDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -302,7 +284,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Inbox Dialog */}
       <Dialog open={inboxDialogOpen} onOpenChange={setInboxDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -346,7 +327,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Recycle Bin Dialog */}
       <Dialog open={recycleBinDialogOpen} onOpenChange={setRecycleBinDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -392,7 +372,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Notifications Dialog */}
       <Dialog open={notificationDialogOpen} onOpenChange={setNotificationDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>

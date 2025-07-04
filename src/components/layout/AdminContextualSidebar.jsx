@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AdminNavigation } from './AdminNavigation';
@@ -8,11 +7,7 @@ import { Button } from '../ui/button';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useToast } from '@/hooks/use-toast';
 
-type AdminContextualSidebarProps = {
-  isCollapsed: boolean;
-};
-
-const AdminContextualSidebar = ({ isCollapsed }: AdminContextualSidebarProps) => {
+const AdminContextualSidebar = ({ isCollapsed }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { closeAdminPanel } = useSidebar();

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Settings,
@@ -9,12 +8,7 @@ import { NavItem } from './NavItem';
 import { useLocation, Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
-type SettingsNavigationProps = {
-  pathname: string;
-  onItemClick?: () => void;
-};
-
-export const SettingsNavigation = ({ pathname, onItemClick }: SettingsNavigationProps) => {
+export const SettingsNavigation = ({ pathname, onItemClick }) => {
   const [expanded, setExpanded] = useState(pathname.includes('/admin-settings'));
   
   const settingsOptions = [
@@ -85,3 +79,5 @@ export const SettingsNavigation = ({ pathname, onItemClick }: SettingsNavigation
     </div>
   );
 };
+
+export default SettingsNavigation;

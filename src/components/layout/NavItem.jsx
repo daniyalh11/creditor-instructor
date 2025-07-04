@@ -1,17 +1,5 @@
-
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface NavItemProps {
-  icon: LucideIcon;
-  label: string;
-  to: string;
-  active?: boolean;
-  collapsed?: boolean;
-  className?: string;
-  onClick?: (e?: React.MouseEvent) => void;
-}
 
 export const NavItem = ({ 
   icon: Icon, 
@@ -21,8 +9,8 @@ export const NavItem = ({
   collapsed = false, 
   className,
   onClick 
-}: NavItemProps) => {
-  const handleClick = (e?: React.MouseEvent) => {
+}) => {
+  const handleClick = (e) => {
     if (onClick) {
       onClick(e);
     }
@@ -56,3 +44,5 @@ export const NavItem = ({
     </button>
   );
 };
+
+export default NavItem;

@@ -1,35 +1,9 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-type SidebarContextType = {
-  isMainOpen: boolean;
-  toggleMain: () => void;
-  closeMain: () => void;
-  
-  isAdminSectionActive: boolean;
-  setAdminSectionActive: (active: boolean) => void;
-  isMainCollapsed: boolean;
-  setMainCollapsed: (collapsed: boolean) => void;
-  isAdminSidebarOpen: boolean;
-  toggleAdminSidebar: () => void;
-  setAdminSidebarOpen: (open: boolean) => void;
-  openAdminPanel: () => void;
-  closeAdminPanel: () => void;
+const SidebarContext = createContext(undefined);
 
-  isGroupSectionActive: boolean;
-  setGroupSectionActive: (active: boolean) => void;
-  isGroupSidebarOpen: boolean;
-  toggleGroupSidebar: () => void;
-  setGroupSidebarOpen: (open: boolean) => void;
-  openGroupPanel: (groupId: string) => void;
-  closeGroupPanel: () => void;
-  activeGroupId: string | null;
-};
-
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
-
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
+export function SidebarProvider({ children }) {
   const [isMainOpen, setIsMainOpen] = useState(true);
   const [isMainCollapsed, setIsMainCollapsed] = useState(false);
   
@@ -38,7 +12,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
   const [isGroupSidebarOpen, setIsGroupSidebarOpen] = useState(false);
   const [isGroupSectionActive, setIsGroupSectionActive] = useState(false);
-  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [activeGroupId, setActiveGroupId] = useState(null);
 
   const location = useLocation();
   
@@ -52,27 +26,23 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     const courseViewRegex = /^\/courses\/view\/([^/]+)/;
     const isCourseSection = location.pathname.match(courseViewRegex);
 
-    // Only set one section active at a time
     if (isInAdminSection) {
       setIsAdminSectionActive(true);
       setIsGroupSectionActive(false);
-      // Close group sidebar if navigating to admin
       setIsGroupSidebarOpen(false);
     } else if (isInGroupSection) {
       setIsGroupSectionActive(true);
       setIsAdminSectionActive(false);
       setActiveGroupId(currentGroupId);
-      // Close admin sidebar if navigating to group
       setIsAdminSidebarOpen(false);
     } else {
-      // If not in a specific section, close all contextual sidebars
       if (!isCourseSection) {
         setIsAdminSidebarOpen(false);
         setIsGroupSidebarOpen(false);
         setIsAdminSectionActive(false);
         setIsGroupSectionActive(false);
         setActiveGroupId(null);
-        setIsMainCollapsed(false); // Expand main when no contextual sidebar
+        setIsMainCollapsed(false);
       }
     }
   }, [location.pathname]);
@@ -84,13 +54,11 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     const newState = !isAdminSidebarOpen;
     setIsAdminSidebarOpen(newState);
     if (newState) {
-      // Close other contextual sidebars when opening admin sidebar
       setIsGroupSidebarOpen(false);
       setIsGroupSectionActive(false);
-      setIsMainCollapsed(true); // Collapse main sidebar when admin is open
+      setIsMainCollapsed(true);
     } else {
-      setIsAdminSectionActive(false); // If closing, also deactivate
-      // Only expand main if no other sidebar is open
+      setIsAdminSectionActive(false);
       setIsMainCollapsed(false);
     }
   };
@@ -99,7 +67,6 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setIsMainCollapsed(true);
     setIsAdminSidebarOpen(true);
     setIsAdminSectionActive(true);
-    // Close all other contextual sidebars when opening admin
     setIsGroupSidebarOpen(false);
     setIsGroupSectionActive(false);
   };
@@ -107,29 +74,27 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const closeAdminPanel = () => {
     setIsAdminSidebarOpen(false);
     setIsAdminSectionActive(false);
-    setIsMainCollapsed(false); // Expand main when closing admin panel
+    setIsMainCollapsed(false);
   };
 
   const toggleGroupSidebar = () => {
     const newState = !isGroupSidebarOpen;
     setIsGroupSidebarOpen(newState);
     if (newState) {
-      // Close other contextual sidebars when opening group sidebar
       setIsAdminSidebarOpen(false);
       setIsAdminSectionActive(false);
       setIsMainCollapsed(true);
     } else {
       setIsGroupSectionActive(false);
-      setIsMainCollapsed(false); // Expand main when closing group sidebar
+      setIsMainCollapsed(false);
     }
   };
 
-  const openGroupPanel = (groupId: string) => {
+  const openGroupPanel = (groupId) => {
     setActiveGroupId(groupId);
     setIsMainCollapsed(true);
     setIsGroupSidebarOpen(true);
     setIsGroupSectionActive(true);
-    // Close all other contextual sidebars when opening group
     setIsAdminSidebarOpen(false);
     setIsAdminSectionActive(false);
   };
@@ -138,7 +103,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setIsGroupSidebarOpen(false);
     setIsGroupSectionActive(false);
     setActiveGroupId(null);
-    setIsMainCollapsed(false); // Expand main when closing group panel
+    setIsMainCollapsed(false);
   };
 
   return (

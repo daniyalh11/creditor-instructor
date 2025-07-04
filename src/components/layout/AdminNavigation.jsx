@@ -9,15 +9,6 @@ import {
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
-type AdminMenuItemProps = {
-  label: string;
-  to: string;
-  active: boolean;
-  icon: React.ReactNode;
-  onClick?: () => void;
-  collapsed?: boolean;
-};
-
 const AdminMenuItem = ({ 
   label, 
   to, 
@@ -25,7 +16,7 @@ const AdminMenuItem = ({
   icon, 
   onClick,
   collapsed = false 
-}: AdminMenuItemProps) => {
+}) => {
   if (collapsed) {
     return (
       <Tooltip>
@@ -73,17 +64,11 @@ const AdminMenuItem = ({
   );
 };
 
-type AdminNavigationProps = {
-  pathname: string;
-  onItemClick?: () => void;
-  collapsed?: boolean;
-};
-
 export const AdminNavigation = ({ 
   pathname, 
   onItemClick,
   collapsed = false 
-}: AdminNavigationProps) => {
+}) => {
   const adminItems = [
     { icon: <Cpu size={collapsed ? 22 : 18} className="text-gray-700" />, label: "API", path: "/admin/api" },
     { icon: <Info size={collapsed ? 22 : 18} className="text-gray-700" />, label: "About", path: "/admin/about" },
@@ -120,7 +105,7 @@ export const AdminNavigation = ({
   );
   
   // Check if we're on a subpage of a section
-  const isSubpageActive = (path: string) => {
+  const isSubpageActive = (path) => {
     const mainPath = path.split('/').slice(0, 3).join('/');
     return pathname.startsWith(mainPath);
   };
@@ -146,3 +131,5 @@ export const AdminNavigation = ({
     </div>
   );
 };
+
+export default AdminNavigation;

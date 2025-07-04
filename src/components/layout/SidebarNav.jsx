@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MainNavigation } from './MainNavigation';
@@ -8,11 +7,7 @@ import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
-type SidebarNavProps = {
-  onCloseMobile?: () => void;
-};
-
-export const SidebarNav = ({ onCloseMobile }: SidebarNavProps) => {
+export const SidebarNav = ({ onCloseMobile }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { 
@@ -37,7 +32,7 @@ export const SidebarNav = ({ onCloseMobile }: SidebarNavProps) => {
     setMainCollapsed(!isMainCollapsed);
   };
 
-  const renderTooltip = (content: string, children: React.ReactNode) => {
+  const renderTooltip = (content, children) => {
     if (isMainCollapsed) {
       return (
         <Tooltip>
@@ -109,3 +104,5 @@ export const SidebarNav = ({ onCloseMobile }: SidebarNavProps) => {
     </nav>
   );
 };
+
+export default SidebarNav;

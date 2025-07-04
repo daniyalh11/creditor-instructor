@@ -9,12 +9,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 
-type GroupContextualSidebarProps = {
-  isCollapsed: boolean;
-};
-
-export const GroupContextualSidebar = ({ isCollapsed }: GroupContextualSidebarProps) => {
-  const { groupId } = useParams<{ groupId: string }>();
+export const GroupContextualSidebar = ({ isCollapsed }) => {
+  const { groupId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { closeGroupPanel, setGroupSectionActive } = useSidebar();
@@ -35,7 +31,7 @@ export const GroupContextualSidebar = ({ isCollapsed }: GroupContextualSidebarPr
     });
   };
 
-  const handleNavItemClick = (path: string) => {
+  const handleNavItemClick = (path) => {
     navigate(path);
     // Don't show toast for chat navigation
     if (!path.includes('/chat')) {
@@ -59,7 +55,7 @@ export const GroupContextualSidebar = ({ isCollapsed }: GroupContextualSidebarPr
     { icon: Info, label: "Overview", path: `/groups/view/${groupId}/about` },
   ];
 
-  const renderTooltip = (content: string, children: React.ReactNode) => {
+  const renderTooltip = (content, children) => {
     if (isCollapsed) {
       return (
         <Tooltip>
@@ -155,3 +151,5 @@ export const GroupContextualSidebar = ({ isCollapsed }: GroupContextualSidebarPr
     </div>
   );
 };
+
+export default GroupContextualSidebar;

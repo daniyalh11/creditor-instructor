@@ -1,44 +1,9 @@
+import React, { createContext, useContext, useState } from 'react';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+const UserFilterContext = createContext(undefined);
 
-// Define user roles
-export type UserRole = 'administrator' | 'learner' | 'friends' | 'archived' | 'manager' | 'instructor' | 'all';
-
-// Define user interface
-export interface User {
-  id: number;
-  name: string;
-  role: UserRole[];
-  avatar: string;
-  email: string;
-  lastVisited: string;
-  groups: number;
-  courses?: number;
-  completed?: number;
-  deactivated?: boolean;
-  superAdmin?: boolean;
-  contactMessages?: number;
-  archived?: boolean;
-}
-
-interface UserFilterContextType {
-  users: User[];
-  filteredUsers: User[];
-  selectedRole: UserRole;
-  setSelectedRole: (role: UserRole) => void;
-  isFilterMenuOpen: boolean;
-  setIsFilterMenuOpen: (isOpen: boolean) => void;
-  totalPages: number;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
-  itemsPerPage: number;
-  addUser: (user: Omit<User, 'id'>) => void;
-}
-
-const UserFilterContext = createContext<UserFilterContextType | undefined>(undefined);
-
-export function UserFilterProvider({ children }: { children: ReactNode }) {
-  const [users, setUsers] = useState<User[]>([
+export function UserFilterProvider({ children }) {
+  const [users, setUsers] = useState([
     {
       id: 1,
       name: "Aberin, David",
@@ -219,7 +184,7 @@ export function UserFilterProvider({ children }: { children: ReactNode }) {
       id: 19,
       name: "Gharfalkar, Jay",
       role: ["manager"],
-      avatar: "/lovable-uploads/dc27ec74-b2e9-4467-8adc-6a66a52eb520.png",
+      avatar: "/lovable-Uploads/dc27ec74-b2e9-4467-8adc-6a66a52eb520.png",
       email: "jay.gharfalkar@example.com",
       lastVisited: "2 days ago",
       groups: 3
@@ -331,12 +296,11 @@ export function UserFilterProvider({ children }: { children: ReactNode }) {
     }
   ]);
   
-  const [selectedRole, setSelectedRole] = useState<UserRole>('all');
+  const [selectedRole, setSelectedRole] = useState('all');
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  // Filter users based on selected role
   const getFilteredUsers = () => {
     if (selectedRole === 'all') {
       return users;
@@ -346,11 +310,9 @@ export function UserFilterProvider({ children }: { children: ReactNode }) {
 
   const filteredUsers = getFilteredUsers();
   
-  // Calculate total pages for pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   
-  // Add user function
-  const addUser = (user: Omit<User, 'id'>) => {
+  const addUser = (user) => {
     const newUser = {
       ...user,
       id: users.length + 1

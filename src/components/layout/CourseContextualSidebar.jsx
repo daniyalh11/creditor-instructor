@@ -13,12 +13,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-type CourseContextualSidebarProps = {
-  isCollapsed: boolean;
-};
-
-export const CourseContextualSidebar = ({ isCollapsed }: CourseContextualSidebarProps) => {
-  const { courseId } = useParams<{ courseId: string }>();
+export const CourseContextualSidebar = ({ isCollapsed }) => {
+  const { courseId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { closeCourseSidebar, courseTitle } = useCourseSidebar();
@@ -35,7 +31,7 @@ export const CourseContextualSidebar = ({ isCollapsed }: CourseContextualSidebar
     });
   };
 
-  const handleNavItemClick = (path: string) => {
+  const handleNavItemClick = (path) => {
     navigate(path);
     toast({
       title: "Navigation",
@@ -52,7 +48,7 @@ export const CourseContextualSidebar = ({ isCollapsed }: CourseContextualSidebar
     { icon: Clock, label: "Attendance", path: `/courses/view/${courseId}/attendance` },
   ];
 
-  const renderTooltip = (content: string, children: React.ReactNode) => {
+  const renderTooltip = (content, children) => {
     if (isCollapsed) {
       return (
         <Tooltip>
@@ -143,3 +139,5 @@ export const CourseContextualSidebar = ({ isCollapsed }: CourseContextualSidebar
     </div>
   );
 };
+
+export default CourseContextualSidebar;

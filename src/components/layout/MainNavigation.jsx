@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Home, Book, Users, Folder, FileText, BarChart2,
@@ -19,12 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type MainNavigationProps = {
-  pathname: string;
-  onItemClick?: () => void;
-};
-
-export const MainNavigation = ({ pathname, onItemClick }: MainNavigationProps) => {
+export const MainNavigation = ({ pathname, onItemClick }) => {
   const { isMainCollapsed } = useSidebar();
   const { isFilterMenuOpen, setIsFilterMenuOpen } = useUserFilter();
   const { openCourseSidebar, setCourseTitle } = useCourseSidebar();
@@ -62,12 +56,12 @@ export const MainNavigation = ({ pathname, onItemClick }: MainNavigationProps) =
     if (onItemClick) onItemClick();
   };
 
-  const handleNavItemClick = (path: string) => {
+  const handleNavItemClick = (path) => {
     navigate(path);
     if (onItemClick) onItemClick();
   };
 
-  const handleHelpMenuClick = (section: string) => {
+  const handleHelpMenuClick = (section) => {
     navigate(`/help?section=${section}`);
     if (onItemClick) onItemClick();
   };
@@ -280,3 +274,5 @@ export const MainNavigation = ({ pathname, onItemClick }: MainNavigationProps) =
     </div>
   );
 };
+
+export default MainNavigation;

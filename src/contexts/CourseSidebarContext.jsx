@@ -1,36 +1,15 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSidebar } from './SidebarContext';
 
-type CourseActionType = 'catalog' | 'list' | 'enroll' | 'add' | 'none';
+const CourseSidebarContext = createContext(undefined);
 
-type CourseSidebarContextType = {
-  isCourseSection: boolean;
-  setIsCourseSection: (value: boolean) => void;
-  isCourseSidebarOpen: boolean;
-  setCourseSidebarOpen: (open: boolean) => void;
-  openCourseSidebar: (courseId: string, title: string) => void;
-  closeCourseSidebar: () => void;
-  activeCourseId: string | null;
-  courseTitle: string;
-  setCourseTitle: (title: string) => void;
-  courseAction: CourseActionType;
-  setCourseAction: (action: CourseActionType) => void;
-  isEnrollDialogOpen: boolean;
-  setEnrollDialogOpen: (open: boolean) => void;
-  isAddCourseDialogOpen: boolean;
-  setAddCourseDialogOpen: (open: boolean) => void;
-};
-
-const CourseSidebarContext = createContext<CourseSidebarContextType | undefined>(undefined);
-
-export function CourseSidebarProvider({ children }: { children: React.ReactNode }) {
+export function CourseSidebarProvider({ children }) {
   const [isCourseSection, setIsCourseSection] = useState(false);
   const [isCourseSidebarOpen, setCourseSidebarOpen] = useState(false);
-  const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
+  const [activeCourseId, setActiveCourseId] = useState(null);
   const [courseTitle, setCourseTitle] = useState('Course');
-  const [courseAction, setCourseAction] = useState<CourseActionType>('none');
+  const [courseAction, setCourseAction] = useState('none');
   const [isEnrollDialogOpen, setEnrollDialogOpen] = useState(false);
   const [isAddCourseDialogOpen, setAddCourseDialogOpen] = useState(false);
   
@@ -72,7 +51,7 @@ export function CourseSidebarProvider({ children }: { children: React.ReactNode 
     }
   }, [location.pathname, isCourseSection, activeCourseId, isCourseSidebarOpen, setMainCollapsed, setAdminSidebarOpen, setGroupSidebarOpen]);
 
-  const openCourseSidebar = (courseId: string, title: string) => {
+  const openCourseSidebar = (courseId, title) => {
     setActiveCourseId(courseId);
     setCourseTitle(title);
     setIsCourseSection(true);
@@ -130,3 +109,5 @@ export function useCourseSidebar() {
   }
   return context;
 }
+
+export default CourseSidebarContext;
