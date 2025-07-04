@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AvatarPickerDialog } from '@/components/profile/AvatarPickerDialog';
+import AvatarPickerDialog  from '@/components/profile/AvatarPickerDialog';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("personal");
