@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserRound, Mail, Phone, MapPin, Calendar, BookOpen, FileText, ArrowLeft, Edit } from 'lucide-react';

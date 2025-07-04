@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,36 +11,12 @@ import { UnitCard } from '@/components/units/UnitCard';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { ScormUploadDialog } from '@/components/units/ScormUploadDialog';
 
-type Block = {
-  id: string;
-  type: string;
-  content: any;
-  order: number;
-};
-
-type Unit = {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  status: string;
-  duration: string;
-  blocks: Block[];
-  settings: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-};
-
 const UnitsBuilder = () => {
   const navigate = useNavigate();
   const { courseId, moduleId, action, unitId } = useParams();
-  const [units, setUnits] = useState<Unit[]>([]);
+  const [units, setUnits] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
-  const [previewUnit, setPreviewUnit] = useState<Unit | null>(null);
+  const [previewUnit, setPreviewUnit] = useState(null);
   const [showScormDialog, setShowScormDialog] = useState(false);
   const { setMainCollapsed } = useSidebar();
 
@@ -70,11 +45,11 @@ const UnitsBuilder = () => {
     navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator`);
   };
 
-  const handleEditUnit = (unitId: string) => {
+  const handleEditUnit = (unitId) => {
     navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${unitId}`);
   };
 
-  const handleDeleteUnit = (unitId: string) => {
+  const handleDeleteUnit = (unitId) => {
     if (window.confirm('Are you sure you want to delete this unit?')) {
       const updatedUnits = units.filter(u => u.id !== unitId);
       setUnits(updatedUnits);
@@ -87,7 +62,7 @@ const UnitsBuilder = () => {
     }
   };
 
-  const handlePreviewUnit = (unitId: string, event: React.MouseEvent) => {
+  const handlePreviewUnit = (unitId, event) => {
     event.stopPropagation();
     const unit = units.find(u => u.id === unitId);
     if (unit) {
@@ -96,13 +71,13 @@ const UnitsBuilder = () => {
     }
   };
 
-  const handleViewUnit = (unitId: string) => {
+  const handleViewUnit = (unitId) => {
     navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${unitId}`);
   };
 
-  const handleScormUpload = (scormData: { name: string; file: File }) => {
+  const handleScormUpload = (scormData) => {
     // Create a new SCORM unit
-    const newScormUnit: Unit = {
+    const newScormUnit = {
       id: `scorm_${Date.now()}`,
       title: scormData.name,
       description: `SCORM package: ${scormData.file.name}`,
@@ -229,4 +204,4 @@ const UnitsBuilder = () => {
   );
 };
 
-export default UnitsBuilder;
+export default UnitsBuilder;    

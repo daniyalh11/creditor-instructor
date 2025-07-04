@@ -16,12 +16,12 @@ import { ResetPasswordModal } from '@/components/users/ResetPasswordModal';
 import { ResendLoginModal } from '@/components/users/ResendLoginModal';
 import { UserScoresModal } from '@/components/users/UserScoresModal';
 import { GiveAwardModal } from '@/components/users/GiveAwardModal';
-import { useUserFilter, UserRole, User } from '@/contexts/UserFilterContext';
+import { useUserFilter } from '@/contexts/UserFilterContext';
 import { toast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import { UserDetailDialog } from '@/components/users/UserDetailDialog';
 
-const roleDisplayNames: Record<UserRole, string> = {
+const roleDisplayNames = {
   all: 'All',
   administrator: 'Administrators',
   learner: 'Learners',
@@ -49,13 +49,13 @@ const UsersPage = () => {
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [resetPasswordModalOpen, setResetPasswordModalOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [sortField, setSortField] = useState<string>("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [sortField, setSortField] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [searchQuery, setSearchQuery] = useState('');
   const [userDetailDialogOpen, setUserDetailDialogOpen] = useState(false);
-  const [selectedUserForDetail, setSelectedUserForDetail] = useState<User | null>(null);
+  const [selectedUserForDetail, setSelectedUserForDetail] = useState(null);
   const [resendLoginModalOpen, setResendLoginModalOpen] = useState(false);
   const [userScoresModalOpen, setUserScoresModalOpen] = useState(false);
   const [giveAwardModalOpen, setGiveAwardModalOpen] = useState(false);
@@ -81,7 +81,7 @@ const UsersPage = () => {
     }
   };
 
-  const handleSelectUser = (id: number) => {
+  const handleSelectUser = (id) => {
     if (selectedUsers.includes(id)) {
       setSelectedUsers(selectedUsers.filter(userId => userId !== id));
     } else {
@@ -89,7 +89,7 @@ const UsersPage = () => {
     }
   };
 
-  const handleSort = (field: string) => {
+  const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -98,7 +98,7 @@ const UsersPage = () => {
     }
   };
 
-  const handleAction = (action: string) => {
+  const handleAction = (action) => {
     if (selectedUsers.length === 0) {
       toast({
         title: "No users selected",
@@ -163,7 +163,7 @@ const UsersPage = () => {
     setSelectedUsers([]);
   };
 
-  const handleEditUser = (userId: number) => {
+  const handleEditUser = (userId) => {
     const user = users.find(u => u.id === userId);
     if (user) {
       setEditingUser(user);
@@ -171,19 +171,19 @@ const UsersPage = () => {
     }
   };
 
-  const handleDeleteUser = (userId: number) => {
+  const handleDeleteUser = (userId) => {
     toast({
       title: "User deleted",
       description: "User has been successfully deleted.",
     });
   };
 
-  const handleSaveUser = (updatedUser: User) => {
+  const handleSaveUser = (updatedUser) => {
     // This would normally update the user in the context
     console.log('Updated user:', updatedUser);
   };
 
-  const handleUserClick = (user: User) => {
+  const handleUserClick = (user) => {
     setSelectedUserForDetail(user);
     setUserDetailDialogOpen(true);
   };
@@ -267,8 +267,8 @@ const UsersPage = () => {
 
   const actionButtons = getActionButtons();
 
-  const handleRoleTabChange = (value: string) => {
-    setSelectedRole(value as UserRole);
+  const handleRoleTabChange = (value) => {
+    setSelectedRole(value);
     setCurrentPage(1);
     setSelectedUsers([]);
     setSearchQuery('');

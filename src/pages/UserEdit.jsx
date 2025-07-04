@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
@@ -24,7 +23,7 @@ const UserEdit = () => {
     isActive: true
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -32,7 +31,7 @@ const UserEdit = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send this data to your backend
     console.log("Updated user data:", formData);

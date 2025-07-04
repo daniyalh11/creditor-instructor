@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,30 +12,6 @@ import { toast } from '@/hooks/use-toast';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useCourseSidebar } from '@/contexts/CourseSidebarContext';
 
-type Block = {
-  id: string;
-  type: string;
-  content: any;
-  order: number;
-};
-
-type Unit = {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  status: string;
-  duration: string;
-  blocks: Block[];
-  settings: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-};
-
 const UnitCreator = () => {
   const navigate = useNavigate();
   const { courseId, moduleId, unitId } = useParams();
@@ -50,7 +25,7 @@ const UnitCreator = () => {
     fontFamily: 'Inter',
     primaryColor: '#3b82f6'
   });
-  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [blocks, setBlocks] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const { setMainCollapsed } = useSidebar();
   const { setCourseSidebarOpen } = useCourseSidebar();
@@ -81,7 +56,7 @@ const UnitCreator = () => {
   useEffect(() => {
     if (unitId && unitId !== 'creator') {
       const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
-      const existingUnit = savedUnits.find((unit: Unit) => unit.id === unitId);
+      const existingUnit = savedUnits.find(unit => unit.id === unitId);
       
       if (existingUnit) {
         setUnitTitle(existingUnit.title);
@@ -92,12 +67,12 @@ const UnitCreator = () => {
     }
   }, [unitId]);
 
-  const handleSaveUnit = (unitBlocks: Block[], title: string) => {
+  const handleSaveUnit = (unitBlocks, title) => {
     // Update current blocks state
     setBlocks(unitBlocks);
     
-    const unitData: Unit = {
-      id: isEditing ? unitId! : `unit_${Date.now()}`,
+    const unitData = {
+      id: isEditing ? unitId : `unit_${Date.now()}`,
       title: title,
       description: courseSettings.description,
       type: 'lesson',
@@ -113,7 +88,7 @@ const UnitCreator = () => {
     const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
     
     if (isEditing) {
-      const updatedUnits = savedUnits.map((unit: Unit) => 
+      const updatedUnits = savedUnits.map(unit => 
         unit.id === unitId ? unitData : unit
       );
       localStorage.setItem('units', JSON.stringify(updatedUnits));
@@ -132,8 +107,8 @@ const UnitCreator = () => {
   };
 
   const handlePublishUnit = () => {
-    const unitData: Unit = {
-      id: isEditing ? unitId! : `unit_${Date.now()}`,
+    const unitData = {
+      id: isEditing ? unitId : `unit_${Date.now()}`,
       title: unitTitle,
       description: courseSettings.description,
       type: 'lesson',
@@ -149,7 +124,7 @@ const UnitCreator = () => {
     const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
     
     if (isEditing) {
-      const updatedUnits = savedUnits.map((unit: Unit) => 
+      const updatedUnits = savedUnits.map(unit => 
         unit.id === unitId ? unitData : unit
       );
       localStorage.setItem('units', JSON.stringify(updatedUnits));
@@ -158,8 +133,8 @@ const UnitCreator = () => {
       localStorage.setItem('units', JSON.stringify(savedUnits));
     }
 
-    if ((window as any).saveLesson) {
-      (window as any).saveLesson();
+    if (window.saveLesson) {
+      window.saveLesson();
     }
 
     toast({
@@ -180,16 +155,16 @@ const UnitCreator = () => {
     setShowPreview(true);
   };
 
-  const updateCourseSettings = (newSettings: any) => {
+  const updateCourseSettings = (newSettings) => {
     setCourseSettings(prev => ({ ...prev, ...newSettings }));
     if (newSettings.title) {
       setUnitTitle(newSettings.title);
     }
   };
 
-  const handleUseTemplate = (templateBlocks: Block[]) => {
-    if ((window as any).loadTemplate) {
-      (window as any).loadTemplate(templateBlocks);
+  const handleUseTemplate = (templateBlocks) => {
+    if (window.loadTemplate) {
+      window.loadTemplate(templateBlocks);
     }
     setActiveTab('blocks');
   };

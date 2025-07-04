@@ -31,7 +31,7 @@ import AssessmentCategories from "./components/courses/AssessmentCategories";
 import Dashboard from "./pages/Dashboard";
 import Courses from "./pages/Courses";
 import Groups from "./pages/Groups";
-import Users from "./pages/Users";
+import Users from "./pages/Users.jsx";
 import Reports from "./pages/Reports";
 import Resources from "./pages/Resources";
 import Messages from "./pages/Messages";
@@ -53,8 +53,8 @@ import CourseLessons from "./pages/CourseLessons";
 import LessonContent from "./pages/LessonContent";
 import CourseCreation from "./pages/CourseCreation";
 import CourseBuilder from "./pages/CourseBuilder";
-import UnitsBuilder from "./pages/UnitsBuilder";
-import UnitCreator from "./pages/UnitCreator";
+import UnitsBuilder from "./pages/UnitsBuilder.jsx";
+import UnitCreator from "./pages/UnitCreator.jsx";
 import AssessmentsBuilder from "./pages/AssessmentsBuilder";
 
 // Import group pages
