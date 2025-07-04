@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
@@ -56,15 +55,15 @@ export const AssessmentQuestionsTab = () => {
     }
   ];
 
-  const handleQuestionTypeClick = (type: string) => {
-    if ((window as any).addAssessmentBlock) {
-      (window as any).addAssessmentBlock(type);
+  const handleQuestionTypeClick = (type) => {
+    if (window.addAssessmentBlock) {
+      window.addAssessmentBlock(type);
     }
   };
 
   const handleInstructionsClick = () => {
-    if ((window as any).editInstructions) {
-      (window as any).editInstructions();
+    if (window.editInstructions) {
+      window.editInstructions();
     }
   };
 

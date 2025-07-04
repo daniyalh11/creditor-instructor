@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,18 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 
-interface AssessmentPreviewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  assessmentData: any;
-}
-
-export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: AssessmentPreviewModalProps) => {
-  const [currentView, setCurrentView] = useState<'overview' | 'assessment' | 'completed'>('overview');
+export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }) => {
+  const [currentView, setCurrentView] = useState('overview');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<{ [key: string]: any }>({});
+  const [answers, setAnswers] = useState({});
   const [timeRemaining, setTimeRemaining] = useState(0);
-  const [draggedItem, setDraggedItem] = useState<{ type: 'left' | 'right', index: number, content: string } | null>(null);
+  const [draggedItem, setDraggedItem] = useState(null);
 
   if (!assessmentData) return null;
 
@@ -32,7 +25,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
   }, [currentView, assessmentData.settings?.timeLimitMinutes]);
 
   React.useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval;
     if (currentView === 'assessment' && timeRemaining > 0) {
       interval = setInterval(() => {
         setTimeRemaining((prev) => {
@@ -47,7 +40,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
     return () => clearInterval(interval);
   }, [currentView, timeRemaining]);
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -59,7 +52,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
     setAnswers({});
   };
 
-  const handleAnswerChange = (questionId: string, answer: any) => {
+  const handleAnswerChange = (questionId, answer) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
@@ -79,21 +72,20 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
     setCurrentView('completed');
   };
 
-  const handleDragStart = (e: React.DragEvent, type: 'left' | 'right', index: number, content: string) => {
+  const handleDragStart = (e, type, index, content) => {
     setDraggedItem({ type, index, content });
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, targetType: 'left' | 'right', targetIndex: number, questionId: string) => {
+  const handleDrop = (e, targetType, targetIndex, questionId) => {
     e.preventDefault();
     if (!draggedItem) return;
 
-    // Only allow dropping right items on left items
     if (draggedItem.type === 'right' && targetType === 'left') {
       const currentMatches = answers[questionId] || {};
       const newMatches = {
@@ -106,14 +98,14 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
     setDraggedItem(null);
   };
 
-  const handleRemoveMatch = (questionId: string, leftIndex: number) => {
+  const handleRemoveMatch = (questionId, leftIndex) => {
     const currentMatches = answers[questionId] || {};
     const newMatches = { ...currentMatches };
     delete newMatches[leftIndex];
     handleAnswerChange(questionId, newMatches);
   };
 
-  const renderQuestion = (block: any, index: number) => {
+  const renderQuestion = (block, index) => {
     const questionId = block.id;
     const userAnswer = answers[questionId];
 
@@ -131,7 +123,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
           
           <p className="text-gray-900 mb-6 text-lg">{block.content?.question}</p>
           
-          {/* Multiple Choice Questions */}
           {(block.type === 'mcq' || block.type === 'scq') && block.content?.options && (
             <div className="space-y-3">
               {block.type === 'scq' ? (
@@ -139,7 +130,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                   value={userAnswer?.toString() || ''}
                   onValueChange={(value) => handleAnswerChange(questionId, parseInt(value))}
                 >
-                  {block.content.options.map((option: string, idx: number) => (
+                  {block.content.options.map((option, idx) => (
                     <div key={idx} className="flex items-center space-x-3 p-3 border rounded hover:bg-gray-50">
                       <RadioGroupItem value={idx.toString()} id={`${questionId}-${idx}`} />
                       <Label htmlFor={`${questionId}-${idx}`} className="flex-1 cursor-pointer">
@@ -150,7 +141,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                 </RadioGroup>
               ) : (
                 <div className="space-y-3">
-                  {block.content.options.map((option: string, idx: number) => (
+                  {block.content.options.map((option, idx) => (
                     <div key={idx} className="flex items-center space-x-3 p-3 border rounded hover:bg-gray-50">
                       <Checkbox
                         id={`${questionId}-${idx}`}
@@ -160,7 +151,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                           if (checked) {
                             handleAnswerChange(questionId, [...currentAnswers, idx]);
                           } else {
-                            handleAnswerChange(questionId, currentAnswers.filter((a: number) => a !== idx));
+                            handleAnswerChange(questionId, currentAnswers.filter(a => a !== idx));
                           }
                         }}
                       />
@@ -174,7 +165,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
             </div>
           )}
 
-          {/* True/False Questions */}
           {block.type === 'truefalse' && (
             <RadioGroup
               value={userAnswer?.toString() || ''}
@@ -191,7 +181,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
             </RadioGroup>
           )}
 
-          {/* Fill in the Blanks */}
           {block.type === 'fillup' && (
             <div className="space-y-3">
               <Label className="text-sm font-medium">Your Answer:</Label>
@@ -203,7 +192,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
             </div>
           )}
 
-          {/* Matching Questions */}
           {block.type === 'matching' && block.content?.leftColumn && block.content?.rightColumn && (
             <div className="space-y-4">
               <div className="text-sm text-gray-600 mb-4 p-3 bg-blue-50 rounded-lg">
@@ -211,11 +199,10 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Column - Items to Match */}
                 <div>
                   <div className="text-sm font-medium text-gray-700 mb-3">Items to Match</div>
                   <div className="space-y-2">
-                    {block.content.leftColumn.map((item: string, idx: number) => {
+                    {block.content.leftColumn.map((item, idx) => {
                       const matchedRightIndex = userAnswer?.[idx];
                       const matchedItem = matchedRightIndex !== undefined ? block.content.rightColumn[matchedRightIndex] : null;
                       
@@ -255,11 +242,10 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                   </div>
                 </div>
 
-                {/* Right Column - Match Options */}
                 <div>
                   <div className="text-sm font-medium text-gray-700 mb-3">Drag to Match</div>
                   <div className="space-y-2">
-                    {block.content.rightColumn.map((match: string, idx: number) => {
+                    {block.content.rightColumn.map((match, idx) => {
                       const isUsed = Object.values(userAnswer || {}).includes(idx);
                       
                       return (
@@ -285,7 +271,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
             </div>
           )}
 
-          {/* One Word Answer */}
           {block.type === 'oneword' && (
             <div className="space-y-3">
               <Label className="text-sm font-medium">Your Answer:</Label>
@@ -297,7 +282,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
             </div>
           )}
 
-          {/* Descriptive Answer */}
           {block.type === 'descriptive' && (
             <div className="space-y-3">
               <Label className="text-sm font-medium">
@@ -310,7 +294,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                 rows={6}
               />
               <div className="text-sm text-gray-500">
-                Word count: {userAnswer ? userAnswer.split(' ').filter((w: string) => w.length > 0).length : 0}
+                Word count: {userAnswer ? userAnswer.split(' ').filter(w => w.length > 0).length : 0}
               </div>
             </div>
           )}
@@ -329,10 +313,8 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
           </DialogTitle>
         </DialogHeader>
 
-        {/* Overview/Instructions View */}
         {currentView === 'overview' && (
           <div className="space-y-6">
-            {/* Assessment Header */}
             <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
               <CardContent className="p-8 text-center">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">{assessmentData.title}</h1>
@@ -361,10 +343,9 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               </CardContent>
             </Card>
 
-            {/* Instructions */}
             {assessmentData.instructions && assessmentData.instructions.length > 0 && (
               <div className="space-y-4">
-                {assessmentData.instructions.map((instruction: any, index: number) => (
+                {assessmentData.instructions.map((instruction, index) => (
                   <Card key={instruction.id || index} className={`border-l-4 border-l-blue-500 ${instruction.backgroundColor || 'bg-blue-50'}`}>
                     <CardContent className="p-6">
                       <h2 className={`font-bold text-xl mb-4 ${instruction.textColor || 'text-blue-900'}`}>
@@ -372,7 +353,7 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
                       </h2>
                       <div className="space-y-4">
                         <ol className={`${instruction.textColor || 'text-blue-800'} text-sm leading-relaxed space-y-2`}>
-                          {instruction.points && instruction.points.map((point: string, pointIndex: number) => (
+                          {instruction.points && instruction.points.map((point, pointIndex) => (
                             <li key={pointIndex} className="flex items-start gap-2">
                               <span className="text-current mt-1 font-medium">{pointIndex + 1}.</span>
                               <span>{point}</span>
@@ -386,7 +367,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               </div>
             )}
 
-            {/* No instructions message */}
             {(!assessmentData.instructions || assessmentData.instructions.length === 0) && (
               <Card className="border-dashed border-2 border-yellow-300 bg-yellow-50">
                 <CardContent className="p-8 text-center">
@@ -397,7 +377,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               </Card>
             )}
 
-            {/* Start Assessment Button */}
             <div className="flex justify-center pt-6">
               <Button 
                 onClick={handleStartAssessment}
@@ -410,7 +389,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               </Button>
             </div>
 
-            {/* No questions warning */}
             {(!assessmentData.blocks || assessmentData.blocks.length === 0) && (
               <Card className="border-dashed border-2 border-gray-300">
                 <CardContent className="p-8 text-center">
@@ -423,10 +401,8 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
           </div>
         )}
 
-        {/* Assessment Questions View */}
         {currentView === 'assessment' && assessmentData.blocks && assessmentData.blocks.length > 0 && (
           <div className="space-y-6">
-            {/* Progress Header */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">
@@ -447,10 +423,8 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
               )}
             </div>
 
-            {/* Current Question */}
             {renderQuestion(assessmentData.blocks[currentQuestionIndex], currentQuestionIndex)}
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between pt-4">
               <Button
                 variant="outline"
@@ -478,7 +452,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
           </div>
         )}
 
-        {/* Completion View */}
         {currentView === 'completed' && (
           <div className="space-y-6">
             <Card className="bg-green-50 border-green-200">
@@ -498,7 +471,6 @@ export const AssessmentPreviewModal = ({ isOpen, onClose, assessmentData }: Asse
           </div>
         )}
 
-        {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t">
           {currentView === 'overview' && (
             <Button variant="outline" onClick={onClose}>

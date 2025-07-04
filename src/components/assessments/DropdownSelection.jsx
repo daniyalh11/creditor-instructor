@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,22 +6,14 @@ import { ArrowLeft, Clock, ChevronDown } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface Question {
-  id: number;
-  text: string;
-  options: string[];
-  correctAnswer: string;
-  placeholder: string;
-}
-
 const DropdownSelection = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes
 
-  const questions: Question[] = [
+  const questions = [
     {
       id: 1,
       text: "Select the appropriate HTTP status code for a successful resource creation:",
@@ -60,13 +51,13 @@ const DropdownSelection = () => {
     }
   ];
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleAnswerSelect = (value: string) => {
+  const handleAnswerSelect = (value) => {
     setSelectedAnswers(prev => ({
       ...prev,
       [currentQuestion]: value

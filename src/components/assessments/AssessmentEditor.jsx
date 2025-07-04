@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,20 +9,6 @@ import { SubmissionBlockEditModal } from './SubmissionBlockEditModal';
 import { DebateEditModal } from './DebateEditModal';
 import { DebateAnswerSection } from './DebateAnswerSection';
 import { AssessmentInstructionsEditor } from './AssessmentInstructionsEditor';
-
-interface AssessmentEditorProps {
-  onSave: (blocks: any[], title: string) => void;
-  onPreview: () => void;
-  settings: any;
-  initialBlocks: any[];
-  assessmentTitle: string;
-  onTitleChange: (title: string) => void;
-  selectedType: string | null;
-  onTypeSelect: (type: string) => void;
-  activeTab: string;
-  instructions?: any[];
-  onUpdateInstructions?: (instructions: any[]) => void;
-}
 
 export const AssessmentEditor = ({ 
   onSave, 
@@ -37,15 +22,15 @@ export const AssessmentEditor = ({
   activeTab,
   instructions: initialInstructions = [],
   onUpdateInstructions
-}: AssessmentEditorProps) => {
+}) => {
   const [blocks, setBlocks] = useState(initialBlocks);
-  const [editingQuestion, setEditingQuestion] = useState<any>(null);
+  const [editingQuestion, setEditingQuestion] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingSubmission, setEditingSubmission] = useState<any>(null);
+  const [editingSubmission, setEditingSubmission] = useState(null);
   const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false);
-  const [editingDebate, setEditingDebate] = useState<any>(null);
+  const [editingDebate, setEditingDebate] = useState(null);
   const [isDebateModalOpen, setIsDebateModalOpen] = useState(false);
-  const [instructions, setInstructions] = useState<any[]>(initialInstructions);
+  const [instructions, setInstructions] = useState(initialInstructions);
   const [showInstructions, setShowInstructions] = useState(true);
   const [showQuestions, setShowQuestions] = useState(false);
 
@@ -57,7 +42,6 @@ export const AssessmentEditor = ({
     setInstructions(initialInstructions);
   }, [initialInstructions]);
 
-  // When quiz, assignment, survey, essay or debate is selected, show instructions first
   useEffect(() => {
     if (selectedType === 'quiz' || selectedType === 'assignment' || selectedType === 'survey' || selectedType === 'essay' || selectedType === 'debate') {
       setShowInstructions(true);
@@ -65,25 +49,20 @@ export const AssessmentEditor = ({
     }
   }, [selectedType]);
 
-  // Check if instructions have been added - at least one instruction must exist
   const hasInstructions = instructions.length > 0;
 
-  // Handle instructions update and notify parent
-  const handleUpdateInstructions = (newInstructions: any[]) => {
+  const handleUpdateInstructions = (newInstructions) => {
     setInstructions(newInstructions);
     if (onUpdateInstructions) {
       onUpdateInstructions(newInstructions);
     }
   };
 
-  // Global function to add assessment blocks
   useEffect(() => {
-    (window as any).addAssessmentBlock = (blockType: string) => {
-      // Check if trying to add submission block when one already exists
+    window.addAssessmentBlock = (blockType) => {
       if (blockType === 'submission') {
         const hasSubmission = blocks.some(block => block.type === 'submission');
         if (hasSubmission) {
-          // If submission block exists, edit it instead
           const submissionBlock = blocks.find(block => block.type === 'submission');
           if (submissionBlock) {
             const index = blocks.findIndex(block => block.type === 'submission');
@@ -106,13 +85,11 @@ export const AssessmentEditor = ({
       onSave(updatedBlocks, assessmentTitle);
     };
 
-    // Global function to check if submission block exists
-    (window as any).hasSubmissionBlock = () => {
+    window.hasSubmissionBlock = () => {
       return blocks.some(block => block.type === 'submission');
     };
 
-    // Global function to edit submission block
-    (window as any).editSubmissionBlock = () => {
+    window.editSubmissionBlock = () => {
       const submissionBlock = blocks.find(block => block.type === 'submission');
       if (submissionBlock) {
         const index = blocks.findIndex(block => block.type === 'submission');
@@ -121,14 +98,12 @@ export const AssessmentEditor = ({
       }
     };
 
-    // Global function to edit instructions
-    (window as any).editInstructions = () => {
+    window.editInstructions = () => {
       setShowInstructions(true);
       setShowQuestions(false);
     };
 
-    // Global function to get current preview data
-    (window as any).getCurrentPreviewData = () => {
+    window.getCurrentPreviewData = () => {
       if (showInstructions) {
         return {
           title: assessmentTitle,
@@ -149,15 +124,15 @@ export const AssessmentEditor = ({
     };
 
     return () => {
-      delete (window as any).addAssessmentBlock;
-      delete (window as any).hasSubmissionBlock;
-      delete (window as any).editSubmissionBlock;
-      delete (window as any).editInstructions;
-      delete (window as any).getCurrentPreviewData;
+      delete window.addAssessmentBlock;
+      delete window.hasSubmissionBlock;
+      delete window.editSubmissionBlock;
+      delete window.editInstructions;
+      delete window.getCurrentPreviewData;
     };
   }, [blocks, assessmentTitle, onSave, instructions, settings, showInstructions]);
 
-  const handleMoveUp = (index: number) => {
+  const handleMoveUp = (index) => {
     if (index > 0) {
       const newBlocks = [...blocks];
       [newBlocks[index], newBlocks[index - 1]] = [newBlocks[index - 1], newBlocks[index]];
@@ -166,7 +141,7 @@ export const AssessmentEditor = ({
     }
   };
 
-  const handleMoveDown = (index: number) => {
+  const handleMoveDown = (index) => {
     if (index < blocks.length - 1) {
       const newBlocks = [...blocks];
       [newBlocks[index], newBlocks[index + 1]] = [newBlocks[index + 1], newBlocks[index]];
@@ -175,7 +150,7 @@ export const AssessmentEditor = ({
     }
   };
 
-  const handleEdit = (index: number) => {
+  const handleEdit = (index) => {
     const blockToEdit = blocks[index];
     
     if (blockToEdit.type === 'submission') {
@@ -190,18 +165,18 @@ export const AssessmentEditor = ({
     }
   };
 
-  const handleSaveEditedQuestion = (updatedQuestion: any) => {
+  const handleSaveEditedQuestion = (updatedQuestion) => {
     const newBlocks = [...blocks];
     newBlocks[updatedQuestion.index] = {
       ...updatedQuestion,
-      index: undefined // Remove the temporary index property
+      index: undefined
     };
     setBlocks(newBlocks);
     onSave(newBlocks, assessmentTitle);
     setEditingQuestion(null);
   };
 
-  const handleSaveEditedSubmission = (submissionData: any) => {
+  const handleSaveEditedSubmission = (submissionData) => {
     const newBlocks = [...blocks];
     const submissionBlock = {
       ...newBlocks[editingSubmission.index],
@@ -213,42 +188,41 @@ export const AssessmentEditor = ({
     setEditingSubmission(null);
   };
 
-  const handleSaveEditedDebate = (updatedDebate: any) => {
+  const handleSaveEditedDebate = (updatedDebate) => {
     const newBlocks = [...blocks];
     newBlocks[updatedDebate.index] = {
       ...updatedDebate,
-      index: undefined // Remove the temporary index property
+      index: undefined
     };
     setBlocks(newBlocks);
     onSave(newBlocks, assessmentTitle);
     setEditingDebate(null);
   };
 
-  const handleDebateAnswerSubmit = (answer: string) => {
+  const handleDebateAnswerSubmit = (answer) => {
     console.log('Debate answer submitted:', answer);
-    // Here you would typically save the answer to your backend
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (index) => {
     const newBlocks = blocks.filter((_, i) => i !== index);
     setBlocks(newBlocks);
     onSave(newBlocks, assessmentTitle);
   };
 
-  const getDefaultContent = (blockType: string) => {
+  const getDefaultContent = (blockType) => {
     switch (blockType) {
       case 'mcq':
         return {
           question: 'Enter your multiple choice question here',
           options: ['Option A', 'Option B', 'Option C', 'Option D'],
-          correctAnswer: [0], // Array for multiple correct answers
+          correctAnswer: [0],
           points: 1
         };
       case 'scq':
         return {
           question: 'Enter your single choice question here',
           options: ['Option A', 'Option B', 'Option C'],
-          correctAnswer: 0, // Single number for one correct answer
+          correctAnswer: 0,
           points: 1
         };
       case 'truefalse':
@@ -287,7 +261,7 @@ export const AssessmentEditor = ({
       case 'submission':
         return {
           questionText: 'Upload your assignment files',
-          submissionType: 'drive-link', // New field for submission type
+          submissionType: 'drive-link',
           driveLink: '',
           textSubmission: '',
           notes: ''
@@ -296,8 +270,8 @@ export const AssessmentEditor = ({
         return {
           topic: 'Enter your debate topic here',
           description: 'Provide context and background for the debate',
-          position: 'for', // 'for' or 'against'
-          timeLimit: 30, // minutes for preparation
+          position: 'for',
+          timeLimit: 30,
           points: 10
         };
       default:
@@ -306,7 +280,6 @@ export const AssessmentEditor = ({
   };
 
   const handleContinueToQuestions = () => {
-    // Only allow proceeding if instructions exist
     if (hasInstructions) {
       setShowInstructions(false);
       setShowQuestions(true);
@@ -356,8 +329,8 @@ export const AssessmentEditor = ({
     }
   ];
 
-  const getInstructionContent = (type: string) => {
-    const instructionMap: { [key: string]: { title: string; content: string } } = {
+  const getInstructionContent = (type) => {
+    const instructionMap = {
       assignment: {
         title: 'Assignment Section Instructions',
         content: 'Create assignments where students can submit projects and practical work. You can set file upload requirements, submission deadlines, and grading criteria.'
@@ -379,7 +352,7 @@ export const AssessmentEditor = ({
     return instructionMap[type] || { title: 'Instructions', content: 'Select an assessment type to get started.' };
   };
 
-  const renderBlockContent = (block: any, index: number) => {
+  const renderBlockContent = (block, index) => {
     if (block.type === 'submission') {
       return (
         <div className="flex-1">
@@ -439,18 +412,16 @@ export const AssessmentEditor = ({
       );
     }
 
-    // Get the question number - only count non-submission blocks
     const questionBlocks = blocks.filter(b => b.type !== 'submission');
     const questionIndex = questionBlocks.findIndex(b => b.id === block.id);
     const questionNumber = questionIndex + 1;
 
-    // Enhanced rendering for different question types with previews
     const renderQuestionPreview = () => {
       switch (block.type) {
         case 'mcq':
           return (
             <div className="mt-3 space-y-2">
-              {block.content.options?.map((option: string, idx: number) => (
+              {block.content.options?.map((option, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <Checkbox disabled className="h-4 w-4" />
                   <span className="text-sm text-gray-700">{option}</span>
@@ -462,7 +433,7 @@ export const AssessmentEditor = ({
         case 'scq':
           return (
             <div className="mt-3 space-y-2">
-              {block.content.options?.map((option: string, idx: number) => (
+              {block.content.options?.map((option, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-gray-300 rounded-full bg-white"></div>
                   <span className="text-sm text-gray-700">{option}</span>
@@ -490,7 +461,7 @@ export const AssessmentEditor = ({
           return (
             <div className="mt-3">
               <div className="text-sm text-gray-700 mb-2">
-                {questionWithBlanks?.split('_____').map((part: string, idx: number, arr: string[]) => (
+                {questionWithBlanks?.split('_____').map((part, idx, arr) => (
                   <span key={idx}>
                     {part}
                     {idx < arr.length - 1 && (
@@ -514,7 +485,7 @@ export const AssessmentEditor = ({
                 <div>
                   <div className="text-xs font-medium text-gray-500 mb-2">Items to Match</div>
                   <div className="space-y-2">
-                    {block.content.leftColumn?.map((item: string, idx: number) => (
+                    {block.content.leftColumn?.map((item, idx) => (
                       <div key={idx} className="text-sm text-gray-700 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <span className="font-medium">{idx + 1}.</span> {item}
                       </div>
@@ -524,7 +495,7 @@ export const AssessmentEditor = ({
                 <div>
                   <div className="text-xs font-medium text-gray-500 mb-2">Match Options</div>
                   <div className="space-y-2">
-                    {block.content.rightColumn?.map((match: string, idx: number) => (
+                    {block.content.rightColumn?.map((match, idx) => (
                       <div key={idx} className="text-sm text-gray-700 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <span className="font-medium">{String.fromCharCode(65 + idx)}.</span> {match}
                       </div>
@@ -573,7 +544,7 @@ export const AssessmentEditor = ({
         default:
           return (
             <div className="mt-3 space-y-1">
-              {block.content.options?.map((option: string, idx: number) => (
+              {block.content.options?.map((option, idx) => (
                 <div key={idx} className="text-sm text-gray-600">
                   {String.fromCharCode(65 + idx)}. {option}
                 </div>
@@ -650,7 +621,6 @@ export const AssessmentEditor = ({
               <p className="text-gray-700 text-lg leading-relaxed mb-6">{instruction.content}</p>
               <Button 
                 onClick={() => {
-                  // For now, just show a message
                   alert(`${selectedType} assessment type selected! Feature implementation coming soon.`);
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
@@ -676,13 +646,11 @@ export const AssessmentEditor = ({
           </p>
         </div>
 
-        {/* Instructions Section */}
         <AssessmentInstructionsEditor
           instructions={instructions}
           onUpdateInstructions={handleUpdateInstructions}
         />
 
-        {/* Continue Button - only enabled if instructions exist */}
         <div className="flex justify-end">
           <Button 
             onClick={handleContinueToQuestions}
@@ -710,7 +678,6 @@ export const AssessmentEditor = ({
             </p>
           </div>
 
-          {/* Questions Section */}
           {blocks.length === 0 ? (
             <Card className="border-dashed border-2 border-gray-300">
               <CardContent className="p-12 text-center">
@@ -781,7 +748,6 @@ export const AssessmentEditor = ({
                     </CardContent>
                   </Card>
 
-                  {/* Add answer section for debate blocks */}
                   {block.type === 'debate' && (
                     <DebateAnswerSection 
                       debate={block}
@@ -827,7 +793,6 @@ export const AssessmentEditor = ({
     );
   }
 
-  // Handle other assessment types with instructions
   if (selectedType && selectedType !== 'quiz' && selectedType !== 'assignment' && selectedType !== 'survey' && selectedType !== 'essay' && selectedType !== 'debate') {
     return (
       <div className="max-w-4xl mx-auto py-8 px-6 space-y-8">
@@ -836,13 +801,11 @@ export const AssessmentEditor = ({
           <p className="text-gray-600">Configure your {selectedType} assessment</p>
         </div>
 
-        {/* Instructions Section for all assessment types */}
         <AssessmentInstructionsEditor
           instructions={instructions}
           onUpdateInstructions={handleUpdateInstructions}
         />
 
-        {/* Placeholder for other assessment type content */}
         <Card className="border-dashed border-2 border-gray-300">
           <CardContent className="p-12 text-center">
             <div className="text-gray-500">

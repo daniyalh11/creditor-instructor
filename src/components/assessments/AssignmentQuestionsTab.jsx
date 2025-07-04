@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileText, Plus, Upload, Edit, Trash2, Link } from 'lucide-react';
@@ -6,40 +5,33 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
-interface AssignmentQuestionsTabProps {
-  assessmentType?: string;
-}
-
-export const AssignmentQuestionsTab = ({ assessmentType }: AssignmentQuestionsTabProps) => {
+export const AssignmentQuestionsTab = ({ assessmentType }) => {
   const [showSubmission, setShowSubmission] = useState(false);
   const [assignmentLink, setAssignmentLink] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
 
   const handleAddFirstQuestion = () => {
-    if ((window as any).addAssessmentBlock) {
-      (window as any).addAssessmentBlock('descriptive');
+    if (window.addAssessmentBlock) {
+      window.addAssessmentBlock('descriptive');
     }
   };
 
   const handleEditInstructions = () => {
-    if ((window as any).editInstructions) {
-      (window as any).editInstructions();
+    if (window.editInstructions) {
+      window.editInstructions();
     }
   };
 
   const handleSubmissionClick = () => {
-    // Check if submission block already exists
-    if ((window as any).hasSubmissionBlock && (window as any).hasSubmissionBlock()) {
-      // If it exists, just edit it
-      if ((window as any).editSubmissionBlock) {
-        (window as any).editSubmissionBlock();
+    if (window.hasSubmissionBlock && window.hasSubmissionBlock()) {
+      if (window.editSubmissionBlock) {
+        window.editSubmissionBlock();
       }
       return;
     }
     
-    // Otherwise, add new submission block
-    if ((window as any).addAssessmentBlock) {
-      (window as any).addAssessmentBlock('submission');
+    if (window.addAssessmentBlock) {
+      window.addAssessmentBlock('submission');
     }
   };
 
@@ -51,9 +43,8 @@ export const AssignmentQuestionsTab = ({ assessmentType }: AssignmentQuestionsTa
     setShowSubmission(false);
     setAssignmentLink('');
     setAdditionalNotes('');
-    // Remove submission form from editor
-    if ((window as any).removeSubmissionForm) {
-      (window as any).removeSubmissionForm();
+    if (window.removeSubmissionForm) {
+      window.removeSubmissionForm();
     }
     console.log('Delete submission');
   };
@@ -81,7 +72,6 @@ export const AssignmentQuestionsTab = ({ assessmentType }: AssignmentQuestionsTa
     }
   ];
 
-  // Only add submission card if not in essay mode
   if (assessmentType !== 'essay') {
     cards.push({
       id: 'submission',

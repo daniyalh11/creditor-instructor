@@ -12,58 +12,17 @@ import { Users, Edit, Save, X, Star, TrendingUp, TrendingDown, BarChart3, User, 
 import { toast } from 'sonner';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-interface DebateData {
-  id: string;
-  title: string;
-  description: string;
-  topic: string;
-  maxScore: number;
-  instructions?: string[];
-  participants: User[];
-  forUsers: string[];
-  againstUsers: string[];
-  submissions: Submission[];
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  team?: 'for' | 'against';
-  status: 'completed' | 'pending' | 'not-attempted';
-}
-
-interface Submission {
-  id: string;
-  userId: string;
-  userName: string;
-  position: 'for' | 'against';
-  response: string;
-  score?: number;
-  submittedAt: string;
-  feedback?: string;
-}
-
-interface DebateInstructorDashboardProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  debate: DebateData | null;
-  onUpdate: (debate: DebateData) => void;
-  isFullPage?: boolean;
-}
-
-export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate, isFullPage = false }: DebateInstructorDashboardProps) => {
+export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate, isFullPage = false }) => {
   const [editingOverview, setEditingOverview] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedTopic, setEditedTopic] = useState('');
-  const [editedInstructions, setEditedInstructions] = useState<string[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [scoringSubmission, setScoringSubmission] = useState<Submission | null>(null);
-  const [tempScore, setTempScore] = useState<number>(0);
-  const [tempFeedback, setTempFeedback] = useState<string>('');
-  const [viewingResponse, setViewingResponse] = useState<Submission | null>(null);
+  const [editedInstructions, setEditedInstructions] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [scoringSubmission, setScoringSubmission] = useState(null);
+  const [tempScore, setTempScore] = useState(0);
+  const [tempFeedback, setTempFeedback] = useState('');
+  const [viewingResponse, setViewingResponse] = useState(null);
 
   useEffect(() => {
     if (debate) {
@@ -100,19 +59,19 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
     setEditedInstructions([...editedInstructions, '']);
   };
 
-  const handleRemoveInstruction = (index: number) => {
+  const handleRemoveInstruction = (index) => {
     if (editedInstructions.length > 1) {
       setEditedInstructions(editedInstructions.filter((_, i) => i !== index));
     }
   };
 
-  const handleInstructionChange = (index: number, value: string) => {
+  const handleInstructionChange = (index, value) => {
     const updatedInstructions = [...editedInstructions];
     updatedInstructions[index] = value;
     setEditedInstructions(updatedInstructions);
   };
 
-  const handleTeamAssignment = (userId: string, team: 'for' | 'against') => {
+  const handleTeamAssignment = (userId, team) => {
     const updatedParticipants = debate.participants.map(user => 
       user.id === userId ? { ...user, team } : user
     );
@@ -128,7 +87,7 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
     toast.success(`User assigned to ${team} team`);
   };
 
-  const handleScoreSubmission = (submission: Submission, score: number, feedback: string) => {
+  const handleScoreSubmission = (submission, score, feedback) => {
     const updatedSubmissions = debate.submissions.map(sub =>
       sub.id === submission.id ? { ...sub, score, feedback } : sub
     );
@@ -145,11 +104,11 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
     toast.success('Score and feedback submitted successfully');
   };
 
-  const handleViewResponse = (submission: Submission) => {
+  const handleViewResponse = (submission) => {
     setViewingResponse(submission);
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'completed':
         return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>;
@@ -163,7 +122,7 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
   };
 
   const getAnalytics = () => {
-    const scores = debate.submissions.filter(s => s.score !== undefined).map(s => s.score!);
+    const scores = debate.submissions.filter(s => s.score !== undefined).map(s => s.score);
     const totalSubmissions = debate.submissions.length;
     const completedSubmissions = debate.submissions.filter(s => s.score !== undefined).length;
     
@@ -180,7 +139,7 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
   };
 
   const getChartData = () => {
-    const scores = debate.submissions.filter(s => s.score !== undefined).map(s => s.score!);
+    const scores = debate.submissions.filter(s => s.score !== undefined).map(s => s.score);
     const chartData = [
       { name: 'Highest Score', value: scores.length > 0 ? Math.max(...scores) : 0 },
       { name: 'Average Score', value: scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0 },
@@ -418,7 +377,7 @@ export const DebateInstructorDashboard = ({ open, onOpenChange, debate, onUpdate
                         )}
                         <Select
                           value={user.team || ''}
-                          onValueChange={(value) => handleTeamAssignment(user.id, value as 'for' | 'against')}
+                          onValueChange={(value) => handleTeamAssignment(user.id, value)}
                         >
                           <SelectTrigger className="w-32">
                             <SelectValue placeholder="Assign Team" />

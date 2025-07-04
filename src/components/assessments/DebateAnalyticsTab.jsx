@@ -1,14 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Trophy, TrendingDown, BarChart3 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-interface DebateAnalyticsTabProps {
-  debate: any;
-}
 
 const scoreDistributionData = [
   { range: '90-100', count: 2, percentage: 40 },
@@ -30,7 +25,7 @@ const participationOverviewData = [
   { name: 'Not Attempted', value: 1, color: '#6B7280' }
 ];
 
-export const DebateAnalyticsTab = ({ debate }: DebateAnalyticsTabProps) => {
+export const DebateAnalyticsTab = ({ debate }) => {
   const totalEnrollment = 5;
   const highestScoreUser = { name: 'Emily Davis', score: 55 };
   const lowestScoreUser = { name: 'John Smith', score: 42 };

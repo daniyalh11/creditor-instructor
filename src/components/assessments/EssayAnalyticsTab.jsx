@@ -1,12 +1,7 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-interface EssayAnalyticsTabProps {
-  essay: any;
-}
 
 const scoreDistributionData = [
   { range: '90-100', count: 3, percentage: 50 },
@@ -38,7 +33,7 @@ const statusData = [
   { name: 'Not Attempted', value: 2, color: '#6B7280' }
 ];
 
-export const EssayAnalyticsTab = ({ essay }: EssayAnalyticsTabProps) => {
+export const EssayAnalyticsTab = ({ essay }) => {
   const avgScore = 82;
   const highestScore = 98;
   const lowestScore = 45;

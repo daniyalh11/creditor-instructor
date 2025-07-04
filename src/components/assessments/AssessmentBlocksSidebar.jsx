@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AssessmentTypesTab } from './AssessmentTypesTab';
 import { AssessmentQuestionsTab } from './AssessmentQuestionsTab';
@@ -6,14 +5,6 @@ import { AssignmentQuestionsTab } from './AssignmentQuestionsTab';
 import { SurveyQuestionsTab } from './SurveyQuestionsTab';
 import { DebateQuestionsTab } from './DebateQuestionsTab';
 import { AssessmentSettingsTab } from './AssessmentSettingsTab';
-
-interface AssessmentBlocksSidebarProps {
-  activeTab: string;
-  selectedType: string | null;
-  onTypeSelect: (type: string) => void;
-  settings: any;
-  onUpdateSettings: (settings: any) => void;
-}
 
 // Default survey data for the sidebar context
 const defaultSurvey = {
@@ -32,9 +23,9 @@ export const AssessmentBlocksSidebar = ({
   onTypeSelect, 
   settings,
   onUpdateSettings 
-}: AssessmentBlocksSidebarProps) => {
+}) => {
   
-  const handleSurveyUpdate = (updatedSurvey: any) => {
+  const handleSurveyUpdate = (updatedSurvey) => {
     // Handle survey updates in sidebar context
     console.log('Survey updated in sidebar:', updatedSurvey);
   };

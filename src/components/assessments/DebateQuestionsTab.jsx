@@ -1,18 +1,17 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileText, Plus, MessageSquare, Edit, Users } from 'lucide-react';
 
 export const DebateQuestionsTab = () => {
   const handleAddDebate = () => {
-    if ((window as any).addAssessmentBlock) {
-      (window as any).addAssessmentBlock('debate');
+    if (window.addAssessmentBlock) {
+      window.addAssessmentBlock('debate');
     }
   };
 
   const handleEditInstructions = () => {
-    if ((window as any).editInstructions) {
-      (window as any).editInstructions();
+    if (window.editInstructions) {
+      window.editInstructions();
     }
   };
 

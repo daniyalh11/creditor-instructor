@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,26 +5,13 @@ import { ArrowLeft, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface DragItem {
-  id: string;
-  text: string;
-  correctZone: string;
-}
-
-interface DropZone {
-  id: string;
-  title: string;
-  color: string;
-  items: string[];
-}
-
 const DragDropExercise = () => {
   const navigate = useNavigate();
   const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes
   const [isCompleted, setIsCompleted] = useState(false);
-  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [draggedItem, setDraggedItem] = useState(null);
 
-  const dragItems: DragItem[] = [
+  const dragItems = [
     { id: 'react', text: 'React.js', correctZone: 'frontend' },
     { id: 'mysql', text: 'MySQL', correctZone: 'backend' },
     { id: 'nodejs', text: 'Node.js', correctZone: 'backend' },
@@ -35,28 +21,28 @@ const DragDropExercise = () => {
   ];
 
   const [availableItems, setAvailableItems] = useState(dragItems);
-  const [dropZones, setDropZones] = useState<DropZone[]>([
+  const [dropZones, setDropZones] = useState([
     { id: 'frontend', title: 'Frontend Layer', color: 'bg-blue-50 border-blue-200', items: [] },
     { id: 'backend', title: 'Backend Layer', color: 'bg-green-50 border-green-200', items: [] }
   ]);
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+  const handleDragStart = (e, itemId) => {
     setDraggedItem(itemId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, zoneId: string) => {
+  const handleDrop = (e, zoneId) => {
     e.preventDefault();
     if (!draggedItem) return;
 

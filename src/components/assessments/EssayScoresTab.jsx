@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,10 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Eye, Save, X } from 'lucide-react';
-
-interface EssayScoresTabProps {
-  essay: any;
-}
 
 const sampleSubmissions = [
   {
@@ -58,14 +53,14 @@ const sampleSubmissions = [
   }
 ];
 
-export const EssayScoresTab = ({ essay }: EssayScoresTabProps) => {
+export const EssayScoresTab = ({ essay }) => {
   const [submissions, setSubmissions] = useState(sampleSubmissions);
-  const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [score, setScore] = useState('');
   const [feedback, setFeedback] = useState('');
   const [isGrading, setIsGrading] = useState(false);
 
-  const handleGradeSubmission = (submission: any) => {
+  const handleGradeSubmission = (submission) => {
     setSelectedSubmission(submission);
     setScore(submission.score?.toString() || '');
     setFeedback(submission.feedback || '');
@@ -100,7 +95,7 @@ export const EssayScoresTab = ({ essay }: EssayScoresTabProps) => {
     setFeedback('');
   };
 
-  const getScoreColor = (score: number | null) => {
+  const getScoreColor = (score) => {
     if (score === null) return 'text-gray-500';
     if (score >= 90) return 'text-green-600';
     if (score >= 80) return 'text-blue-600';
@@ -108,7 +103,7 @@ export const EssayScoresTab = ({ essay }: EssayScoresTabProps) => {
     return 'text-red-600';
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'graded': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';

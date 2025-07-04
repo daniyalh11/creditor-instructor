@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,10 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, Clock, XCircle, Search } from 'lucide-react';
-
-interface EssaySubmissionStatusTabProps {
-  essay: any;
-}
 
 const sampleStudents = [
   {
@@ -72,12 +67,12 @@ const sampleStudents = [
   }
 ];
 
-export const EssaySubmissionStatusTab = ({ essay }: EssaySubmissionStatusTabProps) => {
+export const EssaySubmissionStatusTab = ({ essay }) => {
   const [students] = useState(sampleStudents);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
         return <CheckCircle className="h-5 w-5 text-green-600" />;
@@ -88,7 +83,7 @@ export const EssaySubmissionStatusTab = ({ essay }: EssaySubmissionStatusTabProp
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
         return 'bg-green-100 text-green-800';
@@ -99,7 +94,7 @@ export const EssaySubmissionStatusTab = ({ essay }: EssaySubmissionStatusTabProp
     }
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status) => {
     switch (status) {
       case 'completed':
         return 'Completed';

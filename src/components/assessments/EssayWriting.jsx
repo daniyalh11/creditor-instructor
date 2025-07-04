@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -32,17 +31,17 @@ const EssayWriting = () => {
     ]
   };
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getWordCount = (text: string) => {
+  const getWordCount = (text) => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
-  const getCharacterCount = (text: string) => {
+  const getCharacterCount = (text) => {
     return text.length;
   };
 
