@@ -190,4 +190,4 @@ export const StatementTypeDialog = ({ open, onOpenChange, onSelectType, currentC
   );
 };
 
-export default StatementTypeDialog;:
+export default StatementTypeDialog;
