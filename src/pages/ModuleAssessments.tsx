@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AssignmentListing } from '@/components/assignments/AssignmentListing';
+import AssignmentListing  from '@/components/assignments/AssignmentListing';
 
 // Sample quiz data
 const sampleQuizzes = [
