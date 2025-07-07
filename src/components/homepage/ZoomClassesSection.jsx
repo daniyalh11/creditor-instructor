@@ -298,7 +298,7 @@ const ZoomClassesSection = () => {
                           </Button>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
                         <div>
                           <p className="text-sm text-gray-600">{cls.date}</p>
                           <p className="text-sm text-gray-600">{cls.time}</p>
@@ -320,7 +320,7 @@ const ZoomClassesSection = () => {
                           )}
                         </div>
                         <div>
-                          <Badge variant="outline" className="text-green-600 border-green-200">
+                          <Badge variant="outline" className="text-green-600 border-green-200 ml-4">
                             {cls.duration}
                           </Badge>
                         </div>
