@@ -45,7 +45,7 @@ export function TaskListSection() {
   };
 
   const handleAddTask = () => {
-    navigate('/tasks/new');
+    navigate('/tasks');
   };
 
   const handleViewAllTasks = () => {
