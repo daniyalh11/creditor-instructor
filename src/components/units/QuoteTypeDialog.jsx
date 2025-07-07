@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,19 +7,10 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote, User, Upload, Image } from 'lucide-react';
 
-type QuoteType = 'circular-centerpiece' | 'vertical-spotlight' | 'side-by-side' | 'gray-panel' | 'visual-highlight';
-
-type QuoteTypeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelectType?: (type: QuoteType) => void;
-  currentContent?: any;
-  onSave?: (content: any) => void;
-};
-
+// Valid quoteType values: 'circular-centerpiece', 'vertical-spotlight', 'side-by-side', 'gray-panel', 'visual-highlight'
 const quoteTypes = [
   {
-    id: 'circular-centerpiece' as QuoteType,
+    id: 'circular-centerpiece',
     name: 'Quote A: Circular Centerpiece',
     description: 'Large quotation mark with centered author image',
     icon: <Quote className="h-6 w-6" />,
@@ -38,7 +28,7 @@ const quoteTypes = [
     )
   },
   {
-    id: 'vertical-spotlight' as QuoteType,
+    id: 'vertical-spotlight',
     name: 'Quote B: Vertical Spotlight',
     description: 'Author image at top with caps quote below',
     icon: <User className="h-6 w-6" />,
@@ -53,7 +43,7 @@ const quoteTypes = [
     )
   },
   {
-    id: 'side-by-side' as QuoteType,
+    id: 'side-by-side',
     name: 'Quote C: Side-by-Side',
     description: 'Square image with quote in bordered card',
     icon: <Image className="h-6 w-6" />,
@@ -72,7 +62,7 @@ const quoteTypes = [
     )
   },
   {
-    id: 'gray-panel' as QuoteType,
+    id: 'gray-panel',
     name: 'Quote D: Gray Panel',
     description: 'Light gray panel with right-aligned author image',
     icon: <Quote className="h-6 w-6" />,
@@ -91,7 +81,7 @@ const quoteTypes = [
     )
   },
   {
-    id: 'visual-highlight' as QuoteType,
+    id: 'visual-highlight',
     name: 'Quote E: Visual Highlight',
     description: 'Hero style with background image overlay',
     icon: <Image className="h-6 w-6" />,
@@ -109,8 +99,8 @@ const quoteTypes = [
   }
 ];
 
-export const QuoteTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }: QuoteTypeDialogProps) => {
-  const [selectedType, setSelectedType] = useState<QuoteType>(currentContent?.quoteType || 'circular-centerpiece');
+const QuoteTypeDialog = ({ open, onOpenChange, onSelectType, currentContent, onSave }) => {
+  const [selectedType, setSelectedType] = useState(currentContent?.quoteType || 'circular-centerpiece');
   const [text, setText] = useState(currentContent?.text || 'Enter your inspiring quote here.');
   const [author, setAuthor] = useState(currentContent?.author || 'Author Name');
   const [authorImage, setAuthorImage] = useState(currentContent?.authorImage || '');
@@ -126,7 +116,7 @@ export const QuoteTypeDialog = ({ open, onOpenChange, onSelectType, currentConte
     }
   }, [currentContent]);
 
-  const handleSelectType = (type: QuoteType) => {
+  const handleSelectType = (type) => {
     setSelectedType(type);
     if (onSelectType && !currentContent) {
       onSelectType(type);
@@ -145,24 +135,24 @@ export const QuoteTypeDialog = ({ open, onOpenChange, onSelectType, currentConte
     }
   };
 
-  const handleAuthorImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAuthorImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as string;
+        const result = event.target?.result;
         setAuthorImage(result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleBackgroundImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackgroundImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as string;
+        const result = event.target?.result;
         setBackgroundImage(result);
       };
       reader.readAsDataURL(file);
@@ -483,3 +473,5 @@ export const QuoteTypeDialog = ({ open, onOpenChange, onSelectType, currentConte
     </Dialog>
   );
 };
+
+export { QuoteTypeDialog };

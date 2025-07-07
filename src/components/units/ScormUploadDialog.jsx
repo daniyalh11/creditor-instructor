@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,25 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Upload, File, X, Package, CheckCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-interface ScormUploadDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onUpload: (data: { name: string; file: File }) => void;
-}
-
-export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDialogProps) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+export const ScormUploadDialog = ({ isOpen, onClose, onUpload }) => {
+  const [selectedFile, setSelectedFile] = useState(null);
   const [folderName, setFolderName] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExtracted, setIsExtracted] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef(null);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.type === 'application/zip' || file.name.endsWith('.zip')) {
         setSelectedFile(file);
-        // Auto-generate folder name from file name
         const nameWithoutExtension = file.name.replace(/\.zip$/i, '');
         setFolderName(nameWithoutExtension);
         setIsExtracted(false);
@@ -39,11 +31,11 @@ export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDial
     }
   };
 
-  const handleDragOver = (event: React.DragEvent) => {
+  const handleDragOver = (event) => {
     event.preventDefault();
   };
 
-  const handleDrop = (event: React.DragEvent) => {
+  const handleDrop = (event) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (file && (file.type === 'application/zip' || file.name.endsWith('.zip'))) {
@@ -62,13 +54,10 @@ export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDial
 
   const simulateExtraction = async () => {
     setIsProcessing(true);
-    
-    // Simulate extraction process
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
     setIsProcessing(false);
     setIsExtracted(true);
-    
+
     toast({
       title: "SCORM Package Extracted",
       description: "Your SCORM package has been successfully extracted and is ready to use.",
@@ -90,21 +79,13 @@ export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDial
       return;
     }
 
-    // Create folder structure in browser storage (simulation)
     const scormData = {
       name: folderName.trim(),
       file: selectedFile
     };
 
-    // In a real implementation, you would:
-    // 1. Upload the ZIP file to the server
-    // 2. Extract it on the server
-    // 3. Store the extracted files in the specified folder
-    // 4. Return the path to the SCORM manifest file
-
     onUpload(scormData);
-    
-    // Reset form
+
     setSelectedFile(null);
     setFolderName('');
     setIsExtracted(false);
@@ -119,7 +100,7 @@ export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDial
     onClose();
   };
 
-  const formatFileSize = (bytes: number) => {
+  const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -173,7 +154,6 @@ export const ScormUploadDialog = ({ isOpen, onClose, onUpload }: ScormUploadDial
                   </p>
                 </div>
               )}
-              
               <input
                 ref={fileInputRef}
                 type="file"

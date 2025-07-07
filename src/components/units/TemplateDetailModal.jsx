@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,26 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Edit, Play, Users, CheckCircle, X } from 'lucide-react';
 
-type Template = {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  blockCount: number;
-  category: string;
-};
-
-type TemplateDetailModalProps = {
-  template: Template | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onUseTemplate: (templateId: string) => void;
-};
-
-export const TemplateDetailModal = ({ template, isOpen, onClose, onUseTemplate }: TemplateDetailModalProps) => {
+// Expected template shape: { id: string, name: string, description: string, icon: ReactNode, color: string, blockCount: number, category: string }
+const TemplateDetailModal = ({ template, isOpen, onClose, onUseTemplate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTemplate, setEditedTemplate] = useState<Template | null>(null);
+  const [editedTemplate, setEditedTemplate] = useState(null);
 
   React.useEffect(() => {
     if (template) {
@@ -52,7 +35,7 @@ export const TemplateDetailModal = ({ template, isOpen, onClose, onUseTemplate }
     setEditedTemplate({ ...template });
   };
 
-  const getTemplateContent = (templateId: string) => {
+  const getTemplateContent = (templateId) => {
     switch (templateId) {
       case 'welcome-course':
         return [
@@ -305,7 +288,7 @@ export const TemplateDetailModal = ({ template, isOpen, onClose, onUseTemplate }
                               </div>
                               <h4 className="font-semibold mb-2">{step.title}</h4>
                               <p className="text-sm text-gray-600">{step.description}</p>
-                              {stepIndex < block.steps!.length - 1 && (
+                              {block.steps && stepIndex < block.steps.length - 1 && (
                                 <div className="hidden md:block absolute top-8 left-full w-8 h-0.5 bg-gray-300 transform -translate-y-1/2"></div>
                               )}
                             </div>
@@ -340,3 +323,5 @@ export const TemplateDetailModal = ({ template, isOpen, onClose, onUseTemplate }
     </Dialog>
   );
 };
+
+export default TemplateDetailModal;

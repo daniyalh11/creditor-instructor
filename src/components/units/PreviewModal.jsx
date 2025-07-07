@@ -1,33 +1,27 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, ChevronLeft, ChevronRight, Play, Pause, Volume2, Download } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-type PreviewModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  unitData?: any;
-};
-
-export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) => {
-  const [previewData, setPreviewData] = React.useState<any>(null);
-  const [currentImageIndex, setCurrentImageIndex] = React.useState<{[key: string]: number}>({});
-  const [audioPlaying, setAudioPlaying] = React.useState<{[key: string]: boolean}>({});
+// Expected props shape: { isOpen: boolean, onClose: function, unitData: any (optional) }
+const PreviewModal = ({ isOpen, onClose, unitData }) => {
+  const [previewData, setPreviewData] = React.useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState({});
+  const [audioPlaying, setAudioPlaying] = React.useState({});
 
   React.useEffect(() => {
     if (isOpen) {
       if (unitData) {
         setPreviewData(unitData);
-      } else if ((window as any).getPreviewContent) {
-        const data = (window as any).getPreviewContent();
+      } else if (typeof window.getPreviewContent === 'function') {
+        const data = window.getPreviewContent();
         setPreviewData(data);
       }
     }
   }, [isOpen, unitData]);
 
-  const renderBlockContent = (block: any, index: number) => {
+  const renderBlockContent = (block, index) => {
     const { type, content } = block;
 
     // Multimedia blocks
@@ -259,7 +253,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
               <table className="w-full border-collapse border border-gray-300">
                 <thead>
                   <tr className="bg-gray-50">
-                    {tableData.headers.map((header: string, i: number) => (
+                    {tableData.headers.map((header, i) => (
                       <th key={i} className="border border-gray-300 px-4 py-2 text-left font-medium">
                         {header}
                       </th>
@@ -267,9 +261,9 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.rows.map((row: string[], rowIndex: number) => (
+                  {tableData.rows.map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      {row.map((cell: string, cellIndex: number) => (
+                      {row.map((cell, cellIndex) => (
                         <td key={cellIndex} className="border border-gray-300 px-4 py-2">
                           {cell}
                         </td>
@@ -298,7 +292,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
           return (
             <div className="my-6">
               <ul className="space-y-3">
-                {items.map((item: string, i: number) => (
+                {items.map((item, i) => (
                   <li key={i} className="flex items-start">
                     <span className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                     <span className="text-gray-700 leading-relaxed">{item}</span>
@@ -311,7 +305,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
           return (
             <div className="my-6">
               <ol className="space-y-3">
-                {items.map((item: string, i: number) => (
+                {items.map((item, i) => (
                   <li key={i} className="flex items-start">
                     <span className="bg-blue-500 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0 font-medium">
                       {i + 1}
@@ -326,7 +320,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
           return (
             <div className="my-6">
               <ul className="space-y-3">
-                {items.map((item: string, i: number) => (
+                {items.map((item, i) => (
                   <li key={i} className="flex items-start">
                     <div className="w-5 h-5 border-2 border-green-500 rounded mr-3 mt-0.5 flex items-center justify-center flex-shrink-0">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -395,7 +389,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
         error: 'bg-red-50 border-red-200 text-red-900'
       };
       
-      const style = calloutStyles[calloutType as keyof typeof calloutStyles] || calloutStyles.info;
+      const style = calloutStyles[calloutType] || calloutStyles.info;
       
       return (
         <div className="my-8">
@@ -452,7 +446,7 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
           <div className="py-8 px-2">
             <article className="prose prose-lg max-w-none">
               {previewData.blocks && previewData.blocks.length > 0 ? (
-                previewData.blocks.map((block: any, index: number) => (
+                previewData.blocks.map((block, index) => (
                   <div key={block.id || index}>
                     {renderBlockContent(block, index)}
                   </div>
@@ -470,3 +464,5 @@ export const PreviewModal = ({ isOpen, onClose, unitData }: PreviewModalProps) =
     </Dialog>
   );
 };
+
+export { PreviewModal };
