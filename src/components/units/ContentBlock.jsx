@@ -46,12 +46,12 @@ import { AccordionPreview } from './interactive/AccordionPreview';
 import { TabsPreview } from './interactive/TabsPreview';
 import { LabeledGraphicPreview } from './interactive/LabeledGraphicPreview';
 import { ProcessPreview } from './interactive/ProcessPreview';
-import { FlashcardPreview } from './interactive/FlashcardPreview';
+import FlashcardPreview from './interactive/FlashcardPreview';
 import { TimelinePreview } from './interactive/TimelinePreview';
 import { KVLPreview } from './interactive/KVLPreview';
 import { ImageTypeDialog } from './ImageTypeDialog';
 import { ImageEditor } from './ImageEditor';
-import { FlashcardGridPreview } from './interactive/FlashcardGridPreview';
+import FlashcardGridPreview from './interactive/FlashcardGridPreview';
 import { SortingActivityPreview } from './interactive/SortingActivityPreview';
 import { ScenarioPreview } from './interactive/ScenarioPreview';
 

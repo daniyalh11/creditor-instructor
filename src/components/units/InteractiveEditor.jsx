@@ -8,7 +8,7 @@ import { FlashcardEditor } from './interactive/FlashcardEditor';
 import { TimelineEditor } from './interactive/TimelineEditor';
 import { LabeledGraphicEditor } from './interactive/LabeledGraphicEditor';
 import { ScenarioEditor } from './interactive/ScenarioEditor';
-import { SortingActivityEditor } from './interactive/SortingActivityEditor';
+import  SortingActivityEditor  from './interactive/SortingActivityEditor';
 
 export const InteractiveEditor = ({ 
   isOpen, 
