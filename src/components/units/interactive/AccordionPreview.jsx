@@ -6,11 +6,7 @@ export const AccordionPreview = ({ sections }) => {
   const [openSections, setOpenSections] = useState({});
 
   const toggleSection = (index) => {
-<<<<<<< HEAD
-    setOpenSections(prev => ({
-=======
     setOpenSections((prev) => ({
->>>>>>> b66f2ee1e590857b2e651ea37c791795a7ec4049
       ...prev,
       [index]: !prev[index],
     }));
@@ -89,8 +85,4 @@ export const AccordionPreview = ({ sections }) => {
   );
 };
 
-<<<<<<< HEAD
 export default AccordionPreview;
-=======
-export default AccordionPreview;
->>>>>>> b66f2ee1e590857b2e651ea37c791795a7ec4049
