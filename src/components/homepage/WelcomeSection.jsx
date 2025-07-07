@@ -26,7 +26,7 @@ export function WelcomeSection() {
       body: "Check out your profile page by clicking the avatar in the top right. There you can change your picture, description, location, and password.",
       ctaLabel: "Visit profile",
       onClick: () => navigate("/profile"),
-      imgSrc: "/lovable-Uploads/6b1ea1e6-5943-4f76-b645-ae8ce5265dd0.png",
+      // imgSrc: "/lovable-Uploads/6b1ea1e6-5943-4f76-b645-ae8ce5265dd0.png",
     },
     {
       key: "configure-widgets",
@@ -34,7 +34,7 @@ export function WelcomeSection() {
       subtitle: "",
       body: "Customize your own view by hiding, maximizing, or minimizing widgets on your dashboard.",
       onClick: () => {},
-      imgSrc: "/lovable-Uploads/fd0725b7-d679-48a4-8859-b656636e79ae.png",
+      // imgSrc: "/lovable-Uploads/fd0725b7-d679-48a4-8859-b656636e79ae.png",
     },
     {
       key: "need-help",
@@ -43,7 +43,7 @@ export function WelcomeSection() {
       body: "Click the help icon at the top right to access our Help Center. You'll get access to our support forum, help topics, getting started guides, how-to videos, and more.",
       ctaLabel: "Help center",
       onClick: () => navigate("/help"),
-      imgSrc: "/lovable-Uploads/2250d96c-51d3-4326-8a80-ecad39a2f734.png",
+      // imgSrc: "/lovable-Uploads/2250d96c-51d3-4326-8a80-ecad39a2f734.png",
     },
   ];
 

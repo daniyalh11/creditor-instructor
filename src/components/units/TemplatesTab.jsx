@@ -1,21 +1,9 @@
-
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Users, Briefcase, Lightbulb, Shield } from 'lucide-react';
 
-type Template = {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  blockCount: number;
-  category: string;
-  blocks: any[];
-};
-
-const templates: Template[] = [
+const templates = [
   {
     id: 'welcome-course',
     name: 'Welcome Course',
@@ -28,35 +16,45 @@ const templates: Template[] = [
       {
         id: 'block_1',
         type: 'text',
-        content: { text: 'Welcome to our amazing learning platform! 🎉\n\nWe\'re excited to have you join us on this educational journey. This course is designed to help you get started and make the most of your learning experience.' },
-        order: 0
+        content: {
+          text:
+            "Welcome to our amazing learning platform! 🎉\n\nWe're excited to have you join us on this educational journey. This course is designed to help you get started and make the most of your learning experience.",
+        },
+        order: 0,
       },
       {
         id: 'block_2',
         type: 'statement',
-        content: { text: 'This course will help you understand our platform and get you ready for success!', type: 'info' },
-        order: 1
+        content: {
+          text: "This course will help you understand our platform and get you ready for success!",
+          type: 'info',
+        },
+        order: 1,
       },
       {
         id: 'block_3',
         type: 'video',
-        content: { url: '', title: 'Welcome Video', description: 'A warm welcome from your instructor' },
-        order: 2
+        content: {
+          url: '',
+          title: 'Welcome Video',
+          description: 'A warm welcome from your instructor',
+        },
+        order: 2,
       },
       {
         id: 'block_4',
         type: 'list',
-        content: { 
+        content: {
           items: [
             'Learn at your own pace',
             'Access materials 24/7',
             'Get support when you need it',
-            'Track your progress'
-          ]
+            'Track your progress',
+          ],
         },
-        order: 3
-      }
-    ]
+        order: 3,
+      },
+    ],
   },
   {
     id: 'compliance-training',
@@ -70,28 +68,39 @@ const templates: Template[] = [
       {
         id: 'block_1',
         type: 'text',
-        content: { text: '🛡️ Compliance Training Module\n\nThis module covers essential policies and procedures that ensure workplace safety and regulatory compliance.' },
-        order: 0
+        content: {
+          text:
+            '🛡️ Compliance Training Module\n\nThis module covers essential policies and procedures that ensure workplace safety and regulatory compliance.',
+        },
+        order: 0,
       },
       {
         id: 'block_2',
         type: 'statement',
-        content: { text: 'Compliance is everyone\'s responsibility. Understanding these policies protects both you and the organization.', type: 'warning' },
-        order: 1
+        content: {
+          text:
+            "Compliance is everyone's responsibility. Understanding these policies protects both you and the organization.",
+          type: 'warning',
+        },
+        order: 1,
       },
       {
         id: 'block_3',
         type: 'text',
-        content: { text: '📋 Policy Overview\n\nFamiliarize yourself with our key policies and procedures.' },
-        order: 2
+        content: {
+          text: '📋 Policy Overview\n\nFamiliarize yourself with our key policies and procedures.',
+        },
+        order: 2,
       },
       {
         id: 'block_4',
         type: 'text',
-        content: { text: '⚠️ Safety Procedures\n\nLearn about essential safety protocols and emergency procedures.' },
-        order: 3
-      }
-    ]
+        content: {
+          text: '⚠️ Safety Procedures\n\nLearn about essential safety protocols and emergency procedures.',
+        },
+        order: 3,
+      },
+    ],
   },
   {
     id: 'product-training',
@@ -105,22 +114,33 @@ const templates: Template[] = [
       {
         id: 'block_1',
         type: 'text',
-        content: { text: '🚀 Product Overview\n\nDiscover the amazing features and benefits of our latest product innovation.' },
-        order: 0
+        content: {
+          text:
+            '🚀 Product Overview\n\nDiscover the amazing features and benefits of our latest product innovation.',
+        },
+        order: 0,
       },
       {
         id: 'block_2',
         type: 'video',
-        content: { url: '', title: 'Product Demo Video', description: 'Watch a comprehensive demonstration of key features' },
-        order: 1
+        content: {
+          url: '',
+          title: 'Product Demo Video',
+          description: 'Watch a comprehensive demonstration of key features',
+        },
+        order: 1,
       },
       {
         id: 'block_3',
         type: 'image',
-        content: { url: '', alt: 'Product Dashboard', description: 'Overview of the main interface' },
-        order: 2
-      }
-    ]
+        content: {
+          url: '',
+          alt: 'Product Dashboard',
+          description: 'Overview of the main interface',
+        },
+        order: 2,
+      },
+    ],
   },
   {
     id: 'innovation-workshop',
@@ -134,31 +154,36 @@ const templates: Template[] = [
       {
         id: 'block_1',
         type: 'text',
-        content: { text: '💡 Innovation Workshop\n\nUnlock your creative potential and learn to think outside the box.' },
-        order: 0
+        content: {
+          text:
+            '💡 Innovation Workshop\n\nUnlock your creative potential and learn to think outside the box.',
+        },
+        order: 0,
       },
       {
         id: 'block_2',
         type: 'quote',
-        content: { quote: 'Innovation distinguishes between a leader and a follower.', author: 'Steve Jobs' },
-        order: 1
+        content: {
+          quote: 'Innovation distinguishes between a leader and a follower.',
+          author: 'Steve Jobs',
+        },
+        order: 1,
       },
       {
         id: 'block_3',
         type: 'text',
-        content: { text: 'Workshop Overview\n\nInteractive sessions designed to boost creativity and innovation skills.' },
-        order: 2
-      }
-    ]
-  }
+        content: {
+          text:
+            'Workshop Overview\n\nInteractive sessions designed to boost creativity and innovation skills.',
+        },
+        order: 2,
+      },
+    ],
+  },
 ];
 
-type TemplatesTabProps = {
-  onUseTemplate: (templateBlocks: any[]) => void;
-};
-
-export const TemplatesTab = ({ onUseTemplate }: TemplatesTabProps) => {
-  const handleTemplateClick = (template: Template) => {
+export const TemplatesTab = ({ onUseTemplate }) => {
+  const handleTemplateClick = (template) => {
     onUseTemplate(template.blocks);
   };
 
@@ -168,7 +193,7 @@ export const TemplatesTab = ({ onUseTemplate }: TemplatesTabProps) => {
         <h3 className="text-sm font-medium text-gray-900 mb-2">Course Templates</h3>
         <p className="text-xs text-gray-600">Click on a template to start building your lesson</p>
       </div>
-      
+
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="p-4 space-y-3 pb-6">
@@ -182,16 +207,20 @@ export const TemplatesTab = ({ onUseTemplate }: TemplatesTabProps) => {
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white`}>
+                      <div
+                        className={`w-10 h-10 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white`}
+                      >
                         {template.icon}
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">{template.name}</h4>
+                        <h4 className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
+                          {template.name}
+                        </h4>
                         <p className="text-xs text-gray-600 mt-1">{template.description}</p>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Badge variant="secondary" className="text-xs">
                       {template.blockCount} blocks

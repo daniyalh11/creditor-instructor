@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -7,18 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-type SettingsTabProps = {
-  settings: {
-    title: string;
-    description: string;
-    theme: string;
-    fontFamily: string;
-    primaryColor: string;
-  };
-  onUpdateSettings: (newSettings: any) => void;
-};
-
-export const SettingsTab = ({ settings, onUpdateSettings }: SettingsTabProps) => {
+export const SettingsTab = ({ settings, onUpdateSettings }) => {
   const themes = [
     { value: 'modern', label: 'Modern' },
     { value: 'classic', label: 'Classic' },

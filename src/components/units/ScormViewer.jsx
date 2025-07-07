@@ -1,51 +1,33 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Package, Play, FileText, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Package, Play, ExternalLink } from 'lucide-react';
 
-interface ScormViewerProps {
-  scormData: {
-    fileName: string;
-    size: number;
-    extractedPath: string;
-    manifestUrl: string;
-  };
-  title: string;
-  onBack: () => void;
-}
-
-export const ScormViewer = ({ scormData, title, onBack }: ScormViewerProps) => {
+export const ScormViewer = ({ scormData, title, onBack }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [scormContent, setScormContent] = useState<any>(null);
+  const [scormContent, setScormContent] = useState(null);
 
   useEffect(() => {
-    // Simulate loading SCORM manifest and content
     const loadScormContent = async () => {
       setIsLoading(true);
-      
-      // In a real implementation, you would:
-      // 1. Load the imsmanifest.xml file
-      // 2. Parse the SCORM structure
-      // 3. Get the launch URL for the SCORM content
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock SCORM content structure
+
+      // Simulate loading delay and set mock content
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setScormContent({
         title: title,
-        version: "SCORM 1.2",
+        version: 'SCORM 1.2',
         launchUrl: `${scormData.extractedPath}index.html`,
-        description: "Interactive SCORM learning content",
-        duration: "Estimated 30 minutes",
+        description: 'Interactive SCORM learning content',
+        duration: 'Estimated 30 minutes',
         objectives: [
-          "Complete the interactive learning module",
-          "Pass the embedded assessments",
-          "Demonstrate understanding of key concepts"
-        ]
+          'Complete the interactive learning module',
+          'Pass the embedded assessments',
+          'Demonstrate understanding of key concepts',
+        ],
       });
-      
+
       setIsLoading(false);
     };
 
@@ -53,12 +35,10 @@ export const ScormViewer = ({ scormData, title, onBack }: ScormViewerProps) => {
   }, [scormData, title]);
 
   const handleLaunchScorm = () => {
-    // In a real implementation, this would open the SCORM content
-    // in an iframe or new window with proper SCORM API integration
     window.open(scormContent?.launchUrl || '#', '_blank', 'width=1024,height=768');
   };
 
-  const formatFileSize = (bytes: number) => {
+  const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -129,7 +109,7 @@ export const ScormViewer = ({ scormData, title, onBack }: ScormViewerProps) => {
             <div>
               <label className="text-sm font-medium text-gray-500">Learning Objectives</label>
               <ul className="mt-1 space-y-1">
-                {scormContent.objectives.map((objective: string, index: number) => (
+                {scormContent.objectives.map((objective, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-blue-500 text-sm">•</span>
                     <span className="text-sm">{objective}</span>
@@ -148,7 +128,7 @@ export const ScormViewer = ({ scormData, title, onBack }: ScormViewerProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
-            <Button onClick={handleLaunchScorm} className="bg-green-600 hover:bg-green-700">
+            <Button onClick={handleLaunchScorm} className="bg-green-600 hover:bg-green-700 text-white">
               <Play className="h-4 w-4 mr-2" />
               Launch SCORM Package
             </Button>

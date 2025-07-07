@@ -81,14 +81,14 @@ export function TaskListSection() {
             <Check className="h-5 w-5 text-primary" />
             My Tasks
           </CardTitle>
-          <Button 
+          {/* <Button 
             variant="ghost" 
             size="sm" 
             className="h-8"
             onClick={handleAddTask}
           >
             <Plus className="h-4 w-4 mr-1" /> Add
-          </Button>
+          </Button> */}
         </div>
       </CardHeader>
       <CardContent className="p-0">
