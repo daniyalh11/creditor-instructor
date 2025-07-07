@@ -1,24 +1,11 @@
-
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Edit2, Save, XCircle } from 'lucide-react'; // Using Edit2 as Pencil might not be in the allowed list
+import { Edit2, Save, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type PolicyItemProps = {
-  id: string;
-  label: string;
-  type: 'checkbox' | 'editableText' | 'buttonLink';
-  initialValue?: string | boolean;
-  placeholder?: string;
-  defaultValueLabel?: string; // For "30 Days (Default)"
-  onSave?: (id: string, value: string | boolean) => void; // Callback for saving
-  isCrossedOut?: boolean; // For "Strong passwords"
-  buttonLinkAction?: () => void; // For "Configure authentication remote check"
-};
-
-const PolicyItem: React.FC<PolicyItemProps> = ({
+const PolicyItem = ({
   id,
   label,
   type,
@@ -29,11 +16,11 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
   isCrossedOut = false,
   buttonLinkAction
 }) => {
-  const [isChecked, setIsChecked] = useState<boolean>(typeof initialValue === 'boolean' ? initialValue : false);
-  const [textValue, setTextValue] = useState<string>(typeof initialValue === 'string' ? initialValue : '');
+  const [isChecked, setIsChecked] = useState(typeof initialValue === 'boolean' ? initialValue : false);
+  const [textValue, setTextValue] = useState(typeof initialValue === 'string' ? initialValue : '');
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleCheckboxChange = (checked: boolean) => {
+  const handleCheckboxChange = (checked) => {
     setIsChecked(checked);
     if (onSave) {
       onSave(id, checked);
@@ -49,8 +36,8 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
 
   const handleCancel = () => {
     setIsEditing(false);
-    setTextValue(typeof initialValue === 'string' ? initialValue : ''); // Reset to initial
-  }
+    setTextValue(typeof initialValue === 'string' ? initialValue : '');
+  };
 
   if (type === 'checkbox') {
     return (
@@ -59,13 +46,13 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
           id={id}
           checked={isChecked}
           onCheckedChange={handleCheckboxChange}
-          disabled={isCrossedOut} // Visually crossed-out items are often disabled
+          disabled={isCrossedOut}
         />
         <label
           htmlFor={id}
           className={cn(
-            "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-            isCrossedOut ? "line-through text-muted-foreground" : ""
+            'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+            isCrossedOut ? 'line-through text-muted-foreground' : ''
           )}
         >
           {label}
@@ -77,7 +64,9 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
   if (type === 'editableText') {
     return (
       <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-        <span className={cn("text-sm", isCrossedOut ? "line-through text-muted-foreground" : "")}>{label}</span>
+        <span className={cn('text-sm', isCrossedOut ? 'line-through text-muted-foreground' : '')}>
+          {label}
+        </span>
         {isEditing ? (
           <div className="flex items-center gap-2">
             <Input
@@ -87,7 +76,11 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
               placeholder={placeholder}
               className="w-auto h-8"
             />
-            {defaultValueLabel && <span className="text-xs text-muted-foreground whitespace-nowrap">({defaultValueLabel})</span>}
+            {defaultValueLabel && (
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                ({defaultValueLabel})
+              </span>
+            )}
             <Button variant="ghost" size="icon" onClick={handleSave} className="h-8 w-8">
               <Save size={16} />
             </Button>
@@ -108,12 +101,12 @@ const PolicyItem: React.FC<PolicyItemProps> = ({
       </div>
     );
   }
-  
+
   if (type === 'buttonLink') {
     return (
       <div className="py-3 border-b border-gray-100 last:border-b-0">
         <Button variant="link" onClick={buttonLinkAction} className="p-0 h-auto text-primary hover:underline">
-            <Edit2 size={16} className="mr-2"/> {label}
+          <Edit2 size={16} className="mr-2" /> {label}
         </Button>
       </div>
     );
