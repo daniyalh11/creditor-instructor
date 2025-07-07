@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,12 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { MessageSquare, Clock } from 'lucide-react';
 
-interface DebateAnswerSectionProps {
-  debate: any;
-  onSubmit: (answer: string) => void;
-}
-
-export const DebateAnswerSection = ({ debate, onSubmit }: DebateAnswerSectionProps) => {
+export const DebateAnswerSection = ({ debate, onSubmit }) => {
   const [answer, setAnswer] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 

@@ -1,24 +1,11 @@
-
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 
-interface AssessmentSettingsTabProps {
-  settings: {
-    title: string;
-    description: string;
-    timeLimitMinutes: number;
-    passingScore: number;
-    attemptsAllowed: number;
-    shuffleQuestions: boolean;
-  };
-  onUpdateSettings: (settings: any) => void;
-}
-
-export const AssessmentSettingsTab = ({ settings, onUpdateSettings }: AssessmentSettingsTabProps) => {
-  const handleChange = (field: string, value: any) => {
+export const AssessmentSettingsTab = ({ settings, onUpdateSettings }) => {
+  const handleChange = (field, value) => {
     onUpdateSettings({ [field]: value });
   };
 

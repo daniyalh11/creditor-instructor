@@ -6,23 +6,14 @@ import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Timer from '@/components/shared/Timer';
 
-interface Question {
-  id: number;
-  title: string;
-  question: string;
-  placeholder: string;
-  recommendedWords: string;
-}
-
 const CaseStudyAnalysis = () => {
   const navigate = useNavigate();
-  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
+  const [answers, setAnswers] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
-  const [completionTime, setCompletionTime] = useState<number | null>(null);
+  const [completionTime, setCompletionTime] = useState(null);
   
-  // Assessment settings - in a real app, these would come from the assessment data
-  const timeLimitMinutes = 30; // This would be set during assessment creation
+  const timeLimitMinutes = 30;
 
   const caseStudyContent = {
     title: "IT Infrastructure Modernization Project",
@@ -35,7 +26,7 @@ const CaseStudyAnalysis = () => {
     ]
   };
 
-  const questions: Question[] = [
+  const questions = [
     {
       id: 1,
       title: "Question 1",
@@ -59,20 +50,20 @@ const CaseStudyAnalysis = () => {
     }
   ];
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleAnswerChange = (questionId: number, value: string) => {
+  const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: value
     }));
   };
 
-  const getWordCount = (text: string) => {
+  const getWordCount = (text) => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
@@ -81,7 +72,7 @@ const CaseStudyAnalysis = () => {
     setIsCompleted(true);
   };
 
-  const handleTimerComplete = (totalTime: number) => {
+  const handleTimerComplete = (totalTime) => {
     setCompletionTime(totalTime);
   };
 
@@ -97,7 +88,6 @@ const CaseStudyAnalysis = () => {
   };
 
   const handleTimeUp = () => {
-    // Auto-submit when time runs out
     handleComplete();
   };
 

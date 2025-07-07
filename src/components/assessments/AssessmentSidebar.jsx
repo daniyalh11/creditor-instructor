@@ -5,12 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HelpCircle, FileText, PenTool, Shuffle, BarChart3 } from 'lucide-react';
 
-interface AssessmentSidebarProps {
-  activeTab: string;
-  onQuestionTypeSelect?: (type: string) => void;
-}
-
-export const AssessmentSidebar = ({ activeTab, onQuestionTypeSelect }: AssessmentSidebarProps) => {
+export const AssessmentSidebar = ({ activeTab, onQuestionTypeSelect }) => {
   const [timerEnabled, setTimerEnabled] = useState(false);
   const [timerMinutes, setTimerMinutes] = useState('60');
 

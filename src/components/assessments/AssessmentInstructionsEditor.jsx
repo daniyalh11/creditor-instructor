@@ -1,23 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
-
-interface Instruction {
-  id: string;
-  title: string;
-  points: string[];
-  backgroundColor: string;
-  textColor: string;
-}
-
-interface AssessmentInstructionsEditorProps {
-  instructions: Instruction[];
-  onUpdateInstructions: (instructions: Instruction[]) => void;
-}
 
 const predefinedColors = [
   { name: 'Blue', bg: 'bg-blue-50', text: 'text-blue-800', value: 'blue' },
@@ -29,9 +15,9 @@ const predefinedColors = [
   { name: 'Gray', bg: 'bg-gray-50', text: 'text-gray-800', value: 'gray' },
 ];
 
-export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstructions }: AssessmentInstructionsEditorProps) => {
+export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstructions }) => {
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState(null);
   const [newInstruction, setNewInstruction] = useState({
     title: '',
     points: [''],
@@ -45,7 +31,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
     });
   };
 
-  const handleRemovePoint = (index: number) => {
+  const handleRemovePoint = (index) => {
     if (newInstruction.points.length > 1) {
       const updatedPoints = newInstruction.points.filter((_, i) => i !== index);
       setNewInstruction({
@@ -55,7 +41,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
     }
   };
 
-  const handlePointChange = (index: number, value: string) => {
+  const handlePointChange = (index, value) => {
     const updatedPoints = [...newInstruction.points];
     updatedPoints[index] = value;
     setNewInstruction({
@@ -67,7 +53,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
   const handleAddInstruction = () => {
     if (newInstruction.title && newInstruction.points.some(point => point.trim())) {
       const selectedColor = predefinedColors.find(c => c.value === newInstruction.backgroundColor);
-      const instruction: Instruction = {
+      const instruction = {
         id: `instruction_${Date.now()}`,
         title: newInstruction.title,
         points: newInstruction.points.filter(point => point.trim()),
@@ -81,7 +67,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
     }
   };
 
-  const handleUpdateInstruction = (id: string, updates: Partial<Instruction>) => {
+  const handleUpdateInstruction = (id, updates) => {
     const updatedInstructions = instructions.map(inst => 
       inst.id === id ? { ...inst, ...updates } : inst
     );
@@ -89,7 +75,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
     setEditingId(null);
   };
 
-  const handleDeleteInstruction = (id: string) => {
+  const handleDeleteInstruction = (id) => {
     const updatedInstructions = instructions.filter(inst => inst.id !== id);
     onUpdateInstructions(updatedInstructions);
   };
@@ -109,7 +95,6 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
         </Button>
       </div>
 
-      {/* Add New Instruction Form */}
       {isAddingNew && (
         <Card className="border-2 border-dashed border-blue-300">
           <CardHeader>
@@ -203,7 +188,6 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
         </Card>
       )}
 
-      {/* Display Existing Instructions */}
       <div className="space-y-3">
         {instructions.map((instruction) => (
           <Card key={instruction.id} className={`${instruction.backgroundColor} border-l-4 border-l-blue-500`}>
@@ -268,13 +252,7 @@ export const AssessmentInstructionsEditor = ({ instructions, onUpdateInstruction
   );
 };
 
-interface EditInstructionFormProps {
-  instruction: Instruction;
-  onSave: (updates: Partial<Instruction>) => void;
-  onCancel: () => void;
-}
-
-const EditInstructionForm = ({ instruction, onSave, onCancel }: EditInstructionFormProps) => {
+const EditInstructionForm = ({ instruction, onSave, onCancel }) => {
   const [title, setTitle] = useState(instruction.title);
   const [points, setPoints] = useState(instruction.points);
   const [backgroundColor, setBackgroundColor] = useState(
@@ -285,13 +263,13 @@ const EditInstructionForm = ({ instruction, onSave, onCancel }: EditInstructionF
     setPoints([...points, '']);
   };
 
-  const handleRemovePoint = (index: number) => {
+  const handleRemovePoint = (index) => {
     if (points.length > 1) {
       setPoints(points.filter((_, i) => i !== index));
     }
   };
 
-  const handlePointChange = (index: number, value: string) => {
+  const handlePointChange = (index, value) => {
     const updatedPoints = [...points];
     updatedPoints[index] = value;
     setPoints(updatedPoints);

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,12 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Save, X, Clock, FileText, Target, Trophy, Trash2, Plus, Minus } from 'lucide-react';
 
-interface EssayOverviewTabProps {
-  essay: any;
-  onUpdate: (essay: any) => void;
-}
-
-export const EssayOverviewTab = ({ essay, onUpdate }: EssayOverviewTabProps) => {
+export const EssayOverviewTab = ({ essay, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     ...essay,
@@ -62,14 +56,14 @@ export const EssayOverviewTab = ({ essay, onUpdate }: EssayOverviewTabProps) => 
     });
   };
 
-  const removeInstruction = (index: number) => {
+  const removeInstruction = (index) => {
     setEditData({
       ...editData,
-      instructions: editData.instructions.filter((_: any, i: number) => i !== index)
+      instructions: editData.instructions.filter((_, i) => i !== index)
     });
   };
 
-  const updateInstruction = (index: number, value: string) => {
+  const updateInstruction = (index, value) => {
     const newInstructions = [...editData.instructions];
     newInstructions[index] = value;
     setEditData({
@@ -78,7 +72,7 @@ export const EssayOverviewTab = ({ essay, onUpdate }: EssayOverviewTabProps) => 
     });
   };
 
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
       case 'easy': return 'bg-green-100 text-green-800';
       case 'medium': return 'bg-yellow-100 text-yellow-800';
@@ -275,7 +269,7 @@ export const EssayOverviewTab = ({ essay, onUpdate }: EssayOverviewTabProps) => 
                   Add Instruction
                 </Button>
               </div>
-              {editData.instructions.map((instruction: string, index: number) => (
+              {editData.instructions.map((instruction, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <span className="text-sm font-medium text-gray-500 mt-2 min-w-[20px]">{index + 1}.</span>
                   <Textarea
@@ -298,7 +292,7 @@ export const EssayOverviewTab = ({ essay, onUpdate }: EssayOverviewTabProps) => 
             </div>
           ) : (
             <ol className="space-y-3">
-              {currentInstructions.map((instruction: string, index: number) => (
+              {currentInstructions.map((instruction, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <span className="text-sm font-medium text-blue-600 min-w-[20px]">{index + 1}.</span>
                   <p className="text-gray-700">{instruction}</p>

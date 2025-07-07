@@ -1,14 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileText, Upload, Edit, BarChart, MessageSquare, ArrowRight } from 'lucide-react';
 
-interface AssessmentTypesTabProps {
-  selectedType: string | null;
-  onTypeSelect: (type: string) => void;
-}
-
-export const AssessmentTypesTab = ({ selectedType, onTypeSelect }: AssessmentTypesTabProps) => {
+export const AssessmentTypesTab = ({ selectedType, onTypeSelect }) => {
   const assessmentTypes = [
     {
       id: 'quiz',
