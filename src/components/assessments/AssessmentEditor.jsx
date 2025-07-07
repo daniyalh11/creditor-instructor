@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FileText, Upload, Edit, BarChart, MessageSquare, ArrowRight, ArrowUp, ArrowDown, Trash2, Link } from 'lucide-react';
-import { QuestionEditModal } from './QuestionEditModal';
+import  QuestionEditModal  from './QuestionEditModal';
 import { SubmissionBlockEditModal } from './SubmissionBlockEditModal';
 import { DebateEditModal } from './DebateEditModal';
 import { DebateAnswerSection } from './DebateAnswerSection';
