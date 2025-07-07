@@ -6,9 +6,13 @@ export const AccordionPreview = ({ sections }) => {
   const [openSections, setOpenSections] = useState({});
 
   const toggleSection = (index) => {
+<<<<<<< HEAD
     setOpenSections(prev => ({
+=======
+    setOpenSections((prev) => ({
+>>>>>>> b66f2ee1e590857b2e651ea37c791795a7ec4049
       ...prev,
-      [index]: !prev[index]
+      [index]: !prev[index],
     }));
   };
 
@@ -30,8 +34,14 @@ export const AccordionPreview = ({ sections }) => {
         >
           <CollapsibleTrigger className="w-full">
             <div className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg border transition-colors">
-              <span className="font-medium text-left">{section.title || `Section ${index + 1}`}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${openSections[index] ? 'rotate-180' : ''}`} />
+              <span className="font-medium text-left">
+                {section.title || `Section ${index + 1}`}
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${
+                  openSections[index] ? 'rotate-180' : ''
+                }`}
+              />
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -39,12 +49,12 @@ export const AccordionPreview = ({ sections }) => {
               {section.content && (
                 <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
               )}
-              
+
               {section.image && (
                 <div>
-                  <img 
-                    src={section.image} 
-                    alt="Section content" 
+                  <img
+                    src={section.image}
+                    alt="Section content"
                     className="w-full max-w-md h-auto rounded-lg"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -52,12 +62,12 @@ export const AccordionPreview = ({ sections }) => {
                   />
                 </div>
               )}
-              
+
               {section.video && (
                 <div>
-                  <video 
-                    src={section.video} 
-                    controls 
+                  <video
+                    src={section.video}
+                    controls
                     className="w-full max-w-md h-auto rounded-lg"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -67,7 +77,7 @@ export const AccordionPreview = ({ sections }) => {
                   </video>
                 </div>
               )}
-              
+
               {!section.content && !section.image && !section.video && (
                 <p className="text-gray-500 italic">No content set</p>
               )}
@@ -79,4 +89,8 @@ export const AccordionPreview = ({ sections }) => {
   );
 };
 
+<<<<<<< HEAD
 export default AccordionPreview;
+=======
+export default AccordionPreview;
+>>>>>>> b66f2ee1e590857b2e651ea37c791795a7ec4049
