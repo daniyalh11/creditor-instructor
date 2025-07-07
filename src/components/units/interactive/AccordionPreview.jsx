@@ -82,7 +82,7 @@ export const AccordionPreview = ({ sections }) => {
         </Collapsible>
       ))}
     </div>
-  );
+ );
 };
 
 export default AccordionPreview;
