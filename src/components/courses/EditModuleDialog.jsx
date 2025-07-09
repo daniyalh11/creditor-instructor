@@ -7,44 +7,34 @@ import { Textarea } from '@/components/ui/textarea';
 import { Save, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-const EditModuleDialog = ({
-  open,
-  onOpenChange,
-  module,
-  onUpdate
-}) => {
-  const [title, setTitle] = useState(module.title);
-  const [description, setDescription] = useState(module.description);
+const EditModuleDialog = ({ open, onOpenChange, module, onUpdate }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
+  // Sync state only when module changes
   useEffect(() => {
-    setTitle(module.title);
-    setDescription(module.description);
-  }, [module]);
+    if (module && open) {
+      setTitle(module.title || '');
+      setDescription(module.description || '');
+    }
+  }, [module]); // Removed 'open' from dependencies
 
   const handleSave = () => {
     if (!title.trim()) {
       toast({
-        title: "Error",
-        description: "Module title is required",
-        variant: "destructive"
+        title: 'Module title is required',
+        variant: 'destructive',
       });
       return;
     }
 
-    const updatedModule = {
-      ...module,
-      title: title.trim(),
-      description: description.trim()
-    };
-
-    onUpdate(updatedModule);
-    onOpenChange(false);
-    
-    toast({
-      title: "Module Updated",
-      description: `"${title}" has been updated successfully.`
-    });
+    const updated = { ...module, title: title.trim(), description: description.trim() };
+    onUpdate(updated);
+    toast({ title: 'Module updated' });
+    onOpenChange(false); // Close dialog
   };
+
+  const handleCancel = () => onOpenChange(false);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -52,22 +42,21 @@ const EditModuleDialog = ({
         <DialogHeader>
           <DialogTitle>Edit Module</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Module Title</Label>
+            <Label htmlFor="module-title">Module Title</Label>
             <Input
-              id="title"
+              id="module-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter module title"
             />
           </div>
-          
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="module-desc">Description</Label>
             <Textarea
-              id="description"
+              id="module-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter module description"
@@ -75,15 +64,13 @@ const EditModuleDialog = ({
             />
           </div>
         </div>
-        
+
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            <X className="h-4 w-4 mr-2" />
-            Cancel
+          <Button variant="outline" onClick={handleCancel}>
+            <X className="h-4 w-4 mr-2" /> Cancel
           </Button>
           <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
-            Save Changes
+            <Save className="h-4 w-4 mr-2" /> Save
           </Button>
         </div>
       </DialogContent>

@@ -244,6 +244,7 @@ const Courses = () => {
   };
 
   const handleCourseEdit = (courseId, courseName) => {
+    navigate(`/courses/edit/${courseId}`);
     toast({
       title: "Edit Course",
       description: `Opening edit page for ${courseName}`,
@@ -283,18 +284,6 @@ const Courses = () => {
     toast({
       title: "Course Restored",
       description: `${courseName} has been restored to active courses.`,
-    });
-  };
-
-  const handleAddToCatalog = (courseId, courseName, catalogName) => {
-    setCourses(prevCourses => 
-      prevCourses.map(course => 
-        course.id === courseId ? { ...course, catalog: catalogName } : course
-      )
-    );
-    toast({
-      title: "Added to Catalog",
-      description: `${courseName} has been added to ${catalogName} catalog.`,
     });
   };
 
@@ -439,9 +428,10 @@ const Courses = () => {
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
-            <Card key={course.id} className="hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer">
+            <Card key={course.id} className="hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" >
               <div className="h-48 overflow-hidden relative">
                 <img 
+                 onClick={() => handleCourseClick(course.id)}
                   src={course.image} 
                   alt={course.title} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
@@ -458,7 +448,6 @@ const Courses = () => {
                       onArchive={handleCourseArchive}
                       onDelete={handleCourseDelete}
                       onRestore={handleCourseRestore}
-                      onAddToCatalog={handleAddToCatalog}
                       isDeleted={course.deleted}
                     />
                   </div>
@@ -476,7 +465,7 @@ const Courses = () => {
                   )}
                 </div>
               </div>
-              <CardHeader className="pb-2" onClick={() => handleCourseClick(course.id)}>
+              <CardHeader className="pb-2"  onClick={() => handleCourseClick(course.id)}>
                 <CardTitle className="text-lg font-semibold line-clamp-1">
                   {course.title}
                 </CardTitle>
@@ -593,7 +582,6 @@ const Courses = () => {
                           onArchive={handleCourseArchive}
                           onDelete={handleCourseDelete}
                           onRestore={handleCourseRestore}
-                          onAddToCatalog={handleAddToCatalog}
                           isDeleted={course.deleted}
                         />
                       </td>

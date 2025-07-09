@@ -7,7 +7,6 @@ import { AdminLayout } from "./components/layout/AdminLayout";
 import { SidebarProvider } from "./contexts/SidebarContext";
 import { UserFilterProvider } from "./contexts/UserFilterContext";
 import { CourseSidebarProvider } from "./contexts/CourseSidebarContext";
-
 // Import all assessment components
 import MultipleChoiceQuiz from "./components/assessments/MultipleChoiceQuiz";
 import TrueFalseQuiz from "./components/assessments/TrueFalseQuiz";
@@ -78,6 +77,8 @@ import SurveyInstructorPage from "./pages/SurveyInstructorPage";
 
 // Import course components
 import CourseAttendance from "./components/courses/CourseAttendance";
+import CourseEdit from "./pages/CourseEdit";
+import EditModulePage from './pages/EditModulePage';
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,8 @@ const App = () => (
                   <Route index element={<Dashboard />} />
                   <Route path="courses" element={<Courses />} />
                   <Route path="courses/create" element={<CourseCreation />} />
+                  <Route path="/courses/edit/:courseId" element={<CourseEdit />} />
+                  <Route path="/courses/:courseId/modules/:moduleId/edit" element={<EditModulePage />} />
                   <Route path="courses/builder/:courseId" element={<CourseBuilder />} />
                   <Route path="courses/builder/:courseId/modules/:moduleId/units" element={<UnitsBuilder />} />
                   <Route path="courses/builder/:courseId/modules/:moduleId/units/creator" element={<UnitCreator />} />

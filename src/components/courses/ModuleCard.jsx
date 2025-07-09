@@ -10,11 +10,13 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
-import EditModuleDialog from './EditModuleDialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
+import EditModulePage from '@/pages/EditModulePage';
 
-const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open' }) => {
-  const navigate = useNavigate();
+const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open', onEdit, courseId }) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = () => {
     if (window.confirm(`Are you sure you want to delete "${module.title}"?`)) {
@@ -26,19 +28,37 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
     setIsEditDialogOpen(true);
   };
 
+  const handleSaveModule = (updatedModule) => {
+    if (onUpdate) {
+      onUpdate(updatedModule);
+      toast.success('Module updated successfully');
+      setIsEditDialogOpen(false);
+      // Force a full page reload after successful save
+      setTimeout(() => {
+        window.location.href = window.location.href;
+      }, 100);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setIsEditDialogOpen(false);
+    // Force a full page reload after dialog closes
+    setTimeout(() => {
+      window.location.href = window.location.href;
+    }, 100);
+  };
+
   const handleUnitsClick = () => {
     if (module.locked && courseType === 'sequential') {
-      return; // Don't navigate if module is locked
+      return;
     }
-    // Navigate to a new page for units
     navigate(`/courses/modules/${module.id}/units`);
   };
 
   const handleAssessmentsClick = () => {
     if (module.locked && courseType === 'sequential') {
-      return; // Don't navigate if module is locked
+      return;
     }
-    // Navigate to assessments page
     navigate(`/courses/modules/${module.id}/assessments`);
   };
 
@@ -165,14 +185,18 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
         </CardContent>
       </Card>
 
-      <EditModuleDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        module={module}
-        onUpdate={onUpdate}
-      />
+      <Dialog open={isEditDialogOpen} onOpenChange={handleCloseDialog}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogTitle className="sr-only">Edit Module</DialogTitle>
+          <EditModulePage 
+            module={module}
+            onClose={handleCloseDialog}
+            onSave={handleSaveModule}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
-export default ModuleCard;
+export default React.memo(ModuleCard);

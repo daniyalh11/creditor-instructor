@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowLeft, BookOpen } from "lucide-react";
 import { toast } from "sonner";
@@ -6,8 +6,10 @@ import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import AddModuleDialog from './AddModuleDialog';
 import ModuleCard from './ModuleCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import EditModuleDialog from './EditModuleDialog';
 
 const CourseModules = () => {
+  console.log('Rendering CourseModules');
   const navigate = useNavigate();
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
@@ -17,13 +19,14 @@ const CourseModules = () => {
   const [isAddModuleDialogOpen, setIsAddModuleDialogOpen] = useState(false);
   const [isPublishedCourse, setIsPublishedCourse] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [moduleToEdit, setModuleToEdit] = useState(null);
 
   // Load modules data based on courseId
   useEffect(() => {
     const loadModulesData = () => {
       setLoading(true);
       
-      // Check if this is a published course from localStorage
       const publishedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
       const publishedCourse = publishedCourses.find(course => course.id === courseId);
       
@@ -31,7 +34,6 @@ const CourseModules = () => {
         setIsPublishedCourse(true);
         
         if (publishedCourse.modules && publishedCourse.modules.length > 0) {
-          // Load published course modules with their actual units and assessments
           const courseModules = publishedCourse.modules.map((module, index) => ({
             id: module.id,
             title: module.title,
@@ -44,12 +46,10 @@ const CourseModules = () => {
           }));
           setModules(courseModules);
         } else {
-          // No modules created for this published course
           setModules([]);
         }
       } else {
         setIsPublishedCourse(false);
-        // Load default modules for existing courses (predefined courses)
         const defaultModules = [
           {
             id: 1,
@@ -111,46 +111,55 @@ const CourseModules = () => {
     loadModulesData();
   }, [courseId, courseType]);
 
-  const handleAddModule = () => {
+  useEffect(() => {
+    if (isPublishedCourse) {
+      const publishedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+      const courseIndex = publishedCourses.findIndex(course => course.id === courseId);
+      if (courseIndex !== -1) {
+        publishedCourses[courseIndex].modules = modules;
+        localStorage.setItem('courses', JSON.stringify(publishedCourses));
+      }
+    }
+  }, [modules, isPublishedCourse, courseId]);
+
+  const handleAddModule = useCallback(() => {
     setIsAddModuleDialogOpen(true);
-  };
+  }, []);
 
-  const handleModuleAdd = (newModule) => {
+  const handleModuleAdd = useCallback((newModule) => {
     setModules(prev => [...prev, newModule]);
-  };
+  }, []);
 
-  const handleModuleDelete = (moduleId) => {
+  const handleModuleDelete = useCallback((moduleId) => {
     setModules(prev => prev.filter(module => module.id !== moduleId));
-    toast.success('Module deleted successfully');
-  };
+  }, []);
 
-  const handleModuleUpdate = (updatedModule) => {
+  const handleModuleUpdate = useCallback((updatedModule) => {
     setModules(prev => prev.map(module => 
-      module.id === updatedModule.id ? updatedModule : module
+      module.id === updatedModule.id ? { ...module, ...updatedModule } : module
     ));
-  };
+  }, []);
 
-  const handleModuleComplete = (moduleId) => {
+  const handleModuleComplete = useCallback((moduleId) => {
     setModules(prev => prev.map((module, index) => {
       if (module.id === moduleId) {
         const nextModule = prev[index + 1];
         const updatedModules = [...prev];
-        
-        // Mark current module as completed
         updatedModules[index] = { ...module, completed: true };
-        
-        // Unlock next module in sequential mode
         if (nextModule && courseType === 'sequential') {
           updatedModules[index + 1] = { ...nextModule, locked: false };
         }
-        
         return updatedModules[index];
       }
       return module;
     }));
-    
     toast.success('Module completed! Next module unlocked.');
-  };
+  }, [courseType]);
+
+  const handleEditModule = useCallback((module) => {
+    setModuleToEdit(module);
+    setIsEditDialogOpen(true);
+  }, []);
 
   if (loading) {
     return (
@@ -163,7 +172,6 @@ const CourseModules = () => {
     );
   }
 
-  // Show empty state for published courses with no modules
   if (isPublishedCourse && modules.length === 0) {
     return (
       <div className="p-6 animate-fade-in">
@@ -248,10 +256,12 @@ const CourseModules = () => {
           <ModuleCard
             key={module.id}
             module={module}
+            courseId={courseId}
             onDelete={handleModuleDelete}
             onUpdate={handleModuleUpdate}
             onComplete={handleModuleComplete}
             courseType={courseType}
+            onEdit={handleEditModule}
           />
         ))}
       </div>
@@ -261,6 +271,18 @@ const CourseModules = () => {
         onOpenChange={setIsAddModuleDialogOpen}
         onModuleAdd={handleModuleAdd}
       />
+
+      {moduleToEdit && (
+        <EditModuleDialog
+          open={isEditDialogOpen}
+          onOpenChange={(open) => {
+            setIsEditDialogOpen(open);
+            if (!open) setModuleToEdit(null);
+          }}
+          module={moduleToEdit}
+          onUpdate={handleModuleUpdate}
+        />
+      )}
     </div>
   );
 };
