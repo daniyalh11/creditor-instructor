@@ -156,7 +156,7 @@ export const Header = ({ onMenuClick }) => {
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </Button>
             
-            <Button 
+            {/* <Button 
               variant="ghost" 
               size="icon" 
               onClick={handleRecycleBinClick}
@@ -164,7 +164,7 @@ export const Header = ({ onMenuClick }) => {
               aria-label="Recycle Bin"
             >
               <Recycle className="h-5 w-5" />
-            </Button>
+            </Button> */}
           </div>
           
           <ThemeToggle />

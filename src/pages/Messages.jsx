@@ -72,7 +72,7 @@ const Messages = () => {
       {
         id: '2',
         name: 'Michael Chen',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd722b5bc?w=150',
         lastMessage: "Let's catch up later",
         timestamp: '11:45 AM',
         unreadCount: 0
@@ -682,14 +682,16 @@ const Messages = () => {
                   />
                   <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
                     <PopoverTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        className="absolute right-1 top-1/2 transform -translate-y-1/2 hover:bg-gray-100 w-8 h-8"
-                        disabled={isRecording}
-                      >
-                        <Smile className="h-4 w-4" />
-                      </Button>
+                      <div className="absolute right-1 top-1/2 -translate-y-1/2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="w-8 h-8 flex items-center justify-center p-0 hover:bg-gray-100 rounded-full hover:translate-y-0"
+                          disabled={isRecording}
+                        >
+                          <Smile className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </PopoverTrigger>
                     <PopoverContent className="w-80 p-4" align="end">
                       <div className="flex justify-between items-center mb-3">
