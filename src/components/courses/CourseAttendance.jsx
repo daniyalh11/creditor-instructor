@@ -137,7 +137,7 @@ const CourseAttendance = () => {
     { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
     { studentId: 'MW', status: 'late', time: '09:15 AM', notes: 'Traffic delay' },
     { studentId: 'ED', status: 'absent', time: '', notes: 'Sick leave' }
-  ]);
+  ];
 
   const filteredStudents = students.filter(student =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
