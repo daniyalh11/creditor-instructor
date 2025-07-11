@@ -12,6 +12,46 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Calendar as CalendarIcon, Search, Filter, Download, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { SessionDetailsDialog } from './SessionDetailsDialog';
+
+/**
+ * @typedef {object} StudentAttendanceSummary
+ * @property {number} present
+ * @property {number} absent
+ * @property {number} late
+ * @property {number} percentage
+ */
+
+/**
+ * @typedef {object} Student
+ * @property {string} id
+ * @property {string} name
+ * @property {string} email
+ * @property {string} avatar
+ * @property {StudentAttendanceSummary} attendance
+ */
+
+/**
+ * @typedef {object} AttendanceSession
+ * @property {number} id
+ * @property {string} date
+ * @property {string} topic
+ * @property {number} totalStudents
+ * @property {number} present
+ * @property {number} absent
+ * @property {number} late
+ * @property {string} [sessionLink]
+ * @property {string} [duration]
+ * @property {string} [location]
+ */
+
+/**
+ * @typedef {object} DailyAttendanceRecord
+ * @property {string} studentId
+ * @property {'present' | 'absent' | 'late'} status
+ * @property {string} time
+ * @property {string} notes
+ */
 
 const CourseAttendance = () => {
   const [activeTab, setActiveTab] = useState('details');
@@ -19,58 +59,42 @@ const CourseAttendance = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [sessionDetailsOpen, setSessionDetailsOpen] = useState(false);
+  const [selectedSession, setSelectedSession] = useState(null);
 
+  /** @type {Student[]} */
   const students = [
     {
       id: 'JS',
       name: 'John Smith',
       email: 'john.smith@example.com',
       avatar: 'JS',
-      attendance: {
-        present: 8,
-        absent: 2,
-        late: 1,
-        percentage: 80
-      }
+      attendance: { present: 8, absent: 2, late: 1, percentage: 80 }
     },
     {
       id: 'SJ',
       name: 'Sarah Johnson',
       email: 'sarah.johnson@example.com',
       avatar: 'SJ',
-      attendance: {
-        present: 10,
-        absent: 0,
-        late: 1,
-        percentage: 95
-      }
+      attendance: { present: 10, absent: 0, late: 1, percentage: 95 }
     },
     {
       id: 'MW',
       name: 'Mike Wilson',
       email: 'mike.wilson@example.com',
       avatar: 'MW',
-      attendance: {
-        present: 7,
-        absent: 3,
-        late: 1,
-        percentage: 70
-      }
+      attendance: { present: 7, absent: 3, late: 1, percentage: 70 }
     },
     {
       id: 'ED',
       name: 'Emma Davis',
       email: 'emma.davis@example.com',
       avatar: 'ED',
-      attendance: {
-        present: 9,
-        absent: 1,
-        late: 1,
-        percentage: 85
-      }
+      attendance: { present: 9, absent: 1, late: 1, percentage: 85 }
     }
   ];
 
+  /** @type {AttendanceSession[]} */
   const attendanceSessions = [
     {
       id: 1,
@@ -79,7 +103,10 @@ const CourseAttendance = () => {
       totalStudents: 4,
       present: 3,
       absent: 1,
-      late: 0
+      late: 0,
+      sessionLink: 'https://zoom.us/j/123456789',
+      duration: '1 hour 30 minutes',
+      location: 'Virtual Meeting Room A'
     },
     {
       id: 2,
@@ -88,7 +115,10 @@ const CourseAttendance = () => {
       totalStudents: 4,
       present: 4,
       absent: 0,
-      late: 0
+      late: 0,
+      sessionLink: 'https://meet.google.com/abc-defg-hij',
+      duration: '2 hours',
+      location: 'Virtual Meeting Room B'
     },
     {
       id: 3,
@@ -97,10 +127,14 @@ const CourseAttendance = () => {
       totalStudents: 4,
       present: 2,
       absent: 1,
-      late: 1
+      late: 1,
+      sessionLink: 'https://teams.microsoft.com/l/meetup-join/123',
+      duration: '1 hour 45 minutes',
+      location: 'Conference Room 101'
     }
   ];
 
+  /** @type {DailyAttendanceRecord[]} */
   const dailyAttendance = [
     { studentId: 'JS', status: 'present', time: '09:00 AM', notes: '' },
     { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
@@ -113,11 +147,13 @@ const CourseAttendance = () => {
     student.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  /** @param {string} studentId */
   const getAttendanceStatus = (studentId) => {
     const attendance = dailyAttendance.find(a => a.studentId === studentId);
     return attendance?.status || 'absent';
   };
 
+  /** @param {string} status */
   const getStatusIcon = (status) => {
     switch (status) {
       case 'present':
@@ -131,6 +167,7 @@ const CourseAttendance = () => {
     }
   };
 
+  /** @param {string} status */
   const getStatusColor = (status) => {
     switch (status) {
       case 'present':
@@ -144,6 +181,7 @@ const CourseAttendance = () => {
     }
   };
 
+  /** @param {string} studentId */
   const handleStudentSelect = (studentId) => {
     if (selectedStudents.includes(studentId)) {
       setSelectedStudents(selectedStudents.filter(id => id !== studentId));
@@ -158,6 +196,12 @@ const CourseAttendance = () => {
     } else {
       setSelectedStudents(filteredStudents.map(student => student.id));
     }
+  };
+
+  /** @param {AttendanceSession} session */
+  const handleViewSessionDetails = (session) => {
+    setSelectedSession(session);
+    setSessionDetailsOpen(true);
   };
 
   return (
@@ -179,6 +223,7 @@ const CourseAttendance = () => {
         </div>
       </div>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <Card>
           <CardContent className="p-6">
@@ -260,6 +305,7 @@ const CourseAttendance = () => {
               </div>
             </CardHeader>
             <CardContent>
+              {/* Filters */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -284,6 +330,7 @@ const CourseAttendance = () => {
                 </Select>
               </div>
 
+              {/* Attendance Table */}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -444,7 +491,11 @@ const CourseAttendance = () => {
                         <span className="text-yellow-600 font-medium">{session.late}</span>
                       </TableCell>
                       <TableCell>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleViewSessionDetails(session)}
+                        >
                           View Details
                         </Button>
                       </TableCell>
@@ -456,6 +507,12 @@ const CourseAttendance = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <SessionDetailsDialog
+        open={sessionDetailsOpen}
+        onOpenChange={setSessionDetailsOpen}
+        session={selectedSession}
+      />
     </div>
   );
 };

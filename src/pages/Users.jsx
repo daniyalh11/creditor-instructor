@@ -20,7 +20,25 @@ import { useUserFilter } from '@/contexts/UserFilterContext';
 import { toast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import { UserDetailDialog } from '@/components/users/UserDetailDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
+/**
+ * @typedef {import('@/contexts/UserFilterContext').User} User
+ * @typedef {import('@/contexts/UserFilterContext').UserRole} UserRole
+ */
+
+/**
+ * @type {Record<UserRole, string>}
+ */
 const roleDisplayNames = {
   all: 'All',
   administrator: 'Administrators',
@@ -42,7 +60,9 @@ const UsersPage = () => {
     setCurrentPage,
     itemsPerPage,
     totalPages,
-    users
+    users,
+    removeUsers,
+    updateUser
   } = useUserFilter();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,6 +79,9 @@ const UsersPage = () => {
   const [resendLoginModalOpen, setResendLoginModalOpen] = useState(false);
   const [userScoresModalOpen, setUserScoresModalOpen] = useState(false);
   const [giveAwardModalOpen, setGiveAwardModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
 
   // Get current users for pagination
   const indexOfLastUser = currentPage * itemsPerPage;
@@ -81,6 +104,7 @@ const UsersPage = () => {
     }
   };
 
+  /** @param {number} id */
   const handleSelectUser = (id) => {
     if (selectedUsers.includes(id)) {
       setSelectedUsers(selectedUsers.filter(userId => userId !== id));
@@ -89,6 +113,7 @@ const UsersPage = () => {
     }
   };
 
+  /** @param {string} field */
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -98,6 +123,7 @@ const UsersPage = () => {
     }
   };
 
+  /** @param {string} action */
   const handleAction = (action) => {
     if (selectedUsers.length === 0) {
       toast({
@@ -134,7 +160,7 @@ const UsersPage = () => {
     }
     
     if (action === 'Remove') {
-      handleRemoveUsers();
+      setRemoveConfirmOpen(true);
       return;
     }
     
@@ -156,13 +182,20 @@ const UsersPage = () => {
   };
 
   const handleRemoveUsers = () => {
+    if (selectedUsers.length === 0) return;
+    
+    removeUsers(selectedUsers);
+    
     toast({
       title: "Users removed",
       description: `${selectedUsers.length} user(s) have been successfully removed.`,
     });
+    
     setSelectedUsers([]);
+    setRemoveConfirmOpen(false);
   };
 
+  /** @param {number} userId */
   const handleEditUser = (userId) => {
     const user = users.find(u => u.id === userId);
     if (user) {
@@ -171,24 +204,40 @@ const UsersPage = () => {
     }
   };
 
+  /** @param {number} userId */
   const handleDeleteUser = (userId) => {
-    toast({
-      title: "User deleted",
-      description: "User has been successfully deleted.",
-    });
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      setUserToDelete(user);
+      setDeleteConfirmOpen(true);
+    }
   };
 
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      removeUsers([userToDelete.id]);
+      
+      toast({
+        title: "User deleted",
+        description: `${userToDelete.name} has been successfully deleted.`,
+      });
+      
+      setUserToDelete(null);
+      setDeleteConfirmOpen(false);
+    }
+  };
+
+  /** @param {User} updatedUser */
   const handleSaveUser = (updatedUser) => {
-    // This would normally update the user in the context
-    console.log('Updated user:', updatedUser);
+    updateUser(updatedUser);
   };
 
+  /** @param {User} user */
   const handleUserClick = (user) => {
     setSelectedUserForDetail(user);
     setUserDetailDialogOpen(true);
   };
 
-  // Get column definitions based on selected role
   const getColumns = () => {
     const baseColumns = [
       { key: 'name', label: 'Name' },
@@ -233,9 +282,6 @@ const UsersPage = () => {
     }
   };
 
-  const columns = getColumns();
-
-  // Get action buttons based on selected role
   const getActionButtons = () => {
     const baseActions = [
       { label: 'Message', icon: <Mail className="h-4 w-4 mr-2" /> },
@@ -265,8 +311,7 @@ const UsersPage = () => {
     }
   };
 
-  const actionButtons = getActionButtons();
-
+  /** @param {string} value */
   const handleRoleTabChange = (value) => {
     setSelectedRole(value);
     setCurrentPage(1);
@@ -274,7 +319,6 @@ const UsersPage = () => {
     setSearchQuery('');
   };
 
-  // Get user counts for each role (excluding managers)
   const getUserCounts = () => {
     return {
       all: users.length,
@@ -286,6 +330,8 @@ const UsersPage = () => {
     };
   };
 
+  const columns = getColumns();
+  const actionButtons = getActionButtons();
   const userCounts = getUserCounts();
 
   return (
@@ -566,6 +612,44 @@ const UsersPage = () => {
         onOpenChange={setUserDetailDialogOpen}
         user={selectedUserForDetail}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{userToDelete?.name}</strong>? 
+              This action cannot be undone and will permanently remove the user from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteUser} className="bg-red-600 hover:bg-red-700">
+              Delete User
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Remove Confirmation Dialog */}
+      <AlertDialog open={removeConfirmOpen} onOpenChange={setRemoveConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Users</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove {selectedUsers.length} selected user{selectedUsers.length > 1 ? 's' : ''}? 
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemoveUsers} className="bg-red-600 hover:bg-red-700">
+              Remove Users
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

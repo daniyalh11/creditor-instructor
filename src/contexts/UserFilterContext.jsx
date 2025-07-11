@@ -1,7 +1,53 @@
 import React, { createContext, useContext, useState } from 'react';
 
+/**
+ * @typedef {'administrator' | 'learner' | 'friends' | 'archived' | 'manager' | 'instructor' | 'all'} UserRole
+ */
+
+/**
+ * @typedef {object} User
+ * @property {number} id
+ * @property {string} name
+ * @property {UserRole[]} role
+ * @property {string} avatar
+ * @property {string} email
+ * @property {string} lastVisited
+ * @property {number} groups
+ * @property {number} [courses]
+ * @property {number} [completed]
+ * @property {boolean} [deactivated]
+ * @property {boolean} [superAdmin]
+ * @property {number} [contactMessages]
+ * @property {boolean} [archived]
+ */
+
+/**
+ * @typedef {object} UserFilterContextType
+ * @property {User[]} users - The complete list of all users.
+ * @property {User[]} filteredUsers - The list of users after applying the current filter.
+ * @property {UserRole} selectedRole - The currently selected role for filtering.
+ * @property {(role: UserRole) => void} setSelectedRole - Function to set the filter role.
+ * @property {boolean} isFilterMenuOpen - State for the filter menu's visibility.
+ * @property {(isOpen: boolean) => void} setIsFilterMenuOpen - Function to toggle the filter menu.
+ * @property {number} totalPages - The total number of pages for pagination.
+ * @property {number} currentPage - The current active page.
+ * @property {(page: number) => void} setCurrentPage - Function to set the current page.
+ * @property {number} itemsPerPage - The number of users to display per page.
+ * @property {(user: Omit<User, 'id'>) => void} addUser - Function to add a new user.
+ * @property {(userIds: number[]) => void} removeUsers - Function to remove users by their IDs.
+ * @property {(user: User) => void} updateUser - Function to update an existing user.
+ */
+
+/**
+ * @type {React.Context<UserFilterContextType | undefined>}
+ */
 const UserFilterContext = createContext(undefined);
 
+/**
+ * Provides user data and filtering functionality to its children.
+ * @param {object} props
+ * @param {React.ReactNode} props.children - The child components that will consume the context.
+ */
 export function UserFilterProvider({ children }) {
   const [users, setUsers] = useState([
     {
@@ -184,7 +230,7 @@ export function UserFilterProvider({ children }) {
       id: 19,
       name: "Gharfalkar, Jay",
       role: ["manager"],
-      avatar: "/lovable-Uploads/dc27ec74-b2e9-4467-8adc-6a66a52eb520.png",
+      avatar: "/lovable-uploads/dc27ec74-b2e9-4467-8adc-6a66a52eb520.png",
       email: "jay.gharfalkar@example.com",
       lastVisited: "2 days ago",
       groups: 3
@@ -301,6 +347,7 @@ export function UserFilterProvider({ children }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  // Filter users based on selected role
   const getFilteredUsers = () => {
     if (selectedRole === 'all') {
       return users;
@@ -310,14 +357,39 @@ export function UserFilterProvider({ children }) {
 
   const filteredUsers = getFilteredUsers();
   
+  // Calculate total pages for pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   
+  /**
+   * Adds a new user to the list.
+   * @param {Omit<User, 'id'>} user - The user data to add, without an ID.
+   */
   const addUser = (user) => {
     const newUser = {
       ...user,
-      id: users.length + 1
+      id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1 // More robust ID generation
     };
     setUsers([...users, newUser]);
+  };
+
+  /**
+   * Removes multiple users from the list based on their IDs.
+   * @param {number[]} userIds - An array of user IDs to remove.
+   */
+  const removeUsers = (userIds) => {
+    setUsers(prevUsers => prevUsers.filter(user => !userIds.includes(user.id)));
+  };
+
+  /**
+   * Updates an existing user in the list.
+   * @param {User} updatedUser - The user object with updated data.
+   */
+  const updateUser = (updatedUser) => {
+    setUsers(prevUsers => 
+      prevUsers.map(user => 
+        user.id === updatedUser.id ? updatedUser : user
+      )
+    );
   };
   
   return (
@@ -333,7 +405,9 @@ export function UserFilterProvider({ children }) {
         currentPage,
         setCurrentPage,
         itemsPerPage,
-        addUser
+        addUser,
+        removeUsers,
+        updateUser
       }}
     >
       {children}
@@ -341,6 +415,10 @@ export function UserFilterProvider({ children }) {
   );
 }
 
+/**
+ * Custom hook to consume the UserFilterContext.
+ * @returns {UserFilterContextType} The context value.
+ */
 export function useUserFilter() {
   const context = useContext(UserFilterContext);
   if (context === undefined) {

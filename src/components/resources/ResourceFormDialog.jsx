@@ -32,15 +32,14 @@ export function ResourceFormDialog({ resourceType, open, onClose }) {
     return `Add ${formattedType}`;
   };
 
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <div className="flex justify-between items-center">
             <DialogTitle>{getTitle()}</DialogTitle>
-            <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-100">
-              <X className="h-5 w-5" />
-            </button>
           </div>
         </DialogHeader>
 
@@ -127,6 +126,25 @@ export function ResourceFormDialog({ resourceType, open, onClose }) {
           </form>
         </Form>
       </DialogContent>
+
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Resource Details: {/* selectedResource?.title */}</DialogTitle>
+          </DialogHeader>
+          <div>
+            <pre className="bg-gray-100 p-4 rounded text-xs overflow-x-auto">
+              {/* {JSON.stringify(selectedResource, null, 2)} */}
+            </pre>
+            {/* You can replace the above with a more user-friendly details view if desired */}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowDetailsDialog(false)} className="bg-blue-500 hover:bg-blue-600">
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { AddGroupDialog } from '@/components/groups/AddGroupDialog';
+import { GroupEditDialog } from '@/components/groups/GroupEditDialog';
 import { GroupOptionsMenu } from '@/components/groups/GroupOptionsMenu';
+import { GroupProvider, useGroup } from '@/contexts/GroupContext';
 import { 
   Select,
   SelectContent,
@@ -16,39 +18,65 @@ import {
 } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 
-const Groups = () => {
+/**
+ * @typedef {object} Group
+ * @property {number} id
+ * @property {string} name
+ * @property {number} members
+ * @property {string} type
+ * @property {string} image
+ */
+
+const GroupsContent = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
+  const [isEditGroupOpen, setIsEditGroupOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const navigate = useNavigate();
   
-  // Updated mock data with eye-catching group-related images
-  const enrolledGroups = [
-    { 
-      id: 2, 
-      name: 'Customer Service Excellence', 
-      members: 313, 
-      type: 'Study group', 
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format'
-    },
-    { 
-      id: 5, 
-      name: 'IT Management & Strategy', 
-      members: 156, 
-      type: 'Interest group', 
-      image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=300&fit=crop&auto=format'
-    },
-  ];
+  const { groups, updateGroup, deleteGroup, addGroup } = useGroup();
 
-  const filteredGroups = enrolledGroups.filter(group => 
+  const filteredGroups = groups.filter(group => 
     group.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
+  /** @param {number} id */
   const handleViewGroup = (id) => {
     navigate(`/groups/view/${id}`);
   };
   
   const handleDiscoverGroups = () => {
     navigate('/groups/catalog');
+  };
+
+  /** @param {Group} group */
+  const handleEditGroup = (group) => {
+    setSelectedGroup(group);
+    setIsEditGroupOpen(true);
+  };
+
+  /** @param {number} groupId */
+  const handleDeleteGroup = (groupId) => {
+    deleteGroup(groupId);
+  };
+
+  /** 
+   * @param {number} groupId 
+   * @param {Partial<Group>} updatedData 
+   */
+  const handleSaveGroup = (groupId, updatedData) => {
+    updateGroup(groupId, updatedData);
+  };
+
+  /** @param {object} groupData - Data from the add group form. */
+  const handleAddGroup = (groupData) => {
+    const newGroup = {
+      name: groupData.name,
+      members: 0,
+      type: 'Study group', // Default type
+      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format' // Default image
+    };
+    addGroup(newGroup);
   };
 
   return (
@@ -119,7 +147,12 @@ const Groups = () => {
                   Enrolled
                 </Badge>
                 <div className="bg-white/90 rounded-md">
-                  <GroupOptionsMenu groupId={group.id} groupName={group.name} />
+                  <GroupOptionsMenu 
+                    groupId={group.id} 
+                    groupName={group.name}
+                    onEdit={() => handleEditGroup(group)}
+                    onDelete={() => handleDeleteGroup(group.id)}
+                  />
                 </div>
               </div>
             </div>
@@ -151,9 +184,25 @@ const Groups = () => {
 
       <AddGroupDialog 
         open={isAddGroupOpen} 
-        onOpenChange={setIsAddGroupOpen} 
+        onOpenChange={setIsAddGroupOpen}
+        onSave={handleAddGroup}
+      />
+
+      <GroupEditDialog
+        open={isEditGroupOpen}
+        onOpenChange={setIsEditGroupOpen}
+        group={selectedGroup}
+        onSave={handleSaveGroup}
       />
     </div>
+  );
+};
+
+const Groups = () => {
+  return (
+    <GroupProvider>
+      <GroupsContent />
+    </GroupProvider>
   );
 };
 

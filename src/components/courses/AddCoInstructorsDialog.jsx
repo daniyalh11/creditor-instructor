@@ -3,32 +3,49 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
-export const AddCoInstructorsDialog = ({ open, onOpenChange, courseId }) => {
+/**
+ * @typedef {object} Instructor
+ * @property {string} name
+ * @property {string} role
+ */
+
+/**
+ * A dialog for adding a co-instructor to a course.
+ * @param {object} props
+ * @param {boolean} props.open - Whether the dialog is open.
+ * @param {(open: boolean) => void} props.onOpenChange - Function to handle dialog open/close state.
+ * @param {string} props.courseId - The ID of the course to add the instructor to.
+ * @param {(instructor: Instructor) => void} [props.onInstructorAdded] - Optional callback when an instructor is added.
+ */
+export const AddCoInstructorsDialog = ({ open, onOpenChange, courseId, onInstructorAdded }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [instructorRole, setInstructorRole] = useState('Assistant Instructor');
 
   const handleAddInstructor = () => {
-    console.log('Adding instructor:', { searchTerm, instructorRole, courseId });
-    onOpenChange(false);
+    if (searchTerm.trim()) {
+      const newInstructor = {
+        name: searchTerm,
+        role: instructorRole
+      };
+      
+      console.log('Adding instructor:', { searchTerm, instructorRole, courseId });
+      
+      if (onInstructorAdded) {
+        onInstructorAdded(newInstructor);
+      }
+      
+      setSearchTerm('');
+      onOpenChange(false);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl">Add Instructor to Course</DialogTitle>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => onOpenChange(false)}
-              className="h-6 w-6"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-xl">Add Instructor to Course</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
@@ -74,6 +91,7 @@ export const AddCoInstructorsDialog = ({ open, onOpenChange, courseId }) => {
             <Button 
               onClick={handleAddInstructor}
               className="bg-blue-500 hover:bg-blue-600 text-white"
+              disabled={!searchTerm.trim()}
             >
               Add Instructor
             </Button>
@@ -83,5 +101,3 @@ export const AddCoInstructorsDialog = ({ open, onOpenChange, courseId }) => {
     </Dialog>
   );
 };
-
-export default AddCoInstructorsDialog;

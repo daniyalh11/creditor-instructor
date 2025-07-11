@@ -3,18 +3,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Search, Plus, MoreHorizontal, Trash2 } from 'lucide-react';
 import { AddLearnerModal } from './AddLearnerModal';
 import { useParams } from 'react-router-dom';
+
+/**
+ * @typedef {object} Learner
+ * @property {string} id - A unique identifier or initials for the learner.
+ * @property {string} name - The full name of the learner.
+ * @property {string} email - The email address of the learner.
+ * @property {string} role - The role of the user in the course (e.g., 'Learner', 'Instructor').
+ * @property {number} progress - The completion progress percentage.
+ * @property {string} status - The current status of the learner (e.g., 'Active', 'Pending').
+ * @property {string} enrolled - The date the learner was enrolled.
+ */
 
 const CourseLearners = () => {
   const { courseId } = useParams();
   const [isAddLearnerOpen, setIsAddLearnerOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLearners, setSelectedLearners] = useState([]);
 
   // Mock data matching the image
+  /** @type {Learner[]} */
   const learners = [
     {
       id: 'JS',
@@ -66,22 +76,11 @@ const CourseLearners = () => {
     learner.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSelectLearner = (learnerId) => {
-    if (selectedLearners.includes(learnerId)) {
-      setSelectedLearners(selectedLearners.filter(id => id !== learnerId));
-    } else {
-      setSelectedLearners([...selectedLearners, learnerId]);
-    }
-  };
-
-  const handleSelectAll = () => {
-    if (selectedLearners.length === filteredLearners.length) {
-      setSelectedLearners([]);
-    } else {
-      setSelectedLearners(filteredLearners.map(learner => learner.id));
-    }
-  };
-
+  /**
+   * Returns the appropriate color classes for a given role.
+   * @param {string} role - The user's role.
+   * @returns {string} Tailwind CSS color classes.
+   */
   const getRoleColor = (role) => {
     switch (role.toLowerCase()) {
       case 'learner':
@@ -95,6 +94,11 @@ const CourseLearners = () => {
     }
   };
 
+  /**
+   * Returns the appropriate color classes for a given status.
+   * @param {string} status - The user's status.
+   * @returns {string} Tailwind CSS color classes.
+   */
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'active':
@@ -168,23 +172,11 @@ const CourseLearners = () => {
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Course Participants</h2>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                checked={selectedLearners.length === filteredLearners.length && filteredLearners.length > 0}
-                onCheckedChange={handleSelectAll}
-              />
-              <span className="text-sm text-gray-600">Select All</span>
-            </div>
           </div>
 
           <div className="space-y-3">
             {filteredLearners.map((learner) => (
               <div key={learner.id} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
-                <Checkbox
-                  checked={selectedLearners.includes(learner.id)}
-                  onCheckedChange={() => handleSelectLearner(learner.id)}
-                />
-                
                 <div className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded font-medium text-sm">
                   {learner.id}
                 </div>

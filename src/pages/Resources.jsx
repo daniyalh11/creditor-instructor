@@ -5,14 +5,58 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { FileText, Upload, Plus, List, Grid, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/ui/checkbox'; // Note: Checkbox is imported but not used in this component.
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { ResourceListView } from '@/components/resources/ResourceListView';
 import { AddResourceDialog } from '@/components/resources/AddResourceDialog';
 import { FileUploadTab } from '@/components/resources/FileUploadTab';
+import { ResourceDetailDialog } from '@/components/resources/ResourceDetailDialog';
+import { EditResourceDialog } from '@/components/resources/EditResourceDialog';
 
-const resourcesData = [
+/**
+ * JSDoc type definitions for clarity and editor support.
+ */
+
+/**
+ * @typedef {object} SkillCategory
+ * @property {string} category
+ * @property {string[]} items
+ */
+
+/**
+ * @typedef {object} MetadataContent
+ * @property {string} creator
+ * @property {string} created
+ * @property {string[]} tags
+ */
+
+/**
+ * @typedef {object} LibraryContent
+ * @property {string} type
+ * @property {string} scope
+ * @property {boolean} favorite
+ */
+
+/**
+ * @typedef {object} ResourceContent
+ * @property {SkillCategory[]} [skills]
+ * @property {MetadataContent} [metadata]
+ * @property {LibraryContent} [library]
+ */
+
+/**
+ * @typedef {object} ResourceType
+ * @property {string} id
+ * @property {string} title
+ * @property {string} image
+ * @property {string} date
+ * @property {string} author
+ * @property {string} type
+ * @property {ResourceContent} [content]
+ */
+
+const initialResourcesData = [
   {
     id: '1',
     title: '3D Animator',
@@ -106,7 +150,10 @@ const Resources = () => {
   const [selectedResource, setSelectedResource] = useState(null);
   const [showResourceDialog, setShowResourceDialog] = useState(false);
   const [showAddResourceDialog, setShowAddResourceDialog] = useState(false);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const [resourcesData, setResourcesData] = useState(initialResourcesData);
   const [filters, setFilters] = useState({
     organization: true,
     business: true,
@@ -115,6 +162,7 @@ const Resources = () => {
     personal: true
   });
 
+  /** @param {ResourceType} resource */
   const handleResourceClick = (resource) => {
     setSelectedResource(resource);
     setShowResourceDialog(true);
@@ -125,15 +173,51 @@ const Resources = () => {
     setSelectedResource(null);
   };
 
+  const handleDetailsClick = () => {
+    setShowResourceDialog(false);
+    setShowDetailDialog(true);
+  };
+
+  const handleCloseDetailDialog = () => {
+    setShowDetailDialog(false);
+    setSelectedResource(null);
+  };
+
+  const handleEditClick = () => {
+    setShowDetailDialog(false);
+    setShowEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setShowEditDialog(false);
+    setSelectedResource(null);
+  };
+
+  /** @param {ResourceType} updatedResource */
+  const handleSaveResource = (updatedResource) => {
+    setResourcesData(prevData => 
+      prevData.map(resource => 
+        resource.id === updatedResource.id ? updatedResource : resource
+      )
+    );
+    setShowEditDialog(false);
+    setSelectedResource(null);
+    // toast.success is already called inside the EditResourceDialog
+  };
+
   const handleAddResource = () => {
     setShowAddResourceDialog(true);
   };
 
+  /** @param {string} resourceType */
   const handleResourceTypeSelect = (resourceType) => {
     console.log(`Creating new ${resourceType} resource`);
+    // Logic to handle creating a new resource of a specific type would go here.
   };
 
+  /** @param {string} type */
   const getResourceIcon = (type) => {
+    // This could be expanded to return different icons based on the resource type
     return <FileText className="h-5 w-5 text-blue-500" />;
   };
 
@@ -255,7 +339,7 @@ const Resources = () => {
         </Tabs>
       </div>
 
-      {/* Resource detail dialog */}
+      {/* Resource quick view dialog */}
       <Dialog open={showResourceDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -332,12 +416,33 @@ const Resources = () => {
               )}
               
               <div className="mt-4">
-                <Button className="w-full bg-blue-500 hover:bg-blue-600">Details</Button>
+                <Button 
+                  className="w-full bg-blue-500 hover:bg-blue-600"
+                  onClick={handleDetailsClick}
+                >
+                  Details
+                </Button>
               </div>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Detailed Resource Dialog */}
+      <ResourceDetailDialog 
+        resource={selectedResource}
+        open={showDetailDialog}
+        onClose={handleCloseDetailDialog}
+        onEdit={handleEditClick}
+      />
+
+      {/* Edit Resource Dialog */}
+      <EditResourceDialog
+        resource={selectedResource}
+        open={showEditDialog}
+        onClose={handleCloseEditDialog}
+        onSave={handleSaveResource}
+      />
 
       {/* Add Resource Dialog */}
       <AddResourceDialog 

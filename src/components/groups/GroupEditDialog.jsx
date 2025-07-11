@@ -17,39 +17,68 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 
 /**
- * @typedef {object} AddGroupFormData
+ * @typedef {object} Group
+ * @property {number} id
  * @property {string} name
- * @property {string} description
- * @property {string} capacity
+ * @property {number} members
+ * @property {string} type
+ * @property {string} image
  */
 
 /**
- * A dialog for creating a new group.
+ * @typedef {object} GroupEditFormData
+ * @property {string} name
+ * @property {string} type
+ * @property {string} [description]
+ */
+
+/**
+ * A dialog for editing an existing group.
  * @param {object} props
  * @param {boolean} props.open - Whether the dialog is open.
  * @param {(open: boolean) => void} props.onOpenChange - Function to handle dialog open/close state.
- * @param {(data: AddGroupFormData) => void} [props.onSave] - Optional callback function to save the new group data.
+ * @param {Group | null} props.group - The group object to be edited.
+ * @param {(groupId: number, updatedData: Partial<Group>) => void} props.onSave - Callback function to save the updated group data.
  */
-export function AddGroupDialog({ open, onOpenChange, onSave }) {
-  const form = useForm();
+export function GroupEditDialog({ open, onOpenChange, group, onSave }) {
+  const form = useForm({
+    defaultValues: {
+      name: group?.name || "",
+      type: group?.type || "",
+      description: ""
+    }
+  });
+
+  React.useEffect(() => {
+    if (group) {
+      form.reset({
+        name: group.name,
+        type: group.type,
+        description: "" // Description is not part of the group model, so it resets to empty
+      });
+    }
+  }, [group, form]);
 
   /**
-   * @param {AddGroupFormData} data
+   * @param {GroupEditFormData} data
    */
   const onSubmit = (data) => {
-    console.log("Group created:", data);
+    if (!group) return;
     
-    if (onSave) {
-      onSave(data);
-    }
+    onSave(group.id, {
+      name: data.name,
+      type: data.type
+    });
     
     toast({
-      title: "Group created",
-      description: "The group has been created successfully.",
+      title: "Group updated",
+      description: "The group has been updated successfully.",
     });
+    
     form.reset();
     onOpenChange(false);
   };
@@ -58,7 +87,7 @@ export function AddGroupDialog({ open, onOpenChange, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Group</DialogTitle>
+          <DialogTitle>Edit Group</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -77,12 +106,12 @@ export function AddGroupDialog({ open, onOpenChange, onSave }) {
             />
             <FormField
               control={form.control}
-              name="description"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Group Type</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter group description" {...field} />
+                    <Input placeholder="Enter group type" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,12 +119,12 @@ export function AddGroupDialog({ open, onOpenChange, onSave }) {
             />
             <FormField
               control={form.control}
-              name="capacity"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Capacity</FormLabel>
+                  <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Enter group capacity" {...field} />
+                    <Textarea placeholder="Enter group description" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,7 +134,7 @@ export function AddGroupDialog({ open, onOpenChange, onSave }) {
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create Group</Button>
+              <Button type="submit">Save Changes</Button>
             </DialogFooter>
           </form>
         </Form>

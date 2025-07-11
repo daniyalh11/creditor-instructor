@@ -43,14 +43,6 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>New message</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={() => onOpenChange(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -59,15 +51,6 @@ export const MessageUsersDialog = ({ open, onOpenChange, selectedUsers, onClearS
               {selectedUsers.map((user) => (
                 <Badge key={user.id} variant="secondary" className="flex items-center gap-1">
                   {user.name}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => removeUser(user.id)}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
                 </Badge>
               ))}
               {selectedUsers.length > 3 && (

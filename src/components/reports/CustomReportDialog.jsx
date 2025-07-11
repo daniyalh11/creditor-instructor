@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
-const CustomReportDialog = ({ isOpen, onClose }) => {
+const CustomReportDialog = ({ isOpen, onClose, onAddCustomReport }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [library, setLibrary] = useState('personal');
@@ -25,8 +25,18 @@ const CustomReportDialog = ({ isOpen, onClose }) => {
       return;
     }
 
-    toast.success('Custom report created successfully');
-    onClose();
+    // Call the callback to add the report
+    onAddCustomReport({
+      name,
+      description,
+      library,
+      category: reportOn,
+    });
+    // Reset fields
+    setName('');
+    setDescription('');
+    setLibrary('personal');
+    setReportOn('');
   };
 
   return (
