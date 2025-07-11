@@ -8,7 +8,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Plus, Calendar as CalendarIcon, Search, Filter, Download, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -58,9 +58,13 @@ const CourseAttendance = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [sessionDetailsOpen, setSessionDetailsOpen] = useState(false);
-  const [selectedSession, setSelectedSession] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentStudent, setCurrentStudent] = useState(null);
+  const [currentAttendance, setCurrentAttendance] = useState({
+    status: '',
+    time: '',
+    notes: ''
+  });
 
   /** @type {Student[]} */
   const students = [
@@ -134,13 +138,12 @@ const CourseAttendance = () => {
     }
   ];
 
-  /** @type {DailyAttendanceRecord[]} */
-  const dailyAttendance = [
+  const [dailyAttendance, setDailyAttendance] = useState([
     { studentId: 'JS', status: 'present', time: '09:00 AM', notes: '' },
     { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
     { studentId: 'MW', status: 'late', time: '09:15 AM', notes: 'Traffic delay' },
     { studentId: 'ED', status: 'absent', time: '', notes: 'Sick leave' }
-  ];
+  ]);
 
   const filteredStudents = students.filter(student =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -181,27 +184,76 @@ const CourseAttendance = () => {
     }
   };
 
-  /** @param {string} studentId */
-  const handleStudentSelect = (studentId) => {
-    if (selectedStudents.includes(studentId)) {
-      setSelectedStudents(selectedStudents.filter(id => id !== studentId));
-    } else {
-      setSelectedStudents([...selectedStudents, studentId]);
-    }
+  const exportToCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Student Name,Email,Status,Time,Notes\n";
+    
+    filteredStudents.forEach(student => {
+      const attendance = dailyAttendance.find(a => a.studentId === student.id) || {};
+      csvContent += `"${student.name}","${student.email}","${attendance.status || 'absent'}","${attendance.time || ''}","${attendance.notes || ''}"\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `attendance_${format(selectedDate, 'yyyy-MM-dd')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const handleSelectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
-      setSelectedStudents([]);
+  const openEditModal = (student) => {
+    const attendance = dailyAttendance.find(a => a.studentId === student.id) || {
+      studentId: student.id,
+      status: 'absent',
+      time: '',
+      notes: ''
+    };
+    
+    setCurrentStudent(student);
+    setCurrentAttendance(attendance);
+    setIsEditModalOpen(true);
+  };
+
+  const handleStatusChange = (value) => {
+    setCurrentAttendance(prev => ({
+      ...prev,
+      status: value
+    }));
+  };
+
+  const handleTimeChange = (e) => {
+    setCurrentAttendance(prev => ({
+      ...prev,
+      time: e.target.value
+    }));
+  };
+
+  const handleNotesChange = (e) => {
+    setCurrentAttendance(prev => ({
+      ...prev,
+      notes: e.target.value
+    }));
+  };
+
+  const saveAttendanceChanges = () => {
+    const updatedAttendance = [...dailyAttendance];
+    const existingIndex = updatedAttendance.findIndex(a => a.studentId === currentStudent.id);
+    
+    if (existingIndex >= 0) {
+      updatedAttendance[existingIndex] = currentAttendance;
     } else {
-      setSelectedStudents(filteredStudents.map(student => student.id));
+      updatedAttendance.push(currentAttendance);
     }
+    
+    setDailyAttendance(updatedAttendance);
+    setIsEditModalOpen(false);
   };
 
   /** @param {AttendanceSession} session */
   const handleViewSessionDetails = (session) => {
-    setSelectedSession(session);
-    setSessionDetailsOpen(true);
+    // setSelectedSession(session); // This line was removed in the new_code
+    // setSessionDetailsOpen(true); // This line was removed in the new_code
   };
 
   return (
@@ -212,13 +264,9 @@ const CourseAttendance = () => {
           <p className="text-gray-600">Track and manage student attendance</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={exportToCSV}>
             <Download className="h-4 w-4 mr-2" />
             Export
-          </Button>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            Take Attendance
           </Button>
         </div>
       </div>
@@ -334,12 +382,6 @@ const CourseAttendance = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-12">
-                      <Checkbox
-                        checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </TableHead>
                     <TableHead>Student</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Time</TableHead>
@@ -354,12 +396,6 @@ const CourseAttendance = () => {
                     
                     return (
                       <TableRow key={student.id}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedStudents.includes(student.id)}
-                            onCheckedChange={() => handleStudentSelect(student.id)}
-                          />
-                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-medium text-sm">
@@ -387,7 +423,7 @@ const CourseAttendance = () => {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline">
+                            <Button size="sm" variant="outline" onClick={() => openEditModal(student)}>
                               Edit
                             </Button>
                           </div>
@@ -508,11 +544,70 @@ const CourseAttendance = () => {
         </TabsContent>
       </Tabs>
 
-      <SessionDetailsDialog
-        open={sessionDetailsOpen}
-        onOpenChange={setSessionDetailsOpen}
-        session={selectedSession}
-      />
+      {/* Edit Attendance Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Edit Attendance</DialogTitle>
+            <DialogDescription>
+              Update attendance status for {currentStudent?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="status" className="text-right">
+                Status
+              </label>
+              <Select 
+                value={currentAttendance?.status} 
+                onValueChange={handleStatusChange}
+                className="col-span-3"
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="present">Present</SelectItem>
+                  <SelectItem value="absent">Absent</SelectItem>
+                  <SelectItem value="late">Late</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="time" className="text-right">
+                Time
+              </label>
+              <Input
+                id="time"
+                value={currentAttendance?.time || ''}
+                onChange={handleTimeChange}
+                placeholder="e.g. 09:00 AM"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="notes" className="text-right">
+                Notes
+              </label>
+              <Input
+                id="notes"
+                value={currentAttendance?.notes || ''}
+                onChange={handleNotesChange}
+                placeholder="Optional notes"
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={saveAttendanceChanges}>
+              Save changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
