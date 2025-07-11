@@ -174,7 +174,10 @@ const Catalog = () => {
             key={catalog.id}
             className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-105 bg-white border border-gray-200 group"
           >
-            <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 relative overflow-hidden">
+            <div 
+              className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 relative overflow-hidden"
+              onClick={() => handleCatalogClick(catalog)}
+            >
               <img 
                 src={catalog.imageUrl} 
                 alt={catalog.name}
