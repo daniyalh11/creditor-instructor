@@ -75,6 +75,10 @@ import EssayInstructorPage from "./pages/EssayInstructorPage";
 import AssignmentInstructorPage from "./pages/AssignmentInstructorPage";
 import SurveyInstructorPage from "./pages/SurveyInstructorPage";
 
+// Import score components
+import ScoresOverview from "./pages/scores/ScoresOverview";
+import SectionScores from "./pages/scores/SectionScores";
+
 // Import course components
 import CourseAttendance from "./components/courses/CourseAttendance";
 import CourseEdit from "./pages/CourseEdit";
@@ -95,6 +99,9 @@ const App = () => (
                 <Route path="/" element={<AdminLayout />}>
                   {/* Main pages */}
                   <Route index element={<Dashboard />} />
+                  <Route path="scores" element={<ScoresOverview />} />
+                  <Route path="scores/overview" element={<ScoresOverview />} />
+                  <Route path="scores/:section" element={<SectionScores />} />
                   <Route path="courses" element={<Courses />} />
                   <Route path="courses/create" element={<CourseCreation />} />
                   <Route path="/courses/edit/:courseId" element={<CourseEdit />} />

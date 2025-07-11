@@ -4,18 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Plus, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Trash2, Pencil, Mail, UserX } from 'lucide-react';
 import { AddLearnerModal } from './AddLearnerModal';
 import { useParams } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 const CourseLearners = () => {
   const { courseId } = useParams();
   const [isAddLearnerOpen, setIsAddLearnerOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLearners, setSelectedLearners] = useState([]);
-
-  // Mock data matching the image
-  const learners = [
+  const [learners, setLearners] = useState([
     {
       id: 'JS',
       name: 'John Smith',
@@ -52,7 +57,7 @@ const CourseLearners = () => {
       status: 'Pending',
       enrolled: '2024-01-19'
     }
-  ];
+  ]);
 
   const stats = {
     totalParticipants: 4,
@@ -106,6 +111,79 @@ const CourseLearners = () => {
     }
   };
 
+  const handleDeleteLearner = (learnerId, event) => {
+    event.stopPropagation();
+    // In a real app, you would call an API here
+    setLearners(learners.filter(learner => learner.id !== learnerId));
+    
+    // Remove from selected learners if present
+    setSelectedLearners(selectedLearners.filter(id => id !== learnerId));
+    
+    toast.success('Learner removed successfully');
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedLearners.length === 0) {
+      toast.warning('No learners selected');
+      return;
+    }
+    
+    // In a real app, you would call an API here
+    setLearners(learners.filter(learner => !selectedLearners.includes(learner.id)));
+    setSelectedLearners([]);
+    
+    toast.success(`${selectedLearners.length} learner(s) removed successfully`);
+  };
+
+  const handleViewProfile = (learnerId) => {
+    const learner = learners.find(l => l.id === learnerId);
+    if (learner) {
+      toast.info(`Navigating to ${learner.name}'s profile`);
+      // Example: navigate(`/users/${learnerId}/profile`);
+    }
+  };
+
+  const handleSendMessage = (learnerEmail) => {
+    toast.info(`Opening message dialog for ${learnerEmail}`);
+    // Example: setMessageRecipient(learnerEmail);
+    // setShowMessageDialog(true);
+  };
+
+  const handleMakeInstructor = (learnerId) => {
+    setLearners(learners.map(learner => {
+      if (learner.id === learnerId) {
+        toast.success(`${learner.name} is now an instructor`);
+        return { ...learner, role: 'Instructor' };
+      }
+      return learner;
+    }));
+  };
+
+  const handleRemoveInstructor = (learnerId) => {
+    setLearners(learners.map(learner => {
+      if (learner.id === learnerId) {
+        toast.success(`${learner.name} is now a learner`);
+        return { ...learner, role: 'Learner' };
+      }
+      return learner;
+    }));
+  };
+
+  const handleAddLearner = (newLearner) => {
+    // In a real app, you would call an API here
+    setLearners(prevLearners => [...prevLearners, {
+      id: newLearner.id,
+      name: newLearner.name,
+      email: newLearner.email,
+      role: newLearner.role || 'Learner',
+      progress: 0,
+      status: 'Active',
+      enrolled: new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+    }]);
+    
+    toast.success('Learner added successfully');
+  };
+
   return (
     <div className="p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
@@ -149,6 +227,20 @@ const CourseLearners = () => {
           </CardContent>
         </Card>
       </div>
+
+      {selectedLearners.length > 0 && (
+        <div className="mb-4 flex justify-end">
+          <Button 
+            variant="destructive" 
+            size="sm" 
+            onClick={handleDeleteSelected}
+            className="flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete Selected ({selectedLearners.length})
+          </Button>
+        </div>
+      )}
 
       {/* Search and Filters */}
       <div className="bg-white rounded-lg shadow-sm border mb-6">
@@ -212,12 +304,43 @@ const CourseLearners = () => {
                 </div>
                 
                 <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    onClick={(e) => handleDeleteLearner(learner.id, e)}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                  
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuItem onClick={() => handleViewProfile(learner.id)}>
+                        <UserX className="mr-2 h-4 w-4" />
+                        <span>View Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleSendMessage(learner.email)}>
+                        <Mail className="mr-2 h-4 w-4" />
+                        <span>Send Message</span>
+                      </DropdownMenuItem>
+                      {learner.role === 'Instructor' ? (
+                        <DropdownMenuItem onClick={() => handleRemoveInstructor(learner.id)}>
+                          <UserX className="mr-2 h-4 w-4" />
+                          <span>Remove Instructor Role</span>
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => handleMakeInstructor(learner.id)}>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          <span>Make Instructor</span>
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
@@ -228,6 +351,7 @@ const CourseLearners = () => {
       <AddLearnerModal 
         open={isAddLearnerOpen}
         onOpenChange={setIsAddLearnerOpen}
+        onAddLearner={handleAddLearner}
         courseId={courseId || ''}
       />
     </div>

@@ -63,7 +63,7 @@ export const UnsavedChangesModal = ({
 
             <div className="bg-orange-50 px-4 py-3 rounded-lg border-l-4 border-orange-400 mt-6">
               <p className="text-orange-700 font-medium text-sm">
-                Please publish your current {getTypeDisplayName(currentType).toLowerCase()} before moving to a new assessment type.
+                Please publish your current {currentType ? getTypeDisplayName(currentType).toLowerCase() : 'assessment'} before moving to a new assessment type.
               </p>
             </div>
           </div>
