@@ -3,8 +3,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, Plus, MoreHorizontal, Trash2, Pencil } from 'lucide-react';
 import { AddLearnerModal } from './AddLearnerModal';
+
 import { useParams } from 'react-router-dom';
 
 /**
@@ -21,11 +23,11 @@ import { useParams } from 'react-router-dom';
 const CourseLearners = () => {
   const { courseId } = useParams();
   const [isAddLearnerOpen, setIsAddLearnerOpen] = useState(false);
+  const [isEditLearnerOpen, setIsEditLearnerOpen] = useState(false);
+  const [currentLearner, setCurrentLearner] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Mock data matching the image
-  /** @type {Learner[]} */
-  const learners = [
+  const [selectedLearners, setSelectedLearners] = useState([]);
+  const [learners, setLearners] = useState([
     {
       id: 'JS',
       name: 'John Smith',
@@ -62,19 +64,31 @@ const CourseLearners = () => {
       status: 'Pending',
       enrolled: '2024-01-19'
     }
-  ];
+  ]);
 
   const stats = {
-    totalParticipants: 4,
-    active: 3,
-    pending: 1,
-    avgProgress: 65
+    totalParticipants: learners.length,
+    active: learners.filter(l => l.status === 'Active').length,
+    pending: learners.filter(l => l.status === 'Pending').length,
+    avgProgress: learners.reduce((acc, curr) => acc + curr.progress, 0) / learners.length
   };
 
   const filteredLearners = learners.filter(learner =>
     learner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     learner.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEditLearner = (learner) => {
+    setCurrentLearner(learner);
+    setIsEditLearnerOpen(true);
+  };
+
+  const handleUpdateLearner = (updatedLearner) => {
+    setLearners(learners.map(learner => 
+      learner.id === updatedLearner.id ? updatedLearner : learner
+    ));
+    setIsEditLearnerOpen(false);
+  };
 
   /**
    * Returns the appropriate color classes for a given role.
@@ -148,7 +162,7 @@ const CourseLearners = () => {
         </Card>
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-purple-600">{stats.avgProgress}%</div>
+            <div className="text-2xl font-bold text-purple-600">{Math.round(stats.avgProgress)}%</div>
             <div className="text-sm text-gray-600">Avg Progress</div>
           </CardContent>
         </Card>
@@ -207,8 +221,13 @@ const CourseLearners = () => {
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8"
+                    onClick={() => handleEditLearner(learner)}
+                  >
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -222,6 +241,67 @@ const CourseLearners = () => {
         onOpenChange={setIsAddLearnerOpen}
         courseId={courseId || ''}
       />
+      
+      {currentLearner && (
+        <EditLearnerModal
+          open={isEditLearnerOpen}
+          onOpenChange={setIsEditLearnerOpen}
+          learner={currentLearner}
+          onSave={handleUpdateLearner}
+        />
+      )}
+    </div>
+  );
+};
+
+const EditLearnerModal = ({ open, onOpenChange, learner, onSave }) => {
+  const [formData, setFormData] = useState({ ...learner });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    onSave(formData);
+    onOpenChange(false);
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-xl font-semibold mb-4">Edit Learner</h2>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <Input name="name" value={formData.name} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <Input name="email" value={formData.email} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Role</label>
+            <Input name="role" value={formData.role} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Progress (%)</label>
+            <Input type="number" name="progress" value={formData.progress} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Status</label>
+            <Input name="status" value={formData.status} onChange={handleChange} />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 mt-6">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSave} className="bg-blue-600 text-white hover:bg-blue-700">Save</Button>
+        </div>
+      </div>
     </div>
   );
 };
