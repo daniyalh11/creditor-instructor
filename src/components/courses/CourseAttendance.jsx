@@ -191,6 +191,7 @@ const CourseAttendance = () => {
     const matchesStatus = statusFilter === 'all' || status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
   const exportToCSV = () => {
     if (isFuture) return;
     let csvContent = "data:text/csv;charset=utf-8,";
@@ -260,8 +261,8 @@ const CourseAttendance = () => {
   };
 
   const handleViewSessionDetails = (session) => {
-    // setSelectedSession(session); // This line was removed in the new_code
-    // setSessionDetailsOpen(true); // This line was removed in the new_code
+    setSelectedSession(session);
+    setSessionDetailsOpen(true);
   };
 
   const handleDateChange = (date) => {
