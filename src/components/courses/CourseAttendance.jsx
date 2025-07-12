@@ -8,7 +8,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Plus, Calendar as CalendarIcon, Search, Filter, Download, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,7 +19,6 @@ const CourseAttendance = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedStudents, setSelectedStudents] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(null);
   const [currentAttendance, setCurrentAttendance] = useState({
@@ -167,22 +165,6 @@ const CourseAttendance = () => {
     }
   };
 
-  const handleStudentSelect = (studentId) => {
-    if (selectedStudents.includes(studentId)) {
-      setSelectedStudents(selectedStudents.filter(id => id !== studentId));
-    } else {
-      setSelectedStudents([...selectedStudents, studentId]);
-    }
-  };
-
-  const handleSelectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
-      setSelectedStudents([]);
-    } else {
-      setSelectedStudents(filteredStudents.map(student => student.id));
-    }
-  };
-
   const exportToCSV = () => {
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "Student Name,Email,Status,Time,Notes\n";
@@ -265,10 +247,6 @@ const CourseAttendance = () => {
           <Button variant="outline" onClick={exportToCSV}>
             <Download className="h-4 w-4 mr-2" />
             Export
-          </Button>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            Take Attendance
           </Button>
         </div>
       </div>
@@ -384,12 +362,6 @@ const CourseAttendance = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-12">
-                      <Checkbox
-                        checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </TableHead>
                     <TableHead>Student</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Time</TableHead>
@@ -404,12 +376,6 @@ const CourseAttendance = () => {
                     
                     return (
                       <TableRow key={student.id}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedStudents.includes(student.id)}
-                            onCheckedChange={() => handleStudentSelect(student.id)}
-                          />
-                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-medium text-sm">
