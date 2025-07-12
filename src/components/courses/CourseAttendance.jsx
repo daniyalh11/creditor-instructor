@@ -10,48 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Plus, Calendar as CalendarIcon, Search, Filter, Download, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isAfter, endOfDay } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { SessionDetailsDialog } from './SessionDetailsDialog';
-
-/**
- * @typedef {object} StudentAttendanceSummary
- * @property {number} present
- * @property {number} absent
- * @property {number} late
- * @property {number} percentage
- */
-
-/**
- * @typedef {object} Student
- * @property {string} id
- * @property {string} name
- * @property {string} email
- * @property {string} avatar
- * @property {StudentAttendanceSummary} attendance
- */
-
-/**
- * @typedef {object} AttendanceSession
- * @property {number} id
- * @property {string} date
- * @property {string} topic
- * @property {number} totalStudents
- * @property {number} present
- * @property {number} absent
- * @property {number} late
- * @property {string} [sessionLink]
- * @property {string} [duration]
- * @property {string} [location]
- */
-
-/**
- * @typedef {object} DailyAttendanceRecord
- * @property {string} studentId
- * @property {'present' | 'absent' | 'late'} status
- * @property {string} time
- * @property {string} notes
- */
 
 const CourseAttendance = () => {
   const [activeTab, setActiveTab] = useState('details');
@@ -65,40 +26,62 @@ const CourseAttendance = () => {
     time: '',
     notes: ''
   });
+  const [sessionDetailsOpen, setSessionDetailsOpen] = useState(false);
+  const [selectedSession, setSelectedSession] = useState(null);
 
-  /** @type {Student[]} */
+  // Mock data for students
   const students = [
     {
       id: 'JS',
       name: 'John Smith',
       email: 'john.smith@example.com',
       avatar: 'JS',
-      attendance: { present: 8, absent: 2, late: 1, percentage: 80 }
+      attendance: {
+        present: 8,
+        absent: 2,
+        late: 1,
+        percentage: 80
+      }
     },
     {
       id: 'SJ',
       name: 'Sarah Johnson',
       email: 'sarah.johnson@example.com',
       avatar: 'SJ',
-      attendance: { present: 10, absent: 0, late: 1, percentage: 95 }
+      attendance: {
+        present: 10,
+        absent: 0,
+        late: 1,
+        percentage: 95
+      }
     },
     {
       id: 'MW',
       name: 'Mike Wilson',
       email: 'mike.wilson@example.com',
       avatar: 'MW',
-      attendance: { present: 7, absent: 3, late: 1, percentage: 70 }
+      attendance: {
+        present: 7,
+        absent: 3,
+        late: 1,
+        percentage: 70
+      }
     },
     {
       id: 'ED',
       name: 'Emma Davis',
       email: 'emma.davis@example.com',
       avatar: 'ED',
-      attendance: { present: 9, absent: 1, late: 1, percentage: 85 }
+      attendance: {
+        present: 9,
+        absent: 1,
+        late: 1,
+        percentage: 85
+      }
     }
   ];
 
-  /** @type {AttendanceSession[]} */
+  // Mock attendance sessions
   const attendanceSessions = [
     {
       id: 1,
@@ -138,25 +121,40 @@ const CourseAttendance = () => {
     }
   ];
 
-  const [dailyAttendance, setDailyAttendance] = useState([
-    { studentId: 'JS', status: 'present', time: '09:00 AM', notes: '' },
-    { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
-    { studentId: 'MW', status: 'late', time: '09:15 AM', notes: 'Traffic delay' },
-    { studentId: 'ED', status: 'absent', time: '', notes: 'Sick leave' }
-  ]);
+  // Daily attendance for each date (mocked as an object keyed by date string)
+  const [dailyAttendanceByDate, setDailyAttendanceByDate] = useState({
+    '2025-07-11': [
+      { studentId: 'JS', status: 'present', time: '09:00 AM', notes: '' },
+      { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
+      { studentId: 'MW', status: 'late', time: '09:15 AM', notes: 'Traffic delay' },
+      { studentId: 'ED', status: 'absent', time: '', notes: 'Sick leave' }
+    ],
+    '2025-07-12': [
+      { studentId: 'JS', status: 'present', time: '09:00 AM', notes: '' },
+      { studentId: 'SJ', status: 'present', time: '09:05 AM', notes: '' },
+      { studentId: 'MW', status: 'present', time: '09:10 AM', notes: '' },
+      { studentId: 'ED', status: 'absent', time: '', notes: 'Family emergency' }
+    ]
+  });
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get attendance for the selected date
+  const dateKey = format(selectedDate, 'yyyy-MM-dd');
+  const today = endOfDay(new Date());
+  const isFuture = isAfter(selectedDate, today);
+  const dailyAttendance = dailyAttendanceByDate[dateKey] || [];
 
-  /** @param {string} studentId */
+  // Helper to get a student's attendance record for the selected date
+  const getAttendanceRecord = (studentId) => {
+    return dailyAttendance.find(a => a.studentId === studentId);
+  };
+
+  // Helper to get status for a student for the selected date
   const getAttendanceStatus = (studentId) => {
-    const attendance = dailyAttendance.find(a => a.studentId === studentId);
+    if (isFuture) return '';
+    const attendance = getAttendanceRecord(studentId);
     return attendance?.status || 'absent';
   };
 
-  /** @param {string} status */
   const getStatusIcon = (status) => {
     switch (status) {
       case 'present':
@@ -166,11 +164,10 @@ const CourseAttendance = () => {
       case 'absent':
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <XCircle className="h-4 w-4 text-gray-400" />;
+        return null;
     }
   };
 
-  /** @param {string} status */
   const getStatusColor = (status) => {
     switch (status) {
       case 'present':
@@ -184,32 +181,43 @@ const CourseAttendance = () => {
     }
   };
 
+  // Filter students by search and status for the selected date
+  const filteredStudents = students.filter(student => {
+    if (isFuture) return false;
+    const matchesSearch =
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const status = getAttendanceStatus(student.id);
+    const matchesStatus = statusFilter === 'all' || status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
   const exportToCSV = () => {
+    if (isFuture) return;
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "Student Name,Email,Status,Time,Notes\n";
     
     filteredStudents.forEach(student => {
-      const attendance = dailyAttendance.find(a => a.studentId === student.id) || {};
+      const attendance = getAttendanceRecord(student.id) || {};
       csvContent += `"${student.name}","${student.email}","${attendance.status || 'absent'}","${attendance.time || ''}","${attendance.notes || ''}"\n`;
     });
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `attendance_${format(selectedDate, 'yyyy-MM-dd')}.csv`);
+    link.setAttribute("download", `attendance_${dateKey}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   const openEditModal = (student) => {
-    const attendance = dailyAttendance.find(a => a.studentId === student.id) || {
+    if (isFuture) return;
+    const attendance = getAttendanceRecord(student.id) || {
       studentId: student.id,
       status: 'absent',
       time: '',
       notes: ''
     };
-    
     setCurrentStudent(student);
     setCurrentAttendance(attendance);
     setIsEditModalOpen(true);
@@ -237,23 +245,27 @@ const CourseAttendance = () => {
   };
 
   const saveAttendanceChanges = () => {
-    const updatedAttendance = [...dailyAttendance];
-    const existingIndex = updatedAttendance.findIndex(a => a.studentId === currentStudent.id);
-    
-    if (existingIndex >= 0) {
-      updatedAttendance[existingIndex] = currentAttendance;
-    } else {
-      updatedAttendance.push(currentAttendance);
-    }
-    
-    setDailyAttendance(updatedAttendance);
+    setDailyAttendanceByDate(prev => {
+      const prevAttendance = prev[dateKey] || [];
+      const updatedAttendance = [...prevAttendance];
+      const existingIndex = updatedAttendance.findIndex(a => a.studentId === currentStudent.id);
+      if (existingIndex >= 0) {
+        updatedAttendance[existingIndex] = currentAttendance;
+      } else {
+        updatedAttendance.push(currentAttendance);
+      }
+      return { ...prev, [dateKey]: updatedAttendance };
+    });
     setIsEditModalOpen(false);
   };
 
-  /** @param {AttendanceSession} session */
   const handleViewSessionDetails = (session) => {
     // setSelectedSession(session); // This line was removed in the new_code
     // setSessionDetailsOpen(true); // This line was removed in the new_code
+  };
+
+  const handleDateChange = (date) => {
+    if (date) setSelectedDate(date);
   };
 
   return (
@@ -264,7 +276,7 @@ const CourseAttendance = () => {
           <p className="text-gray-600">Track and manage student attendance</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={exportToCSV}>
+          <Button variant="outline" onClick={exportToCSV} disabled={isFuture}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -343,7 +355,7 @@ const CourseAttendance = () => {
                       <Calendar
                         mode="single"
                         selected={selectedDate}
-                        onSelect={(date) => date && setSelectedDate(date)}
+                        onSelect={handleDateChange}
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
                       />
@@ -362,9 +374,10 @@ const CourseAttendance = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
+                    disabled={isFuture}
                   />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter} onValueChange={setStatusFilter} disabled={isFuture}>
                   <SelectTrigger className="w-48">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="Filter by status" />
@@ -390,11 +403,8 @@ const CourseAttendance = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredStudents.map((student) => {
-                    const status = getAttendanceStatus(student.id);
-                    const attendance = dailyAttendance.find(a => a.studentId === student.id);
-                    
-                    return (
+                  {isFuture ? (
+                    students.map((student) => (
                       <TableRow key={student.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
@@ -407,30 +417,70 @@ const CourseAttendance = () => {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {getStatusIcon(status)}
-                            <Badge className={`${getStatusColor(status)} text-xs`}>
-                              {status.charAt(0).toUpperCase() + status.slice(1)}
-                            </Badge>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-sm">{attendance?.time || '-'}</span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-sm text-gray-600">{attendance?.notes || '-'}</span>
-                        </TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline" onClick={() => openEditModal(student)}>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              disabled
+                            >
                               Edit
                             </Button>
                           </div>
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
+                    ))
+                  ) : (
+                    filteredStudents.map((student) => {
+                      const status = getAttendanceStatus(student.id);
+                      const attendance = getAttendanceRecord(student.id);
+                      return (
+                        <TableRow key={student.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-medium text-sm">
+                                {student.avatar}
+                              </div>
+                              <div>
+                                <div className="font-medium">{student.name}</div>
+                                <div className="text-sm text-gray-500">{student.email}</div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getStatusIcon(status)}
+                              {status && (
+                                <Badge className={`${getStatusColor(status)} text-xs`}>
+                                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm">{attendance?.time || '-'}</span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-gray-600">{attendance?.notes || '-'}</span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={() => openEditModal(student)}
+                              >
+                                Edit
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
@@ -608,6 +658,12 @@ const CourseAttendance = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <SessionDetailsDialog
+        open={sessionDetailsOpen}
+        onOpenChange={setSessionDetailsOpen}
+        session={selectedSession}
+      />
     </div>
   );
 };
