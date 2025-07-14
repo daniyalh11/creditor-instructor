@@ -290,7 +290,7 @@ const ModuleAssessments = () => {
   };
 
   const handleAddNewAssessment = () => {
-    navigate(`/courses/builder/1757539/modules/${moduleId}/assessments/creator`);
+    navigate(`/courses/builder/1757539/modules/${moduleId}/assessments/builder`);
   };
 
   const filteredQuizzes = quizFilter === 'general' ? quizzes.filter(quiz => quiz.type === 'general') : quizzes.filter(quiz => quiz.type === 'final');

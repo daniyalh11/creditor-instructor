@@ -436,9 +436,9 @@ const PreviewModal = ({ isOpen, onClose, unitData }) => {
             <DialogTitle className="text-xl font-bold">
               {previewData.title || previewData.settings?.title || 'Preview'}
             </DialogTitle>
-            <Button variant="outline" size="sm" onClick={onClose}>
+            {/* <Button variant="outline" size="sm" onClick={onClose}>
               <X className="h-4 w-4" />
-            </Button>
+            </Button> */}
           </div>
         </DialogHeader>
 

@@ -10,6 +10,17 @@ import { PreviewModal } from '@/components/units/PreviewModal';
 import { UnitCard } from '@/components/units/UnitCard';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { ScormUploadDialog } from '@/components/units/ScormUploadDialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const UnitsBuilder = () => {
   const navigate = useNavigate();
@@ -18,6 +29,12 @@ const UnitsBuilder = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewUnit, setPreviewUnit] = useState(null);
   const [showScormDialog, setShowScormDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [newLessonData, setNewLessonData] = useState({
+    title: '',
+    description: '',
+    lessonNumber: ''
+  });
   const { setMainCollapsed } = useSidebar();
 
   // Collapse main sidebar when entering units builder
@@ -42,9 +59,72 @@ const UnitsBuilder = () => {
   }, []);
 
   const handleAddUnit = () => {
-    navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator`);
+    // Calculate the next lesson number
+    const lessonNumbers = units
+      .filter(u => u.type === 'lesson')
+      .map(u => parseInt(u.settings.lessonNumber) || 0);
+    
+    const nextLessonNumber = lessonNumbers.length > 0 
+      ? Math.max(...lessonNumbers) + 1 
+      : 1;
+
+    setNewLessonData({
+      title: '',
+      description: '',
+      lessonNumber: nextLessonNumber.toString()
+    });
+    setShowCreateDialog(true);
   };
 
+  const handleCreateLesson = () => {
+  if (!newLessonData.title.trim()) {
+    toast({
+      title: "Title Required",
+      description: "Please enter a title for your lesson.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (!newLessonData.lessonNumber.trim() || isNaN(newLessonData.lessonNumber)) {
+    toast({
+      title: "Lesson Number Required",
+      description: "Please enter a valid lesson number.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  // Create a basic unit structure with the provided title and description
+  const newUnit = {
+    id: `unit_${Date.now()}`,
+    title: newLessonData.title,
+    description: newLessonData.description,
+    type: 'lesson',
+    status: 'draft',
+    duration: '0 min',
+    blocks: [],
+    settings: {
+      title: newLessonData.title,
+      description: newLessonData.description,
+      lessonNumber: newLessonData.lessonNumber,
+      theme: 'Modern',
+      fontFamily: 'Inter',
+      primaryColor: '#3b82f6'
+    }
+  };
+
+  // Save to localStorage
+  const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
+  const updatedUnits = [...savedUnits, newUnit];
+  localStorage.setItem('units', JSON.stringify(updatedUnits));
+
+  // Update state
+  setUnits(updatedUnits);
+
+  // Navigate to the creator with the new unit ID
+  navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${newUnit.id}`);
+};
   const handleEditUnit = (unitId) => {
     navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${unitId}`);
   };
@@ -98,6 +178,7 @@ const UnitsBuilder = () => {
       settings: {
         title: scormData.name,
         description: `SCORM package: ${scormData.file.name}`,
+        lessonNumber: '',
         theme: 'Modern',
         fontFamily: 'Inter',
         primaryColor: '#3b82f6'
@@ -200,8 +281,69 @@ const UnitsBuilder = () => {
         onClose={() => setShowScormDialog(false)}
         onUpload={handleScormUpload}
       />
+
+      {/* Create Lesson Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create New Lesson</DialogTitle>
+            <DialogDescription>
+              Enter details for your new lesson. You can change these later in the lesson settings.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="lessonNumber" className="text-right">
+                Lesson Number
+              </Label>
+              <Input
+                id="lessonNumber"
+                type="number"
+                min="1"
+                value={newLessonData.lessonNumber}
+                onChange={(e) => setNewLessonData({...newLessonData, lessonNumber: e.target.value})}
+                placeholder="Lesson number"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="title"
+                value={newLessonData.title}
+                onChange={(e) => setNewLessonData({...newLessonData, title: e.target.value})}
+                placeholder="Lesson title"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="description"
+                value={newLessonData.description}
+                onChange={(e) => setNewLessonData({...newLessonData, description: e.target.value})}
+                placeholder="Brief description of the lesson"
+                className="col-span-3"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateLesson}>
+              Create Lesson
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export default UnitsBuilder;    
+export default UnitsBuilder;
