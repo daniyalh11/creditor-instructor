@@ -4,11 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-<<<<<<< HEAD
-import { Search, Plus, MoreHorizontal, Trash2, Pencil } from 'lucide-react';
-=======
 import { Search, Plus, MoreHorizontal, Trash2, Pencil, Mail, UserX } from 'lucide-react';
->>>>>>> 33145875b31fee2702835db95e906c3f9d58fadc
 import { AddLearnerModal } from './AddLearnerModal';
 
 import { useParams } from 'react-router-dom';
@@ -324,16 +320,6 @@ const CourseLearners = () => {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-<<<<<<< HEAD
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8"
-                    onClick={() => handleEditLearner(learner)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-=======
                   
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -363,7 +349,6 @@ const CourseLearners = () => {
                       )}
                     </DropdownMenuContent>
                   </DropdownMenu>
->>>>>>> 33145875b31fee2702835db95e906c3f9d58fadc
                 </div>
               </div>
             ))}
