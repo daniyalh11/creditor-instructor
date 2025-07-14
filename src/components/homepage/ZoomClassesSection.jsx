@@ -372,26 +372,26 @@ const ZoomClassesSection = () => {
                           <Users className="h-4 w-4 text-gray-500" />
                           <span className="text-sm">{cls.attendance}/{cls.totalStudents}</span>
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewRecording(cls)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Recording
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDownloadRecording(cls)}
-                          >
-                            <Download className="h-4 w-4 mr-1" />
-                            Download
-                          </Button>
-                        </div>
+                        <div className="flex gap-2 flex-wrap">
+  <Button
+    size="sm"
+    variant="outline"
+    onClick={() => handleViewRecording(cls)}
+  >
+    <Eye className="h-3 w-4 mr-1" />
+    View Recording
+  </Button>
+  <Button
+    size="sm"
+    variant="outline"
+    onClick={() => handleDownloadRecording(cls)}
+  >
+    <Download className="h-4 w-4 mr-1" />
+    Download
+  </Button>
+</div>
                         <div>
-                          <Badge variant="secondary" className="text-gray-600">
+                          <Badge variant="secondary" className="text-gray-600 ml-8">
                             {cls.duration}
                           </Badge>
                         </div>

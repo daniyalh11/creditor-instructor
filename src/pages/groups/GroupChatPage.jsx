@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Mic, Paperclip, Users, X } from 'lucide-react';
+import { Send, Mic, Paperclip, Users, X, Image, File } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const GroupChatPage = () => {
@@ -11,6 +11,11 @@ const GroupChatPage = () => {
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioChunks, setAudioChunks] = useState([]);
+  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
   
   const [messages, setMessages] = useState([
     {
@@ -86,12 +91,140 @@ const GroupChatPage = () => {
     }
   };
 
-  const handleVoiceRecord = () => {
-    setIsRecording(!isRecording);
+  const handleVoiceRecord = async () => {
+    if (!isRecording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream);
+        const chunks = [];
+        
+        recorder.ondataavailable = (e) => {
+          chunks.push(e.data);
+        };
+        
+        recorder.onstop = () => {
+          const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          // Create a message with the audio
+          const newMessage = {
+            id: messages.length + 1,
+            author: "You",
+            content: "Voice message",
+            audioUrl: audioUrl,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            isOwnMessage: true,
+            isVoiceMessage: true
+          };
+          
+          setMessages([...messages, newMessage]);
+          setAudioChunks([]);
+        };
+        
+        recorder.start();
+        setMediaRecorder(recorder);
+        setAudioChunks(chunks);
+        setIsRecording(true);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
+    } else {
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        setIsRecording(false);
+      }
+    }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fileUrl = URL.createObjectURL(file);
+    
+    const newMessage = {
+      id: messages.length + 1,
+      author: "You",
+      content: file.name,
+      fileUrl: fileUrl,
+      isFile: true,
+      fileType: file.type.startsWith('image/') ? 'image' : 'file',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isOwnMessage: true
+    };
+
+    setMessages([...messages, newMessage]);
+    setShowAttachmentOptions(false);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const newMessage = {
+        id: messages.length + 1,
+        author: "You",
+        content: "Image",
+        imageUrl: event.target.result,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isOwnMessage: true,
+        isImage: true
+      };
+      
+      setMessages([...messages, newMessage]);
+    };
+    reader.readAsDataURL(file);
+    setShowAttachmentOptions(false);
   };
 
   const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const renderMessageContent = (msg) => {
+    if (msg.isVoiceMessage) {
+      return (
+        <div className="flex items-center">
+          <audio controls className="h-8">
+            <source src={msg.audioUrl} type="audio/wav" />
+            Your browser does not support the audio element.
+          </audio>
+          <span className="ml-2">Voice message</span>
+        </div>
+      );
+    }
+    
+    if (msg.isImage) {
+      return (
+        <div className="max-w-xs">
+          <img 
+            src={msg.imageUrl} 
+            alt="Sent image" 
+            className="rounded-lg max-h-48 object-cover"
+          />
+        </div>
+      );
+    }
+    
+    if (msg.isFile) {
+      return (
+        <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-lg">
+          <File className="h-5 w-5 text-gray-500" />
+          <a 
+            href={msg.fileUrl} 
+            download={msg.content}
+            className="text-blue-600 hover:underline truncate max-w-xs"
+          >
+            {msg.content}
+          </a>
+        </div>
+      );
+    }
+    
+    return msg.content;
   };
 
   return (
@@ -139,7 +272,7 @@ const GroupChatPage = () => {
                         ? 'bg-blue-500 text-white' 
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {msg.content}
+                      {renderMessageContent(msg)}
                     </div>
                     <div className="text-xs text-gray-500">{msg.timestamp}</div>
                   </div>
@@ -152,9 +285,48 @@ const GroupChatPage = () => {
         {/* Input Area */}
         <div className="p-4 border-t bg-gray-50">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-gray-500 hover:text-gray-700">
-              <Paperclip className="h-4 w-4" />
-            </Button>
+            <div className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+              
+              {showAttachmentOptions && (
+                <div className="absolute bottom-10 left-0 bg-white shadow-lg rounded-lg p-2 z-10 w-48">
+                  <button 
+                    className="flex items-center w-full p-2 hover:bg-gray-100 rounded text-left"
+                    onClick={() => imageInputRef.current.click()}
+                  >
+                    <Image className="h-4 w-4 mr-2 text-blue-500" />
+                    <span>Image</span>
+                    <input 
+                      type="file" 
+                      ref={imageInputRef}
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </button>
+                  <button 
+                    className="flex items-center w-full p-2 hover:bg-gray-100 rounded text-left"
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    <File className="h-4 w-4 mr-2 text-blue-500" />
+                    <span>File</span>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </button>
+                </div>
+              )}
+            </div>
             
             <div className="flex-1 relative">
               <Input

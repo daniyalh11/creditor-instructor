@@ -405,11 +405,6 @@ export const Header = ({ onMenuClick }) => {
                 <span className="text-xs text-yellow-600">30 minutes ago</span>
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t">
-              <Button variant="outline" size="sm" className="w-full">
-                Mark All as Read
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
