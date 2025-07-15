@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
 
 export const AssessmentSettingsTab = ({ settings, onUpdateSettings }) => {
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const handleChange = (field, value) => {
     onUpdateSettings({ [field]: value });
   };
+
+  // Helper to get today with no time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return (
     <div className="space-y-6">
@@ -64,15 +74,38 @@ export const AssessmentSettingsTab = ({ settings, onUpdateSettings }) => {
         </div>
 
         <div>
-          <Label htmlFor="attempts" className="text-sm font-medium">Attempts Allowed</Label>
-          <Input
-            id="attempts"
-            type="number"
-            value={settings.attemptsAllowed}
-            onChange={(e) => handleChange('attemptsAllowed', parseInt(e.target.value) || 1)}
-            className="mt-1"
-            min="1"
-          />
+          <Label htmlFor="deadline" className="text-sm font-medium">Assessment Deadline</Label>
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={
+                  'w-full justify-start text-left font-normal mt-1' +
+                  (!settings.deadline ? ' text-muted-foreground' : '')
+                }
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {settings.deadline ?
+                  format(new Date(settings.deadline), 'yyyy/MM/dd') :
+                  <span>Pick a date</span>
+                }
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={settings.deadline ? new Date(settings.deadline) : undefined}
+                onSelect={(date) => {
+                  if (date) {
+                    handleChange('deadline', date.toISOString());
+                    setCalendarOpen(false);
+                  }
+                }}
+                initialFocus
+                disabled={(date) => date < today}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="flex items-center space-x-2">
