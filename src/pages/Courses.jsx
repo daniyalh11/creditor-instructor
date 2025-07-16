@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from '@/hooks/use-toast';
 
+
 const Courses = () => {
   const [view, setView] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
