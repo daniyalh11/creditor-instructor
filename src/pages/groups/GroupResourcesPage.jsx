@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { MinusCircle, FileText, Upload, Download, Trash2, ExternalLink, Plus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -22,6 +22,7 @@ const GroupResourcesPage = () => {
   const [selectedResources, setSelectedResources] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [resourceToDelete, setResourceToDelete] = useState(null);
+  const downloadLinkRef = useRef(null);
   
   const [resources, setResources] = useState([
     { 
@@ -84,7 +85,29 @@ const GroupResourcesPage = () => {
       toast.error("Please select resources to export");
       return;
     }
-    toast.success(`Exporting ${selectedResources.length} resource(s)`);
+    // Gather selected resources
+    const selected = resources.filter(r => selectedResources.includes(r.id));
+    // Generate CSV content
+    const csvHeader = ['Name', 'Type', 'Date Added', 'Size', 'Description', 'URL'];
+    const csvRows = selected.map(r => [
+      '"' + r.name.replace(/"/g, '""') + '"',
+      r.type,
+      r.dateAdded,
+      r.size,
+      '"' + (r.description ? r.description.replace(/"/g, '""') : '') + '"',
+      r.isLink ? r.url : ''
+    ].join(','));
+    const csvContent = [csvHeader.join(','), ...csvRows].join('\r\n');
+    // Create blob and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    if (downloadLinkRef.current) {
+      downloadLinkRef.current.href = url;
+      downloadLinkRef.current.download = 'resources_export.csv';
+      downloadLinkRef.current.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    toast.success(`Exported ${selected.length} resource(s)`);
   };
 
   const handleAddResource = (resourceData) => {
@@ -271,6 +294,9 @@ const GroupResourcesPage = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Hidden download link for export */}
+      <a ref={downloadLinkRef} style={{ display: 'none' }}>Download</a>
     </div>
   );
 };

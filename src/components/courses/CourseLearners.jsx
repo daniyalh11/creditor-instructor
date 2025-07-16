@@ -155,38 +155,21 @@ const CourseLearners = () => {
     toast.success(`${selectedLearners.length} learner(s) removed successfully`);
   };
 
+  const [viewProfileLearner, setViewProfileLearner] = useState(null);
+  const [sendMessageLearner, setSendMessageLearner] = useState(null);
+
   const handleViewProfile = (learnerId) => {
     const learner = learners.find(l => l.id === learnerId);
     if (learner) {
-      toast.info(`Navigating to ${learner.name}'s profile`);
-      // Example: navigate(`/users/${learnerId}/profile`);
+      setViewProfileLearner(learner);
     }
   };
 
   const handleSendMessage = (learnerEmail) => {
-    toast.info(`Opening message dialog for ${learnerEmail}`);
-    // Example: setMessageRecipient(learnerEmail);
-    // setShowMessageDialog(true);
-  };
-
-  const handleMakeInstructor = (learnerId) => {
-    setLearners(learners.map(learner => {
-      if (learner.id === learnerId) {
-        toast.success(`${learner.name} is now an instructor`);
-        return { ...learner, role: 'Instructor' };
-      }
-      return learner;
-    }));
-  };
-
-  const handleRemoveInstructor = (learnerId) => {
-    setLearners(learners.map(learner => {
-      if (learner.id === learnerId) {
-        toast.success(`${learner.name} is now a learner`);
-        return { ...learner, role: 'Learner' };
-      }
-      return learner;
-    }));
+    const learner = learners.find(l => l.email === learnerEmail);
+    if (learner) {
+      setSendMessageLearner(learner);
+    }
   };
 
   const handleAddLearner = (newLearner) => {
@@ -320,7 +303,6 @@ const CourseLearners = () => {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                  
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -336,17 +318,6 @@ const CourseLearners = () => {
                         <Mail className="mr-2 h-4 w-4" />
                         <span>Send Message</span>
                       </DropdownMenuItem>
-                      {learner.role === 'Instructor' ? (
-                        <DropdownMenuItem onClick={() => handleRemoveInstructor(learner.id)}>
-                          <UserX className="mr-2 h-4 w-4" />
-                          <span>Remove Instructor Role</span>
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem onClick={() => handleMakeInstructor(learner.id)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          <span>Make Instructor</span>
-                        </DropdownMenuItem>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -369,6 +340,32 @@ const CourseLearners = () => {
           onOpenChange={setIsEditLearnerOpen}
           learner={currentLearner}
           onSave={handleUpdateLearner}
+        />
+      )}
+      {/* View Profile Modal */}
+      {viewProfileLearner && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+            <h2 className="text-xl font-semibold mb-4">Learner Profile</h2>
+            <div className="space-y-2 mb-4">
+              <div><span className="font-medium">Name:</span> {viewProfileLearner.name}</div>
+              <div><span className="font-medium">Email:</span> {viewProfileLearner.email}</div>
+              <div><span className="font-medium">Role:</span> {viewProfileLearner.role}</div>
+              <div><span className="font-medium">Status:</span> {viewProfileLearner.status}</div>
+              <div><span className="font-medium">Progress:</span> {viewProfileLearner.progress}%</div>
+              <div><span className="font-medium">Enrolled:</span> {viewProfileLearner.enrolled}</div>
+            </div>
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => setViewProfileLearner(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Send Message Modal */}
+      {sendMessageLearner && (
+        <SendMessageModal
+          learner={sendMessageLearner}
+          onClose={() => setSendMessageLearner(null)}
         />
       )}
     </div>
@@ -421,6 +418,34 @@ const EditLearnerModal = ({ open, onOpenChange, learner, onSave }) => {
         <div className="flex justify-end gap-2 mt-6">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={handleSave} className="bg-blue-600 text-white hover:bg-blue-700">Save</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Add SendMessageModal component
+const SendMessageModal = ({ learner, onClose }) => {
+  const [message, setMessage] = useState("");
+  const handleSend = () => {
+    toast.success(`Message sent to ${learner.email}`);
+    onClose();
+  };
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-xl font-semibold mb-4">Send Message</h2>
+        <div className="mb-2"><span className="font-medium">To:</span> {learner.name} ({learner.email})</div>
+        <textarea
+          className="w-full border rounded p-2 mb-4"
+          rows={4}
+          placeholder="Type your message..."
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSend} className="bg-blue-600 text-white hover:bg-blue-700">Send</Button>
         </div>
       </div>
     </div>
