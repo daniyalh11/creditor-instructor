@@ -31,20 +31,12 @@ const CourseBuilder = () => {
   const [modules, setModules] = useState([
     {
       id: 1,
-      title: "Introduction to the Course",
-      description: "Welcome and overview of what students will learn",
+      title: 'Personal Finance Basics',
+      description: 'Foundations of money management, goals, and financial planning',
       units: 3,
       assessments: 1,
-      duration: "2 hours"
+      duration: '2 hours',
     },
-    {
-      id: 2,
-      title: "Fundamentals",
-      description: "Core concepts and foundational knowledge",
-      units: 5,
-      assessments: 2,
-      duration: "4 hours"
-    }
   ]);
 
   // Load data from localStorage on mount

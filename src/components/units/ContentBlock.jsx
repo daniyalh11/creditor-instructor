@@ -1309,9 +1309,18 @@ export const ContentBlock = ({
               )}
               {multimediaType === 'embedded' && renderEmbeddedContent(url)}
               {multimediaType === 'attachment' && (
-                <div className="bg-white border rounded p-4">
+                <div className="bg-white border rounded p-4 space-y-3">
+                  {block.content.fileType?.includes('pdf') ? (
+                    <div className="border rounded">
+                      <iframe
+                        src={url}
+                        title={block.content.fileName || 'PDF attachment'}
+                        className="w-full h-64 rounded"
+                      />
+                    </div>
+                  ) : null}
                   <a href={url} download className="text-blue-600 hover:text-blue-800">
-                    Download Attachment
+                    {block.content.fileName || 'Download Attachment'}
                   </a>
                 </div>
               )}

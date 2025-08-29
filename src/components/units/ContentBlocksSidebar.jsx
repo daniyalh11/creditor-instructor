@@ -286,7 +286,9 @@ export const ContentBlocksSidebar = () => {
           multimediaType: 'attachment',
           title: 'Attachment Title',
           url: '',
-          description: 'Attachment description'
+          description: 'Attachment description',
+          fileName: '',
+          fileType: ''
         };
         break;
     }

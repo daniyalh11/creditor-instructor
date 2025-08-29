@@ -29,7 +29,7 @@ export const MultimediaTypeDialog = ({ open, onOpenChange, onSelectType }) => {
     {
       id: 'attachment',
       title: 'Attachment',
-      description: 'Add a downloadable file or attachment',
+      description: 'Add a PDF or downloadable file (PDF preview supported)',
       icon: Paperclip,
       color: 'text-orange-600'
     }

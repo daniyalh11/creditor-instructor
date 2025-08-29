@@ -22,199 +22,56 @@ const Courses = () => {
   const [view, setView] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false);
-  const [courseType, setCourseType] = useState('open');
+  // Removed course access type (open/sequential)
   const [activeTab, setActiveTab] = useState('courses');
   const navigate = useNavigate();
 
-  // Extended mock courses data with comprehensive IT courses
+  // Basic banking courses (3 only)
   const mockCourses = [
     {
       id: 1,
-      title: "Advanced JavaScript",
-      description: "Master modern JavaScript concepts and ES6+ features",
-      students: 45,
-      duration: "8 weeks",
-      level: "Advanced",
+      title: "Banking Basics",
+      description: "Core concepts of banking, accounts, deposits, and lending",
+      students: 120,
+      duration: "6 weeks",
+      level: "Beginner",
       status: "Active",
-      image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=300&fit=crop&auto=format",
+      image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1200&h=800&fit=crop&auto=format",
       archived: false,
       deleted: false,
-      catalog: "Web Development"
+      catalog: "Banking"
     },
     {
       id: 2,
-      title: "React Development",
-      description: "Build modern web applications with React",
-      students: 62,
-      duration: "10 weeks",
-      level: "Intermediate",
+      title: "Retail Banking Fundamentals",
+      description: "Products, services, KYC, and branch operations in retail banking",
+      students: 95,
+      duration: "5 weeks",
+      level: "Beginner",
       status: "Active",
-      image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop&auto=format",
+      image: "https://images.unsplash.com/photo-1559526324-593bc073d938?w=1200&h=800&fit=crop&auto=format",
       archived: false,
       deleted: false,
-      catalog: "Web Development"
+      catalog: "Banking"
     },
     {
       id: 3,
-      title: "Node.js Backend",
-      description: "Server-side development with Node.js and Express",
-      students: 38,
-      duration: "6 weeks",
-      level: "Intermediate",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Web Development"
-    },
-    {
-      id: 4,
-      title: "Python for Data Science",
-      description: "Data analysis and machine learning with Python",
-      students: 71,
-      duration: "12 weeks",
+      title: "Introduction to Financial Markets",
+      description: "Overview of money markets, capital markets, and risk basics",
+      students: 110,
+      duration: "7 weeks",
       level: "Beginner",
       status: "Active",
-      image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=300&fit=crop&auto=format",
+      image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1200&h=800&fit=crop&auto=format",
       archived: false,
       deleted: false,
-      catalog: "Data Science"
-    },
-    {
-      id: 5,
-      title: "Machine Learning Fundamentals",
-      description: "Introduction to machine learning algorithms and techniques",
-      students: 55,
-      duration: "10 weeks",
-      level: "Intermediate",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Data Science"
-    },
-    {
-      id: 6,
-      title: "React Native Development",
-      description: "Build cross-platform mobile apps with React Native",
-      students: 34,
-      duration: "8 weeks",
-      level: "Advanced",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Mobile Development"
-    },
-    {
-      id: 7,
-      title: "Cloud Computing with AWS",
-      description: "Deploy and manage applications on Amazon Web Services",
-      students: 42,
-      duration: "8 weeks",
-      level: "Advanced",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "DevOps"
-    },
-    {
-      id: 8,
-      title: "Docker & Kubernetes",
-      description: "Containerization and orchestration fundamentals",
-      students: 39,
-      duration: "6 weeks",
-      level: "Intermediate",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "DevOps"
-    },
-    {
-      id: 9,
-      title: "Full Stack Development",
-      description: "Complete web development from frontend to backend",
-      students: 89,
-      duration: "16 weeks",
-      level: "Advanced",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Web Development"
-    },
-    {
-      id: 10,
-      title: "iOS Development with Swift",
-      description: "Build native iOS applications using Swift and Xcode",
-      students: 28,
-      duration: "12 weeks",
-      level: "Intermediate",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Mobile Development"
-    },
-    {
-      id: 11,
-      title: "Cybersecurity Fundamentals",
-      description: "Learn essential cybersecurity principles and practices",
-      students: 67,
-      duration: "10 weeks",
-      level: "Beginner",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Cybersecurity"
-    },
-    {
-      id: 12,
-      title: "Database Design & SQL",
-      description: "Comprehensive database design and SQL programming",
-      students: 52,
-      duration: "8 weeks",
-      level: "Beginner",
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: "Database Management"
+      catalog: "Banking"
     }
   ];
 
   const [courses, setCourses] = useState(mockCourses);
 
-  // Load published courses from localStorage
-  useEffect(() => {
-    const publishedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
-    
-    // Transform published courses to match the expected format
-    const transformedPublishedCourses = publishedCourses.map((course) => ({
-      id: course.id,
-      title: course.title,
-      description: course.description || 'Published course with comprehensive content',
-      students: course.students || 0,
-      duration: course.modules?.reduce((total, module) => {
-        const moduleDuration = parseInt(module.duration) || 0;
-        return total + moduleDuration;
-      }, 0) + ' hours' || '0 hours',
-      level: 'Intermediate',
-      status: course.status || 'Published',
-      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop&auto=format",
-      archived: false,
-      deleted: false,
-      catalog: course.category || 'General',
-      modules: course.modules || [],
-      publishedAt: course.publishedAt
-    }));
-
-    // Combine mock courses with published courses
-    setCourses(prevCourses => [...prevCourses, ...transformedPublishedCourses]);
-  }, []);
+  // Only show the predefined banking courses
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -228,7 +85,7 @@ const Courses = () => {
   });
 
   const handleCourseClick = (courseId) => {
-    navigate(`/courses/view/${courseId}?type=${courseType}`);
+    navigate(`/courses/view/${courseId}`);
   };
 
   const handleCatalogClick = () => {
@@ -396,17 +253,7 @@ const Courses = () => {
             Catalog
           </Button>
 
-          {/* Sequential/Open Toggle */}
-          <Tabs value={courseType} onValueChange={(value) => setCourseType(value)}>
-            <TabsList className="bg-blue-50">
-              <TabsTrigger value="open" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-                Open
-              </TabsTrigger>
-              <TabsTrigger value="sequential" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
-                Sequential
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          {/* Removed Sequential/Open Toggle */}
 
           {/* View Toggle */}
           <Tabs value={view} onValueChange={(value) => setView(value)}>
@@ -436,6 +283,7 @@ const Courses = () => {
                   alt={course.title} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute top-2 right-2 flex items-center gap-2">
                   <Badge className={getStatusColor(course.status)}>
                     {course.status}
@@ -452,18 +300,7 @@ const Courses = () => {
                     />
                   </div>
                 </div>
-                {/* Course Type Indicator */}
-                <div className="absolute top-2 left-2">
-                  {courseType === 'sequential' ? (
-                    <Badge variant="outline" className="text-orange-600 border-orange-300 bg-white/90">
-                      Sequential
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-green-500 text-white border-green-400">
-                      Open Access
-                    </Badge>
-                  )}
-                </div>
+                {/* Removed Course Access Type Indicator */}
               </div>
               <CardHeader className="pb-2"  onClick={() => handleCourseClick(course.id)}>
                 <CardTitle className="text-lg font-semibold line-clamp-1">

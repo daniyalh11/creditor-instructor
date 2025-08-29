@@ -11,6 +11,8 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
   const [description, setDescription] = useState(content?.description || '');
   const [url, setUrl] = useState(content?.url || '');
   const [embeddedCode, setEmbeddedCode] = useState(content?.embeddedCode || '');
+  const [fileName, setFileName] = useState(content?.fileName || '');
+  const [fileType, setFileType] = useState(content?.fileType || '');
   const [isRecording, setIsRecording] = useState(false);
 
   const handleFileUpload = (e) => {
@@ -20,6 +22,8 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
       reader.onload = (event) => {
         const result = event.target?.result;
         setUrl(result);
+        setFileName(file.name);
+        setFileType(file.type || '');
       };
       reader.readAsDataURL(file);
     }
@@ -50,7 +54,9 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
       title,
       description,
       url: content?.multimediaType === 'embedded' ? embeddedCode : url,
-      embeddedCode: content?.multimediaType === 'embedded' ? embeddedCode : undefined
+      embeddedCode: content?.multimediaType === 'embedded' ? embeddedCode : undefined,
+      fileName: content?.multimediaType === 'attachment' ? fileName : undefined,
+      fileType: content?.multimediaType === 'attachment' ? fileType : undefined
     };
     onSave(updatedContent);
     onOpenChange(false);
@@ -107,6 +113,8 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
                       ? 'audio/*'
                       : content?.multimediaType === 'video'
                       ? 'video/*'
+                      : content?.multimediaType === 'attachment'
+                      ? '.pdf,application/pdf,*/*'
                       : '*/*'
                   }
                   onChange={handleFileUpload}
@@ -139,13 +147,23 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
             (content?.multimediaType === 'embedded' && embeddedCode)) && (
             <div>
               <Label>Preview</Label>
-              <div className="bg-gray-50 p-3 rounded border">
-                <p className="text-sm text-gray-600">
-                  {content?.multimediaType === 'embedded'
-                    ? 'Embedded content added successfully'
-                    : 'File uploaded successfully'}
-                </p>
-              </div>
+              {content?.multimediaType === 'attachment' && fileType?.includes('pdf') ? (
+                <div className="bg-gray-50 p-2 rounded border">
+                  <iframe
+                    src={url}
+                    title={fileName || 'PDF preview'}
+                    className="w-full h-64 rounded"
+                  />
+                </div>
+              ) : content?.multimediaType === 'embedded' ? (
+                <div className="bg-gray-50 p-3 rounded border">
+                  <p className="text-sm text-gray-600">Embedded content added successfully</p>
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-3 rounded border">
+                  <p className="text-sm text-gray-600">File uploaded successfully</p>
+                </div>
+              )}
             </div>
           )}
 
