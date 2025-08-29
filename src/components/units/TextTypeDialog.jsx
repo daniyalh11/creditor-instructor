@@ -70,6 +70,16 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
   const [subheading, setSubheading] = useState(currentContent?.subheading || '');
   const [tableHeaders, setTableHeaders] = useState(currentContent?.tableData?.headers || ['Header 1', 'Header 2']);
   const [tableRows, setTableRows] = useState(currentContent?.tableData?.rows || [['Data 1', 'Data 2']]);
+  const [backgroundVideoUrl, setBackgroundVideoUrl] = useState(currentContent?.backgroundVideoUrl || '');
+  const [backgroundVideoMuted, setBackgroundVideoMuted] = useState(
+    currentContent?.backgroundVideoMuted !== undefined ? currentContent.backgroundVideoMuted : true
+  );
+  const [backgroundVideoLoop, setBackgroundVideoLoop] = useState(
+    currentContent?.backgroundVideoLoop !== undefined ? currentContent.backgroundVideoLoop : true
+  );
+  const [backgroundOverlay, setBackgroundOverlay] = useState(
+    currentContent?.backgroundOverlay !== undefined ? currentContent.backgroundOverlay : true
+  );
 
   useEffect(() => {
     if (currentContent) {
@@ -79,6 +89,10 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
       setSubheading(currentContent.subheading || '');
       setTableHeaders(currentContent.tableData?.headers || ['Header 1', 'Header 2']);
       setTableRows(currentContent.tableData?.rows || [['Data 1', 'Data 2']]);
+      setBackgroundVideoUrl(currentContent.backgroundVideoUrl || '');
+      setBackgroundVideoMuted(currentContent.backgroundVideoMuted !== undefined ? currentContent.backgroundVideoMuted : true);
+      setBackgroundVideoLoop(currentContent.backgroundVideoLoop !== undefined ? currentContent.backgroundVideoLoop : true);
+      setBackgroundOverlay(currentContent.backgroundOverlay !== undefined ? currentContent.backgroundOverlay : true);
     }
   }, [currentContent]);
 
@@ -134,7 +148,11 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
       textType: selectedType,
       text,
       heading,
-      subheading
+      subheading,
+      backgroundVideoUrl,
+      backgroundVideoMuted,
+      backgroundVideoLoop,
+      backgroundOverlay
     };
 
     if (selectedType === 'table') {
@@ -153,6 +171,7 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
     switch (selectedType) {
       case 'paragraph':
         return (
+          <>
           <div className="space-y-4">
             <div>
               <Label>Paragraph Text</Label>
@@ -163,11 +182,67 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
                 rows={4}
               />
             </div>
+            <div className="space-y-2">
+              <Label>Background Video (optional)</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setBackgroundVideoUrl(url);
+                    }
+                  }}
+                />
+                {backgroundVideoUrl && (
+                  <Button variant="outline" size="sm" onClick={() => setBackgroundVideoUrl('')}>Remove</Button>
+                )}
+              </div>
+              {backgroundVideoUrl && (
+                <div className="grid grid-cols-3 gap-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoMuted} onChange={(e) => setBackgroundVideoMuted(e.target.checked)} />
+                    Muted
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoLoop} onChange={(e) => setBackgroundVideoLoop(e.target.checked)} />
+                    Loop
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundOverlay} onChange={(e) => setBackgroundOverlay(e.target.checked)} />
+                    Dark overlay
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
+          {backgroundVideoUrl && (
+            <div className="space-y-2">
+              <Label>Background Video Preview</Label>
+              <div className="relative rounded-lg overflow-hidden min-h-64 border">
+                <video
+                  src={backgroundVideoUrl}
+                  autoPlay
+                  muted={backgroundVideoMuted}
+                  loop={backgroundVideoLoop}
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {backgroundOverlay && <div className="absolute inset-0 bg-black/40" />}
+                <div className="relative p-4">
+                  <p className="text-white text-sm">This is how your paragraph text will appear over the video.</p>
+                </div>
+              </div>
+            </div>
+          )}
+          </>
         );
 
       case 'heading-paragraph':
         return (
+          <>
           <div className="space-y-4">
             <div>
               <Label>Heading</Label>
@@ -186,11 +261,68 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
                 rows={4}
               />
             </div>
+            <div className="space-y-2">
+              <Label>Background Video (optional)</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setBackgroundVideoUrl(url);
+                    }
+                  }}
+                />
+                {backgroundVideoUrl && (
+                  <Button variant="outline" size="sm" onClick={() => setBackgroundVideoUrl('')}>Remove</Button>
+                )}
+              </div>
+              {backgroundVideoUrl && (
+                <div className="grid grid-cols-3 gap-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoMuted} onChange={(e) => setBackgroundVideoMuted(e.target.checked)} />
+                    Muted
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoLoop} onChange={(e) => setBackgroundVideoLoop(e.target.checked)} />
+                    Loop
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundOverlay} onChange={(e) => setBackgroundOverlay(e.target.checked)} />
+                    Dark overlay
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
+          {backgroundVideoUrl && (
+            <div className="space-y-2">
+              <Label>Background Video Preview</Label>
+              <div className="relative rounded-lg overflow-hidden min-h-64 border">
+                <video
+                  src={backgroundVideoUrl}
+                  autoPlay
+                  muted={backgroundVideoMuted}
+                  loop={backgroundVideoLoop}
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {backgroundOverlay && <div className="absolute inset-0 bg-black/40" />}
+                <div className="relative p-4">
+                  <h3 className="text-white font-bold mb-2">{heading || 'Main Heading'}</h3>
+                  <p className="text-white text-sm">This is how your content will appear over the video.</p>
+                </div>
+              </div>
+            </div>
+          )}
+          </>
         );
 
       case 'subheading-paragraph':
         return (
+          <>
           <div className="space-y-4">
             <div>
               <Label>Subheading</Label>
@@ -209,7 +341,63 @@ export const TextTypeDialog = ({ open, onOpenChange, onSelectType, currentConten
                 rows={4}
               />
             </div>
+            <div className="space-y-2">
+              <Label>Background Video (optional)</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setBackgroundVideoUrl(url);
+                    }
+                  }}
+                />
+                {backgroundVideoUrl && (
+                  <Button variant="outline" size="sm" onClick={() => setBackgroundVideoUrl('')}>Remove</Button>
+                )}
+              </div>
+              {backgroundVideoUrl && (
+                <div className="grid grid-cols-3 gap-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoMuted} onChange={(e) => setBackgroundVideoMuted(e.target.checked)} />
+                    Muted
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundVideoLoop} onChange={(e) => setBackgroundVideoLoop(e.target.checked)} />
+                    Loop
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={backgroundOverlay} onChange={(e) => setBackgroundOverlay(e.target.checked)} />
+                    Dark overlay
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
+          {backgroundVideoUrl && (
+            <div className="space-y-2">
+              <Label>Background Video Preview</Label>
+              <div className="relative rounded-lg overflow-hidden min-h-64 border">
+                <video
+                  src={backgroundVideoUrl}
+                  autoPlay
+                  muted={backgroundVideoMuted}
+                  loop={backgroundVideoLoop}
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {backgroundOverlay && <div className="absolute inset-0 bg-black/40" />}
+                <div className="relative p-4">
+                  <h4 className="text-white font-semibold mb-2">{subheading || 'Subheading'}</h4>
+                  <p className="text-white text-sm">This is how your content will appear over the video.</p>
+                </div>
+              </div>
+            </div>
+          )}
+          </>
         );
 
       case 'table':

@@ -880,18 +880,57 @@ export const ContentBlock = ({
   };
 
   const renderTextContent = () => {
-    const { textType, text, heading, subheading, tableData } = block.content;
+    const { textType, text, heading, subheading, tableData, backgroundVideoUrl, backgroundVideoMuted, backgroundVideoLoop, backgroundOverlay } = block.content;
 
     switch (textType) {
       case 'paragraph':
-        return (
+        return backgroundVideoUrl ? (
+          <div className="relative rounded-lg overflow-hidden min-h-[320px] md:min-h-[420px]">
+            <video
+              src={backgroundVideoUrl}
+              autoPlay
+              muted={backgroundVideoMuted !== false}
+              loop={backgroundVideoLoop !== false}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {backgroundOverlay !== false && (
+              <div className="absolute inset-0 bg-black/40" />
+            )}
+            <div className="relative p-6">
+              <div className="prose max-w-none">
+                <p className="text-white leading-relaxed">{text || 'Enter your paragraph text here.'}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="prose max-w-none">
             <p className="text-gray-700 leading-relaxed">{text || 'Enter your paragraph text here.'}</p>
           </div>
         );
       
       case 'heading-paragraph':
-        return (
+        return backgroundVideoUrl ? (
+          <div className="relative rounded-lg overflow-hidden min-h-[320px] md:min-h-[420px]">
+            <video
+              src={backgroundVideoUrl}
+              autoPlay
+              muted={backgroundVideoMuted !== false}
+              loop={backgroundVideoLoop !== false}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {backgroundOverlay !== false && (
+              <div className="absolute inset-0 bg-black/40" />
+            )}
+            <div className="relative p-6">
+              <div className="prose max-w-none">
+                <h3 className="text-xl font-bold mb-3 text-white">{heading || 'Main Heading'}</h3>
+                <p className="text-white leading-relaxed">{text || 'Enter your content here.'}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="prose max-w-none">
             <h3 className="text-xl font-bold mb-3 text-gray-900">{heading || 'Main Heading'}</h3>
             <p className="text-gray-700 leading-relaxed">{text || 'Enter your content here.'}</p>
@@ -899,7 +938,27 @@ export const ContentBlock = ({
         );
       
       case 'subheading-paragraph':
-        return (
+        return backgroundVideoUrl ? (
+          <div className="relative rounded-lg overflow-hidden min-h-[320px] md:min-h-[420px]">
+            <video
+              src={backgroundVideoUrl}
+              autoPlay
+              muted={backgroundVideoMuted !== false}
+              loop={backgroundVideoLoop !== false}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {backgroundOverlay !== false && (
+              <div className="absolute inset-0 bg-black/40" />
+            )}
+            <div className="relative p-6">
+              <div className="prose max-w-none">
+                <h4 className="text-lg font-semibold mb-2 text-white">{subheading || 'Subheading'}</h4>
+                <p className="text-white leading-relaxed">{text || 'Enter your content here.'}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="prose max-w-none">
             <h4 className="text-lg font-semibold mb-2 text-gray-800">{subheading || 'Subheading'}</h4>
             <p className="text-gray-700 leading-relaxed">{text || 'Enter your content here.'}</p>
@@ -1319,7 +1378,7 @@ export const ContentBlock = ({
                       />
                     </div>
                   ) : null}
-                  <a href={url} download className="text-blue-600 hover:text-blue-800">
+                  <a href={url} download={block.content.fileName || true} className="text-blue-600 hover:text-blue-800">
                     {block.content.fileName || 'Download Attachment'}
                   </a>
                 </div>

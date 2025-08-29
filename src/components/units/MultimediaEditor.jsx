@@ -17,13 +17,19 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+    setFileName(file.name);
+    setFileType(file.type || '');
+
+    if (content?.multimediaType === 'attachment') {
+      // Use object URL for attachments (e.g., PDFs) to avoid huge data URLs in localStorage
+      const objectUrl = URL.createObjectURL(file);
+      setUrl(objectUrl);
+    } else {
       const reader = new FileReader();
       reader.onload = (event) => {
         const result = event.target?.result;
         setUrl(result);
-        setFileName(file.name);
-        setFileType(file.type || '');
       };
       reader.readAsDataURL(file);
     }
