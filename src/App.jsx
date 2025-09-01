@@ -79,6 +79,7 @@ import SurveyInstructorPage from "./pages/SurveyInstructorPage";
 import CourseAttendance from "./components/courses/CourseAttendance";
 import CourseEdit from "./pages/CourseEdit";
 import EditModulePage from './pages/EditModulePage';
+import LessonMod2 from './pages/LessonMod2';
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => (
                   <Route path="courses/modules/:moduleId/essays/:essayId" element={<EssayInstructorPage />} />
                   <Route path="courses/modules/:moduleId/surveys/:surveyId" element={<SurveyInstructorPage />} />
                   <Route path="courses/modules/:moduleId/units" element={<ModuleUnits />} />
+                  <Route path="courses/modules/2/lessons" element={<LessonMod2 />} />
                   <Route path="catalog" element={<Catalog />} />
                   <Route path="catalog/:categoryId" element={<CategoryDetail />} />
                   <Route path="catalog/:courseId/:moduleId/:unitId" element={<CourseLessons />} />

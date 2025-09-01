@@ -54,10 +54,13 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
     if (module.locked && courseType === 'sequential') {
       return;
     }
-    const resolvedCourseId = courseId || 'course-1';
-    // Navigate directly to content-only lesson view (default to unit-1, lesson 1)
-    setMainCollapsed(true);
-    navigate(`/catalog/${resolvedCourseId}/${module.id}/unit-1/1`);
+    
+    // Special handling for Module 2 - navigate to lessons page
+    if (module.id === 2) {
+      navigate('/courses/modules/2/lessons');
+    } else {
+      navigate(`/courses/modules/${module.id}/units`);
+    }
   };
 
   const handleAssessmentsClick = () => {

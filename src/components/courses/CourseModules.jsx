@@ -54,46 +54,36 @@ const CourseModules = () => {
         const byCourse = {
           '1': {
             id: 1,
-            title: 'Banking Basics: Getting Started',
-            description: 'Accounts, deposits and lending fundamentals for beginners.',
-            units: 3,
+            title: "Module 1: Foundations of Life Insurance",
+            description: "Understanding the basics and why protection matters",
+            units: 8,
+            assessments: 2,
+            duration: "4 hours",
+            completed: false,
+            locked: false,
+          },
+          {
+            id: 2,
+            title: "Module 2: Key Benefits & Smart Flexibility",
+            description: "Exploring Rakshak Smart features, terms, and assured returns",
+            units: 6,
             assessments: 1,
             duration: '2 hours',
             completed: false,
             locked: false,
           },
-          '2': {
-            id: 1,
-            title: 'Retail Banking: Branch Operations 101',
-            description: 'KYC, common products, and customer journeys in retail branches.',
-            units: 3,
-            assessments: 1,
-            duration: '2 hours',
+          {
+            id: 3,
+            title: "Module 3: Real-Life Scenarios & Payouts",
+            description: "Learning through practical examples and family protection cases",
+            units: 7,
+            assessments: 2,
+            duration: "4 hours",
             completed: false,
-            locked: false,
-          },
-          '3': {
-            id: 1,
-            title: 'Financial Markets: Orientation Module',
-            description: 'Money vs capital markets, instruments, and risk primers.',
-            units: 3,
-            assessments: 1,
-            duration: '2 hours',
-            completed: false,
-            locked: false,
-          },
-        };
-        const defaultModule = byCourse[courseId] || {
-          id: 1,
-          title: 'Course Orientation',
-          description: 'Overview, outcomes, and how to succeed in this course.',
-          units: 2,
-          assessments: 0,
-          duration: '1 hour',
-          completed: false,
-          locked: false,
-        };
-        setModules([defaultModule]);
+            locked: courseType === 'sequential',
+          }
+        ];
+        setModules(defaultModules);
       }
       
       setLoading(false);
