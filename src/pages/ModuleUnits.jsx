@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileText, Video, Volume2, Play, Edit, Trash2, Plus, Upload } from 'lucide-react';
+import { ArrowLeft, FileText, Video, Volume2, Play, Edit, Trash2, Plus, Upload, FileType2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,33 +31,43 @@ const ModuleUnits = () => {
   const [lessons, setLessons] = useState([
     {
       id: 1,
-      title: "Introduction to Business Trust Fundamentals",
+      title: "Insurance Fundamentals: Policy Types and Coverage",
       type: 'text',
-      description: "Comprehensive overview of business trust concepts and their applications in modern commerce.",
+      description: "Overview of common insurance policy types, coverage limits, and exclusions with sales talking points.",
       duration: "15 min",
-      content: "Business trusts are legal entities that hold and manage assets for the benefit of beneficiaries. They operate under specific legal frameworks and provide various advantages for business operations.\n\nKey Concepts:\n- Legal Structure: Business trusts are formed under state law and provide a flexible structure for business operations\n- Fiduciary Duties: Trustees have legal obligations to manage assets in the best interests of beneficiaries\n- Tax Advantages: Business trusts can provide certain tax benefits depending on their structure and jurisdiction\n- Asset Protection: Properly structured trusts can offer protection from creditors and legal claims\n\nApplications in Modern Commerce:\nBusiness trusts are commonly used in various industries including real estate investment, equipment leasing, and natural resource development.",
+      content: "In this lesson, learn key policy types (auto, health, life, commercial) and how to position coverage benefits and exclusions during sales conversations. Includes examples and objection-handling scripts.",
       videoUrl: '',
       audioUrl: ''
     },
     {
       id: 2,
-      title: "Digital Marketing Video Tutorial",
+      title: "Insurance Sales Demo Call - Video Walkthrough",
       type: 'video',
-      description: "Visual explanation of digital marketing strategies and implementation techniques.",
+      description: "Sample insurance sales demo with objection handling and benefit framing.",
       duration: "25 min",
-      content: "This comprehensive video tutorial covers the essential aspects of digital marketing, from strategy development to execution. Learn about social media marketing, content creation, SEO optimization, and performance measurement techniques that drive successful online campaigns.",
+      content: "Watch a full demo call illustrating discovery, needs analysis, and closing techniques for insurance products.",
       videoUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=450&fit=crop&auto=format',
       audioUrl: ''
     },
     {
       id: 3,
-      title: "Legal Framework Audio Lecture",
+      title: "Sales Objections Audio Workshop",
       type: 'audio',
-      description: "Audio lecture covering the legal aspects and regulatory framework of business operations.",
-      duration: "30 min",
-      content: "In this detailed audio lecture, we explore the complex legal landscape that governs modern business operations. Topics include regulatory compliance, risk management, contract law, and intellectual property protection. This session provides essential knowledge for business professionals navigating legal requirements.",
+      description: "Audio coaching on handling common insurance sales objections with scripts.",
+      duration: "18 min",
+      content: "Listen to real objection scenarios (price, coverage confusion, timing) and recommended responses that keep the conversation moving forward.",
       videoUrl: '',
       audioUrl: '/placeholder-audio.mp3'
+    },
+    {
+      id: 4,
+      title: "Commercial Insurance Brochure (PDF)",
+      type: 'pdf',
+      description: "Reference PDF for agents to share with prospects.",
+      duration: "10 min",
+      content: "Downloadable brochure covering product features, eligibility, and underwriting guidelines.",
+      videoUrl: '',
+      audioUrl: ''
     },
     {
       id: 4,
@@ -96,6 +106,7 @@ const ModuleUnits = () => {
       case 'text': return <FileText className="h-4 w-4" />;
       case 'video': return <Video className="h-4 w-4" />;
       case 'audio': return <Volume2 className="h-4 w-4" />;
+      case 'pdf': return <FileType2 className="h-4 w-4" />;
       default: return <FileText className="h-4 w-4" />;
     }
   };
@@ -105,6 +116,7 @@ const ModuleUnits = () => {
       case 'text': return 'bg-green-100 text-green-800';
       case 'video': return 'bg-blue-100 text-blue-800';
       case 'audio': return 'bg-purple-100 text-purple-800';
+      case 'pdf': return 'bg-amber-100 text-amber-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };

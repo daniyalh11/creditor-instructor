@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
+import { useSidebar } from '@/contexts/SidebarContext';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import EditModulePage from '@/pages/EditModulePage';
@@ -17,6 +18,7 @@ import EditModulePage from '@/pages/EditModulePage';
 const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open', onEdit, courseId }) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { setMainCollapsed } = useSidebar();
 
   const handleDelete = () => {
     if (window.confirm(`Are you sure you want to delete "${module.title}"?`)) {
@@ -48,11 +50,14 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
     }, 100);
   };
 
-  const handleUnitsClick = () => {
+  const handleViewLessonClick = () => {
     if (module.locked && courseType === 'sequential') {
       return;
     }
-    navigate(`/courses/modules/${module.id}/units`);
+    const resolvedCourseId = courseId || 'course-1';
+    // Navigate directly to content-only lesson view (default to unit-1, lesson 1)
+    setMainCollapsed(true);
+    navigate(`/catalog/${resolvedCourseId}/${module.id}/unit-1/1`);
   };
 
   const handleAssessmentsClick = () => {
@@ -143,13 +148,13 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
         <CardContent className="pt-0">
           <div className="grid grid-cols-1 gap-3">
             <Button 
-              onClick={handleUnitsClick}
+              onClick={handleViewLessonClick}
               variant="outline" 
               className="w-full justify-start hover:bg-blue-50 transition-colors duration-200"
               disabled={isLocked}
             >
-              <List className="h-4 w-4 mr-2" />
-              View Lessons
+              <BookOpen className="h-4 w-4 mr-2" />
+              View Lesson
               {isLocked && <Lock className="h-3 w-3 ml-auto" />}
             </Button>
 

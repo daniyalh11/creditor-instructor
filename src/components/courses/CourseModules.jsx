@@ -50,59 +50,50 @@ const CourseModules = () => {
         }
       } else {
         setIsPublishedCourse(false);
-        const defaultModules = [
-          {
+        // One starter module per course, tailored to the courseId
+        const byCourse = {
+          '1': {
             id: 1,
-            title: "Introduction to Business Trust",
-            description: "Understanding the fundamentals of business trust structures and their applications in modern commerce.",
+            title: 'Banking Basics: Getting Started',
+            description: 'Accounts, deposits and lending fundamentals for beginners.',
             units: 3,
             assessments: 1,
-            duration: "2 hours",
+            duration: '2 hours',
             completed: false,
             locked: false,
           },
-          {
-            id: 2,
-            title: "Kick-off: Why Digital Marketing Matters for Your Side Hustle",
-            description: "Get an engaging, image-rich overview of how digital marketing fuels a side hustle's growth.",
-            units: 7,
-            assessments: 2,
-            duration: "4 hours",
-            completed: false,
-            locked: courseType === 'sequential',
-          },
-          {
-            id: 3,
-            title: "Creating Magnetic Content and Social Presence",
-            description: "Using storyboard exercises and visual templates, you'll practice crafting on-brand content",
-            units: 5,
+          '2': {
+            id: 1,
+            title: 'Retail Banking: Branch Operations 101',
+            description: 'KYC, common products, and customer journeys in retail branches.',
+            units: 3,
             assessments: 1,
-            duration: "3 hours",
+            duration: '2 hours',
             completed: false,
-            locked: courseType === 'sequential',
+            locked: false,
           },
-          {
-            id: 4,
-            title: "Advanced Marketing Strategies",
-            description: "Dive deep into advanced marketing techniques and automation tools",
-            units: 4,
+          '3': {
+            id: 1,
+            title: 'Financial Markets: Orientation Module',
+            description: 'Money vs capital markets, instruments, and risk primers.',
+            units: 3,
             assessments: 1,
-            duration: "3 hours",
+            duration: '2 hours',
             completed: false,
-            locked: courseType === 'sequential',
+            locked: false,
           },
-          {
-            id: 5,
-            title: "Analytics and Performance Tracking",
-            description: "Learn to measure and optimize your marketing performance using data-driven insights",
-            units: 6,
-            assessments: 2,
-            duration: "4 hours",
-            completed: false,
-            locked: courseType === 'sequential',
-          }
-        ];
-        setModules(defaultModules);
+        };
+        const defaultModule = byCourse[courseId] || {
+          id: 1,
+          title: 'Course Orientation',
+          description: 'Overview, outcomes, and how to succeed in this course.',
+          units: 2,
+          assessments: 0,
+          duration: '1 hour',
+          completed: false,
+          locked: false,
+        };
+        setModules([defaultModule]);
       }
       
       setLoading(false);

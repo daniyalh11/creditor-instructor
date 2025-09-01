@@ -25,6 +25,8 @@ export function SidebarProvider({ children }) {
     
     const courseViewRegex = /^\/courses\/view\/([^/]+)/;
     const isCourseSection = location.pathname.match(courseViewRegex);
+    const lessonContentRegex = /^\/catalog\/[^/]+\/[^/]+\/[^/]+\/[^/]+/;
+    const isLessonContent = lessonContentRegex.test(location.pathname);
 
     if (isInAdminSection) {
       setIsAdminSectionActive(true);
@@ -42,7 +44,8 @@ export function SidebarProvider({ children }) {
         setIsAdminSectionActive(false);
         setIsGroupSectionActive(false);
         setActiveGroupId(null);
-        setIsMainCollapsed(false);
+        // Keep sidebar collapsed on immersive lesson content pages
+        setIsMainCollapsed(isLessonContent ? true : false);
       }
     }
   }, [location.pathname]);
