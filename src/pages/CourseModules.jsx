@@ -10,7 +10,27 @@ const CourseModules = () => {
   
   // Mock data for modules
   const modules = [
-    { id: 'module-1', title: 'MODULE 1', imageUrl: '/placeholder.svg', itemCount: 8 }
+    { 
+      id: 'module-1', 
+      title: 'Module 1: Foundations of Life Insurance', 
+      description: 'Understanding the basics and why protection matters',
+      imageUrl: '/placeholder.svg', 
+      itemCount: 8 
+    },
+    { 
+      id: 'module-2', 
+      title: 'Module 2: Key Benefits & Smart Flexibility', 
+      description: 'Exploring Rakshak Smart features, terms, and assured returns',
+      imageUrl: '/placeholder.svg', 
+      itemCount: 6 
+    },
+    { 
+      id: 'module-3', 
+      title: 'Module 3: Real-Life Scenarios & Payouts', 
+      description: 'Learning through practical examples and family protection cases',
+      imageUrl: '/placeholder.svg', 
+      itemCount: 7 
+    }
   ];
   
   // Get course title from courseId
@@ -56,6 +76,7 @@ const CourseModules = () => {
                 </div>
                 <div className="p-4">
                   <h3 className="text-lg font-semibold mb-2">{module.title}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{module.description}</p>
                   <p className="text-sm text-gray-500">{module.itemCount} items</p>
                 </div>
               </Card>

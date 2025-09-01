@@ -43,13 +43,13 @@ const Courses = () => {
     },
     {
       id: 2,
-      title: "Retail Banking Fundamentals",
+      title: "Protecting Dreams: A Learning Journey with Rakshak Smart",
       description: "Products, services, KYC, and branch operations in retail banking",
       students: 95,
       duration: "5 weeks",
       level: "Beginner",
       status: "Active",
-      image: "https://images.unsplash.com/photo-1559526324-593bc073d938?w=1200&h=800&fit=crop&auto=format",
+      image: "/assets/Course2.PNG",
       archived: false,
       deleted: false,
       catalog: "Banking"

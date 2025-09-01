@@ -52,7 +52,13 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
     if (module.locked && courseType === 'sequential') {
       return;
     }
-    navigate(`/courses/modules/${module.id}/units`);
+    
+    // Special handling for Module 2 - navigate to lessons page
+    if (module.id === 2) {
+      navigate('/courses/modules/2/lessons');
+    } else {
+      navigate(`/courses/modules/${module.id}/units`);
+    }
   };
 
   const handleAssessmentsClick = () => {
