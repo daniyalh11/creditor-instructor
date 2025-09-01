@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X, BarChart3, PieChart, TrendingUp } from 'lucide-react';
+import { Plus, X, BarChart3, PieChart, TrendingUp, Upload, Mic } from 'lucide-react';
 
 export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
   const [chartType, setChartType] = useState(content?.chartType || 'bar');
@@ -14,6 +14,10 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
     { label: 'Item 2', value: 50 },
     { label: 'Item 3', value: 20 }
   ]);
+  const [audioUrl, setAudioUrl] = useState(content?.audioUrl || '');
+  const [audioFileName, setAudioFileName] = useState(content?.audioFileName || '');
+  const [isUploading, setIsUploading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     if (content) {
@@ -24,8 +28,19 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
         { label: 'Item 2', value: 50 },
         { label: 'Item 3', value: 20 }
       ]);
+      setAudioUrl(content.audioUrl || '');
+      setAudioFileName(content.audioFileName || '');
     }
   }, [content]);
+
+  // Clean up object URLs when component unmounts or dialog closes
+  useEffect(() => {
+    return () => {
+      if (audioUrl && audioUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(audioUrl);
+      }
+    };
+  }, [audioUrl]);
 
   const addDataPoint = () => {
     setData([...data, { label: `Item ${data.length + 1}`, value: 0 }]);
@@ -43,11 +58,67 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
     setData(newData);
   };
 
+  const handleAudioUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Check file size (limit to 50MB for audio files)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      alert(`File size (${fileSizeMB}MB) is too large. Please select a file smaller than 50MB.`);
+      return;
+    }
+    
+    setIsUploading(true);
+    setAudioFileName(file.name);
+
+    try {
+      const objectUrl = URL.createObjectURL(file);
+      setAudioUrl(objectUrl);
+      setIsUploading(false);
+    } catch (error) {
+      console.error('Error creating object URL:', error);
+      setIsUploading(false);
+      alert('Error uploading file. Please try again.');
+    }
+  };
+
+  const handleRecordAudio = async () => {
+    if (!isRecording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setIsRecording(true);
+        console.log('Recording started...');
+        setTimeout(() => {
+          setIsRecording(false);
+          stream.getTracks().forEach(track => track.stop());
+          console.log('Recording stopped');
+        }, 5000);
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
+        alert('Error accessing microphone. Please check your permissions.');
+      }
+    } else {
+      setIsRecording(false);
+    }
+  };
+
+  const removeAudio = () => {
+    if (audioUrl && audioUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(audioUrl);
+    }
+    setAudioUrl('');
+    setAudioFileName('');
+  };
+
   const handleSave = () => {
     const chartContent = {
       chartType,
       title,
-      data: data.filter(item => item.label.trim() && item.value >= 0)
+      data: data.filter(item => item.label.trim() && item.value >= 0),
+      audioUrl,
+      audioFileName
     };
     onSave(chartContent);
     onOpenChange(false);
@@ -156,6 +227,62 @@ export const ChartEditor = ({ open, onOpenChange, content, onSave }) => {
               <Plus className="h-4 w-4 mr-2" />
               Add Data Point
             </Button>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Audio Narration (Optional)</Label>
+            <div className="space-y-3">
+              <div>
+                <Label>Upload Audio</Label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    id="audio-upload"
+                  />
+                  <Button variant="outline" className="w-full" disabled={isUploading}>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {isUploading ? 'Uploading...' : 'Upload Audio File'}
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <Label>Record Audio</Label>
+                <Button
+                  variant="outline"
+                  className={`w-full ${isRecording ? 'bg-red-50 border-red-300' : ''}`}
+                  onClick={handleRecordAudio}
+                >
+                  <Mic className={`w-4 h-4 mr-2 ${isRecording ? 'text-red-600' : ''}`} />
+                  {isRecording ? 'Recording... (Click to stop)' : 'Record Audio'}
+                </Button>
+              </div>
+
+              {audioUrl && (
+                <div className="bg-gray-50 p-3 rounded border">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-900">
+                      {audioFileName || 'Audio File'}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={removeAudio}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <audio controls className="w-full">
+                    <source src={audioUrl} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">

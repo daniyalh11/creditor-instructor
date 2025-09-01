@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,22 +14,56 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
   const [fileName, setFileName] = useState(content?.fileName || '');
   const [fileType, setFileType] = useState(content?.fileType || '');
   const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); // New state for upload loading
+
+  // Clean up object URLs when component unmounts or dialog closes
+  useEffect(() => {
+    return () => {
+      if (url && url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    };
+  }, [url]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Check file size (limit to 50MB for audio/video files)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      alert(`File size (${fileSizeMB}MB) is too large. Please select a file smaller than 50MB.`);
+      return;
+    }
+    
+    setIsUploading(true);
     setFileName(file.name);
     setFileType(file.type || '');
 
-    if (content?.multimediaType === 'attachment') {
-      // Use object URL for attachments (e.g., PDFs) to avoid huge data URLs in localStorage
-      const objectUrl = URL.createObjectURL(file);
-      setUrl(objectUrl);
+    // Use object URLs for audio, video, and attachments to avoid huge data URLs
+    if (content?.multimediaType === 'audio' || 
+        content?.multimediaType === 'video' || 
+        content?.multimediaType === 'attachment') {
+      try {
+        const objectUrl = URL.createObjectURL(file);
+        setUrl(objectUrl);
+        setIsUploading(false);
+      } catch (error) {
+        console.error('Error creating object URL:', error);
+        setIsUploading(false);
+        alert('Error uploading file. Please try again.');
+      }
     } else {
       const reader = new FileReader();
       reader.onload = (event) => {
         const result = event.target?.result;
         setUrl(result);
+        setIsUploading(false);
+      };
+      reader.onerror = () => {
+        setIsUploading(false);
+        alert('Error reading file. Please try again.');
       };
       reader.readAsDataURL(file);
     }
@@ -55,17 +89,22 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
   };
 
   const handleSave = () => {
-    const updatedContent = {
-      ...content,
-      title,
-      description,
-      url: content?.multimediaType === 'embedded' ? embeddedCode : url,
-      embeddedCode: content?.multimediaType === 'embedded' ? embeddedCode : undefined,
-      fileName: content?.multimediaType === 'attachment' ? fileName : undefined,
-      fileType: content?.multimediaType === 'attachment' ? fileType : undefined
-    };
-    onSave(updatedContent);
-    onOpenChange(false);
+    try {
+      const updatedContent = {
+        ...content,
+        title,
+        description,
+        url: content?.multimediaType === 'embedded' ? embeddedCode : url,
+        embeddedCode: content?.multimediaType === 'embedded' ? embeddedCode : undefined,
+        fileName: content?.multimediaType === 'attachment' ? fileName : undefined,
+        fileType: content?.multimediaType === 'attachment' ? fileType : undefined
+      };
+      onSave(updatedContent);
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error saving multimedia content:', error);
+      // You might want to show a toast notification here
+    }
   };
 
   return (
@@ -127,9 +166,9 @@ export const MultimediaEditor = ({ open, onOpenChange, content, onSave }) => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   id="file-upload"
                 />
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" disabled={isUploading}>
                   <Upload className="w-4 h-4 mr-2" />
-                  Upload {content?.multimediaType || 'File'}
+                  {isUploading ? 'Uploading...' : `Upload ${content?.multimediaType || 'File'}`}
                 </Button>
               </div>
             </div>

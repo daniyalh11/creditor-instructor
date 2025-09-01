@@ -587,10 +587,15 @@ export const ContentEditor = ({
   };
 
   const updateBlock = (id, content) => {
-    const updatedBlocks = blocks.map(block => 
-      block.id === id ? { ...block, content } : block
-    );
-    setBlocks(updatedBlocks);
+    try {
+      const updatedBlocks = blocks.map(block => 
+        block.id === id ? { ...block, content } : block
+      );
+      setBlocks(updatedBlocks);
+    } catch (error) {
+      console.error('Error updating block:', error);
+      // You might want to show a toast notification here
+    }
   };
 
   const deleteBlock = (id) => {

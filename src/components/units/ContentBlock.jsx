@@ -29,7 +29,8 @@ import {
   AlertCircle,
   Upload,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Mic
 } from 'lucide-react';
 import { KnowledgeCheckEditor } from './KnowledgeCheckEditor';
 import { ChartEditor } from './ChartEditor';
@@ -271,8 +272,14 @@ export const ContentBlock = ({
   };
 
   const handleMultimediaSave = (content) => {
-    onUpdate(content);
-    setShowMultimediaEditor(false);
+    try {
+      onUpdate(content);
+      setShowMultimediaEditor(false);
+    } catch (error) {
+      console.error('Error saving multimedia content:', error);
+      // Keep the editor open if there's an error
+      // You might want to show a toast notification here
+    }
   };
 
   const handleImageSave = (content) => {
@@ -491,7 +498,7 @@ export const ContentBlock = ({
   };
 
   const renderChart = () => {
-    const { chartType, title, data } = block.content;
+    const { chartType, title, data, audioUrl, audioFileName } = block.content;
     const colors = ['#3b82f6', '#1d4ed8', '#1e40af', '#2563eb', '#60a5fa', '#93c5fd'];
 
     if (!data || data.length === 0) {
@@ -542,12 +549,30 @@ export const ContentBlock = ({
             ) : null}
           </ResponsiveContainer>
         </div>
+        
+        {audioUrl && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-2 mb-2">
+              <Mic className="h-4 w-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-900">
+                Audio Narration
+              </span>
+            </div>
+            <audio controls className="w-full">
+              <source src={audioUrl} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+            {audioFileName && (
+              <p className="text-xs text-gray-500 mt-1">{audioFileName}</p>
+            )}
+          </div>
+        )}
       </div>
     );
   };
 
   const renderChartSummary = () => {
-    const { chartType, title, data } = block.content;
+    const { chartType, title, data, audioUrl, audioFileName } = block.content;
     
     const getChartIcon = () => {
       switch (chartType) {
@@ -574,6 +599,12 @@ export const ContentBlock = ({
           <div className="text-sm text-gray-600">
             {data?.length || 0} data points
           </div>
+          {audioUrl && (
+            <div className="flex items-center space-x-2 mt-2 text-sm text-blue-600">
+              <Mic className="h-3 w-3" />
+              <span>Audio narration included</span>
+            </div>
+          )}
         </div>
       </div>
     );
