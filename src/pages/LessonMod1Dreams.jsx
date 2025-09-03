@@ -1248,55 +1248,7 @@ const LessonMod1Dreams = () => {
         </section>
       </div>
       
-              {/* Troubleshooting Section */}
-        <section className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-              {baseLang === 'hi' ? 'समस्या समाधान' : baseLang === 'mr' ? 'समस्या सोडवणे' : 'Troubleshooting'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-700">
-                  {baseLang === 'hi' ? 'आवाज नहीं आ रही है?' : baseLang === 'mr' ? 'आवाज येत नाही?' : 'Voice not working?'}
-                </h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'पेज को रिफ्रेश करें' : baseLang === 'mr' ? 'पृष्ठ रिफ्रेश करा' : 'Refresh the page'}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'अलग भाषा चुनें' : baseLang === 'mr' ? 'वेगळी भाषा निवडा' : 'Try a different language'}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'ब्राउज़र अपडेट करें' : baseLang === 'mr' ? 'ब्राउज़र अपडेट करा' : 'Update your browser'}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-700">
-                  {baseLang === 'hi' ? 'हिंदी आवाज के लिए' : baseLang === 'mr' ? 'हिंदी आवाजीसाठी' : 'For Hindi voice'}
-                </h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'Windows: Settings > Time & Language > Language' : baseLang === 'mr' ? 'Windows: सेटिंग्ज > वेळ आणि भाषा > भाषा' : 'Windows: Settings > Time & Language > Language'}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'हिंदी भाषा पैक पैक इंस्टॉल करें' : baseLang === 'mr' ? 'हिंदी भाषा पॅक इन्स्टॉल करा' : 'Install Hindi language pack'}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                    <span>{baseLang === 'hi' ? 'स्पीच पैक भी जोड़ें' : baseLang === 'mr' ? 'स्पीच पॅक देखील जोडा' : 'Add speech pack too'}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      
+           
       {/* Module Completion */}
       <div className="bg-white border-t mt-12">
         <div className="container mx-auto px-6 py-6">

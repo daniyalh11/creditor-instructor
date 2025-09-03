@@ -283,8 +283,8 @@ const Courses = () => {
                   alt={course.title} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                <div className="absolute top-2 right-2 flex items-center gap-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                <div className="absolute top-2 right-2 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                   <Badge className={getStatusColor(course.status)}>
                     {course.status}
                   </Badge>

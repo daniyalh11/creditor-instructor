@@ -52,7 +52,7 @@ export const MainNavigation = ({ pathname, onItemClick }) => {
 
   const handleGamesClick = () => {
     // Open the games URL in a new tab
-    window.open('https://army-game.vercel.app/', '_blank');
+    window.open('https://game-open-scene.vercel.app/', '_blank');
     if (onItemClick) onItemClick();
   };
 

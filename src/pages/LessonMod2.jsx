@@ -118,7 +118,7 @@ const LessonMod2 = () => {
             <div className="aspect-video w-full max-w-4xl mx-auto">
               <iframe
                 className="w-full h-full rounded-xl shadow-lg"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                src="https://www.youtube.com/embed/3ctoSEQsY54"
                 title="Rakshak Smart Benefits Overview"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
