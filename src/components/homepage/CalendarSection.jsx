@@ -11,21 +11,21 @@ export function CalendarSection() {
   const events = [
     {
       id: 1,
-      title: 'React Hooks Lecture',
+      title: 'Insurance Sales Training',
       time: '10:00 AM - 12:00 PM',
       date: 'Today',
       type: 'lecture',
     },
     {
       id: 2,
-      title: 'Node.js Assignment Review',
+      title: 'Sales Technique Review',
       time: '2:00 PM - 3:00 PM',
       date: 'Today',
       type: 'meeting',
     },
     {
       id: 3,
-      title: 'Office Hours',
+      title: 'Insurance License Prep',
       time: '2:00 PM - 4:00 PM',
       date: 'Today',
       type: 'office-hours',

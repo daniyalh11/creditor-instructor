@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { X } from 'lucide-react';
 
 export const EmailInvitationsDialog = ({ open, onOpenChange, courseId }) => {
-  const [organization, setOrganization] = useState('Creditor Academy');
+  const [organization, setOrganization] = useState('PRAMERICA');
   const [invitationCount, setInvitationCount] = useState('1');
 
   const handleContinue = () => {
@@ -46,7 +46,7 @@ export const EmailInvitationsDialog = ({ open, onOpenChange, courseId }) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Creditor Academy">Creditor Academy</SelectItem>
+                  <SelectItem value="PRAMERICA">PRAMERICA</SelectItem>
                   <SelectItem value="Other Organization">Other Organization</SelectItem>
                 </SelectContent>
               </Select>

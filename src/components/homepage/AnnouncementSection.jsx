@@ -11,24 +11,24 @@ export function AnnouncementSection() {
   const announcements = [
     {
       id: 1,
-      title: 'New React Course Module',
-      source: 'Instructor',
+      title: 'New Insurance Sales Module',
+      source: 'Training Manager',
       time: '2 hours ago',
-      content: 'Advanced React Hooks module has been added to the React Development course.',
+      content: 'Advanced Life Insurance Sales Techniques module has been added to the Insurance Fundamentals course.',
     },
     {
       id: 2,
-      title: 'Office Hours This Week',
-      source: 'Instructor',
+      title: 'Sales Training Office Hours',
+      source: 'Sales Coach',
       time: '1 day ago',
-      content: 'Office hours will be held Tuesday and Thursday from 2-4 PM.',
+      content: 'Office hours will be held Tuesday and Thursday from 2-4 PM for sales technique consultation.',
     },
     {
       id: 3,
-      title: 'ML Assignment Deadline',
-      source: 'Instructor',
+      title: 'Insurance License Exam Prep',
+      source: 'Training Manager',
       time: '3 days ago',
-      content: 'Machine Learning final project is due next Friday.',
+      content: 'Life Insurance License preparation course final assessment is due next Friday.',
     },
   ];
 

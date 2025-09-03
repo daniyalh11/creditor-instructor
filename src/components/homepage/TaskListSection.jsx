@@ -10,28 +10,28 @@ export function TaskListSection() {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      title: 'Complete React Assignment',
+      title: 'Complete Insurance Sales Assignment',
       dueDate: '2023-07-10',
       completed: false,
       priority: 'high'
     },
     {
       id: 2,
-      title: 'Review Node.js Documentation',
+      title: 'Review Life Insurance Documentation',
       dueDate: '2023-07-12',
       completed: false,
       priority: 'medium'
     },
     {
       id: 3,
-      title: 'Submit Project Proposal',
+      title: 'Submit Sales Proposal',
       dueDate: '2023-07-15',
       completed: true,
       priority: 'high'
     },
     {
       id: 4,
-      title: 'Watch Lecture on Redux',
+      title: 'Watch Lecture on Sales Techniques',
       dueDate: '2023-07-08',
       completed: false,
       priority: 'low'

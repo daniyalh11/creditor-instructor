@@ -20,58 +20,58 @@ const CalendarManagement = () => {
   const [events, setEvents] = useState([
     {
       id: 1,
-      title: 'React Hooks Lecture',
+      title: 'Insurance Sales Training',
       time: '10:00 AM - 12:00 PM',
       date: 'Today',
       type: 'lecture',
-      description: 'Advanced React Hooks patterns and best practices',
-      location: 'Room 101 / Online',
-      attendees: '42 students',
-      course: 'React Development',
+      description: 'Advanced insurance sales methodologies and customer engagement techniques',
+      location: 'Training Room 101 / Online',
+      attendees: '25 sales agents',
+      course: 'Insurance Fundamentals',
       zoomUrl: 'https://zoom.us/j/1234567890'
     },
     {
       id: 2,
-      title: 'Node.js Assignment Review',
+      title: 'Life Insurance Sales Review',
       time: '2:00 PM - 3:00 PM',
       date: 'Today',
       type: 'meeting',
-      description: 'Review submitted Node.js projects with students',
-      location: 'Office 205',
-      attendees: '15 students',
-      course: 'Node.js Backend',
+      description: 'Review life insurance sales performance and strategies',
+      location: 'Conference Room 205',
+      attendees: '15 sales managers',
+      course: 'Life Insurance Sales',
       zoomUrl: 'https://zoom.us/j/0987654321'
     },
     {
       id: 3,
-      title: 'ML Project Deadline',
+      title: 'Insurance License Exam Prep',
       time: '11:59 PM',
       date: 'Tomorrow',
       type: 'deadline',
-      description: 'Final project submission for Machine Learning course',
+      description: 'Final assessment submission for Insurance License preparation course',
       location: 'Online Portal',
-      attendees: '24 students',
-      course: 'Machine Learning'
+      attendees: '30 trainees',
+      course: 'Insurance License Prep'
     },
     {
       id: 4,
-      title: 'Office Hours',
+      title: 'Sales Technique Office Hours',
       time: '2:00 PM - 4:00 PM',
       date: 'Thursday',
       type: 'office-hours',
-      description: 'Weekly office hours for student consultations',
+      description: 'Weekly office hours for sales technique consultation and guidance',
       location: 'Office 205',
-      attendees: 'Open to all'
+      attendees: 'Open to all sales agents'
     },
     {
       id: 5,
-      title: 'Faculty Meeting',
+      title: 'Insurance Compliance Meeting',
       time: '9:00 AM - 10:30 AM',
       date: 'Friday',
       type: 'meeting',
-      description: 'Monthly department faculty meeting',
+      description: 'Monthly insurance regulatory compliance and policy updates meeting',
       location: 'Conference Room A',
-      attendees: '12 faculty members',
+      attendees: '12 compliance officers',
       zoomUrl: 'https://zoom.us/j/1122334455'
     },
   ]);
@@ -160,7 +160,7 @@ const CalendarManagement = () => {
   };
 
   const eventTypes = ['lecture', 'meeting', 'deadline'];
-  const courses = ['React Development', 'Node.js Backend', 'Machine Learning'];
+  const courses = ['Insurance Fundamentals', 'Life Insurance Sales', 'Insurance License Prep'];
 
   // Filter today's events
   const todaysEvents = events.filter(event => event.date === 'Today');

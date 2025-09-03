@@ -7,44 +7,44 @@ import { motion } from "framer-motion";
 const groups = [
   {
     id: 1,
-    name: "Customer Service",
-    desc: "Study group",
-    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=40&q=80",
+    name: "Sales Agents",
+    desc: "Insurance sales training group",
+    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=40&q=80",
   },
   {
     id: 2,
-    name: "Education Counselor",
-    desc: "Study group",
-    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=40&q=80",
+    name: "Training Managers",
+    desc: "Sales training coordination group",
+    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=40&q=80",
   },
   {
     id: 3,
-    name: "New Members",
-    desc: "Study group",
-    img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=40&q=80",
+    name: "New Agents",
+    desc: "Insurance license prep group",
+    img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=40&q=80",
   },
 ];
 
 const catalog = [
   {
     id: 1,
-    name: "General",
-    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=40&q=80",
+    name: "Insurance Fundamentals",
+    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=40&q=80",
   },
   {
     id: 2,
-    name: "NEW SOV 101",
-    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=40&q=80",
+    name: "Life Insurance Sales",
+    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=40&q=80",
   },
   {
     id: 3,
-    name: "NEW SOV 101 (VIDEO)",
-    img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=40&q=80",
+    name: "Sales Training",
+    img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=40&q=80",
   },
   {
     id: 4,
-    name: "SOVEREIGNITY 101",
-    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=40&q=80",
+    name: "Insurance Compliance",
+    img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=40&q=80",
   },
 ];
 

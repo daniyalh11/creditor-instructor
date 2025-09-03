@@ -15,11 +15,11 @@ const ZoomClassesSection = () => {
   const [classes, setClasses] = useState([
     {
       id: 1,
-      title: "Advanced Credit Analysis - Module 3",
+      title: "Advanced Insurance Sales - Module 3",
       date: "Wed, Jun 12",
       time: "10:00 AM",
       duration: "1 hour",
-      description: "Deep dive into credit risk assessment methodologies",
+      description: "Deep dive into insurance sales methodologies and customer engagement",
       zoomLink: "https://zoom.us/j/123456789",
       meetingId: "123 456 789",
       attendance: 0,
@@ -28,11 +28,11 @@ const ZoomClassesSection = () => {
     },
     {
       id: 2,
-      title: "Financial Risk Assessment Workshop",
+      title: "Life Insurance Sales Workshop",
       date: "Sat, Jun 15",
       time: "2:00 PM",
       duration: "2 hours",
-      description: "Practical workshop on financial risk assessment",
+      description: "Practical workshop on life insurance sales techniques",
       zoomLink: "https://zoom.us/j/987654321",
       meetingId: "987 654 321",
       attendance: 0,
@@ -41,26 +41,26 @@ const ZoomClassesSection = () => {
     },
     {
       id: 3,
-      title: "Credit Portfolio Management",
+      title: "Insurance Portfolio Management",
       date: "Sat, Jun 8",
       time: "11:00 AM",
       duration: "1.5 hours",
-      description: "Strategic approaches to credit portfolio management",
+      description: "Strategic approaches to insurance portfolio management",
       attendance: 18,
       totalStudents: 25,
-      recordingUrl: "https://example.com/recording/credit-portfolio-management.mp4",
+      recordingUrl: "https://example.com/recording/insurance-portfolio-management.mp4",
       isCompleted: true
     },
     {
       id: 4,
-      title: "Regulatory Compliance Updates",
+      title: "Insurance Compliance Updates",
       date: "Wed, Jun 5",
       time: "3:00 PM",
       duration: "1 hour",
-      description: "Latest updates in regulatory compliance requirements",
+      description: "Latest updates in insurance regulatory compliance requirements",
       attendance: 22,
       totalStudents: 30,
-      recordingUrl: "https://example.com/recording/regulatory-compliance.mp4",
+      recordingUrl: "https://example.com/recording/insurance-compliance.mp4",
       isCompleted: true
     }
   ]);

@@ -6,25 +6,25 @@ import { Book, Calendar, Users, Copy } from "lucide-react";
 
 const teachingCourses = [
   {
-    id: 1757539,
-    title: "React Development",
-    image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=400&q=80",
-    students: 42,
-    modules: 8
+    id: 1,
+    title: "Banking Basics",
+    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1200&h=800&fit=crop&auto=format",
+    students: 120,
+    modules: 6
   },
   {
-    id: 1757540,
-    title: "Node.js Backend",
-    image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=400&q=80",
-    students: 38,
-    modules: 12
+    id: 2,
+    title: "Protecting Dreams: A Learning Journey with Rakshak Smart",
+    image: "/assets/Course2.PNG",
+    students: 95,
+    modules: 5
   },
   {
-    id: 1757541,
-    title: "Machine Learning",
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=400&q=80",
-    students: 24,
-    modules: 15
+    id: 3,
+    title: "Introduction to Financial Markets",
+    image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1200&h=800&fit=crop&auto=format",
+    students: 110,
+    modules: 7
   }
 ];
 

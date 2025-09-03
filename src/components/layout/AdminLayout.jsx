@@ -71,7 +71,7 @@ export const AdminLayout = ({ title = 'Dashboard' }) => {
       }
     }
 
-    document.title = `${newTitle} | Creditor Academy`;
+    document.title = `${newTitle} | PRAMERICA`;
   }, [location.pathname, title, courseId, setCourseTitle]);
 
   return (

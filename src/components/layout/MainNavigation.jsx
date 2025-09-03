@@ -52,7 +52,19 @@ export const MainNavigation = ({ pathname, onItemClick }) => {
 
   const handleGamesClick = () => {
     // Open the games URL in a new tab
-    window.open('https://preview--game-glow-carousel-01.lovable.app/', '_blank');
+    window.open('https://army-game.vercel.app/', '_blank');
+    if (onItemClick) onItemClick();
+  };
+
+  const handleScenarioAssessmentClick = () => {
+    // Open Scenario Assessment in a new tab
+    window.open('https://preview--rakshak-coach-62.lovable.app/', '_blank');
+    if (onItemClick) onItemClick();
+  };
+
+  const handlePreliminaryProfileClick = () => {
+    // Open Preliminary Profile in a new tab
+    window.open('https://prudential-ai.vercel.app/', '_blank');
     if (onItemClick) onItemClick();
   };
 
@@ -141,19 +153,6 @@ export const MainNavigation = ({ pathname, onItemClick }) => {
           />
         </motion.div>
         
-        {/* Messages */}
-        <motion.div variants={itemVariants}>
-          <NavItem 
-            icon={MessageCircle}
-            label="Messages"
-            to="/messages"
-            active={pathname.startsWith('/messages')}
-            onClick={() => handleNavItemClick('/messages')}
-            collapsed={isMainCollapsed}
-            className="hover-lift"
-          />
-        </motion.div>
-        
         {/* Games */}
         <motion.div variants={itemVariants}>
           <NavItem 
@@ -162,6 +161,45 @@ export const MainNavigation = ({ pathname, onItemClick }) => {
             to="#"
             active={false}
             onClick={handleGamesClick}
+            collapsed={isMainCollapsed}
+            className="hover-lift"
+          />
+        </motion.div>
+        
+        {/* Scenario Assessment */}
+        <motion.div variants={itemVariants}>
+          <NavItem 
+            icon={FileText}
+            label="Scenario Assessment"
+            to="#"
+            active={false}
+            onClick={handleScenarioAssessmentClick}
+            collapsed={isMainCollapsed}
+            className="hover-lift"
+          />
+        </motion.div>
+        
+        {/* Preliminary Profile */}
+        <motion.div variants={itemVariants}>
+          <NavItem 
+            icon={FileText}
+            label="Preliminary Profile"
+            to="#"
+            active={false}
+            onClick={handlePreliminaryProfileClick}
+            collapsed={isMainCollapsed}
+            className="hover-lift"
+          />
+        </motion.div>
+        
+        {/* Messages */}
+        <motion.div variants={itemVariants}>
+          <NavItem 
+            icon={MessageCircle}
+            label="Messages"
+            to="/messages"
+            active={pathname.startsWith('/messages')}
+            onClick={() => handleNavItemClick('/messages')}
             collapsed={isMainCollapsed}
             className="hover-lift"
           />

@@ -28,45 +28,45 @@ const Catalog = () => {
   const [catalogs, setCatalogs] = useState([
     {
       id: 1,
-      name: 'Web Development',
-      description: 'Frontend and backend web development courses',
-      imageUrl: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=300&fit=crop&auto=format',
-      courseCount: 4 // Advanced JavaScript, React Development, Node.js Backend, Full Stack Development
+      name: 'Insurance Fundamentals',
+      description: 'Core insurance concepts, policies, and industry knowledge',
+      imageUrl: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=400&h=300&fit=crop&auto=format',
+      courseCount: 2 // Banking Basics, Introduction to Financial Markets
     },
     {
       id: 2,
-      name: 'Data Science',
-      description: 'Data analysis, machine learning, and AI courses',
-      imageUrl: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=300&fit=crop&auto=format',
-      courseCount: 2 // Python for Data Science, Machine Learning Fundamentals
+      name: 'Life Insurance Sales',
+      description: 'Life insurance products, sales techniques, and customer engagement',
+      imageUrl: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=400&h=300&fit=crop&auto=format',
+      courseCount: 1 // Protecting Dreams: A Learning Journey with Rakshak Smart
     },
     {
       id: 3,
-      name: 'Mobile Development',
-      description: 'iOS and Android app development',
-      imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop&auto=format',
-      courseCount: 2 // React Native Development, iOS Development with Swift
+      name: 'Sales Training',
+      description: 'Advanced sales methodologies and customer relationship management',
+      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&auto=format',
+      courseCount: 1 // Sales techniques and methodologies
     },
     {
       id: 4,
-      name: 'DevOps',
-      description: 'Cloud computing, deployment, and infrastructure',
-      imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop&auto=format',
-      courseCount: 2 // Cloud Computing with AWS, Docker & Kubernetes
+      name: 'Insurance Compliance',
+      description: 'Regulatory requirements, legal frameworks, and compliance practices',
+      imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop&auto=format',
+      courseCount: 1 // Compliance and regulatory training
     },
     {
       id: 5,
-      name: 'Cybersecurity',
-      description: 'Information security and cybersecurity practices',
-      imageUrl: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop&auto=format',
-      courseCount: 1 // Cybersecurity Fundamentals
+      name: 'Financial Planning',
+      description: 'Personal financial planning and wealth management strategies',
+      imageUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&auto=format',
+      courseCount: 1 // Financial planning fundamentals
     },
     {
       id: 6,
-      name: 'Database Management',
-      description: 'Database design, administration, and optimization',
-      imageUrl: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=300&fit=crop&auto=format',
-      courseCount: 1 // Database Design & SQL
+      name: 'Customer Service',
+      description: 'Insurance customer service excellence and client satisfaction',
+      imageUrl: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=300&fit=crop&auto=format',
+      courseCount: 1 // Customer service training
     }
   ]);
 

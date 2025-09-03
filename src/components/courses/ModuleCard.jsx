@@ -55,9 +55,13 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
       return;
     }
     
-    // Special handling for Module 2 - navigate to lessons page
-    if (module.id === 2) {
+    // Special handling for Module 1, 2, and 3 - navigate to lessons page
+    if (module.id === 1) {
+      navigate('/courses/modules/1/lessons');
+    } else if (module.id === 2) {
       navigate('/courses/modules/2/lessons');
+    } else if (module.id === 3) {
+      navigate('/courses/modules/3/lessons');
     } else {
       navigate(`/courses/modules/${module.id}/units`);
     }
@@ -83,7 +87,7 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
       <Card className={`overflow-hidden hover:shadow-lg transition-shadow ${isLocked ? 'opacity-60' : ''}`}>
         <div className="relative h-48 bg-gradient-to-br from-blue-50 to-indigo-100">
           <img 
-            src="/placeholder.svg" 
+            src={module.image || '/placeholder.svg'} 
             alt={module.title} 
             className="w-full h-full object-cover"
           />
@@ -130,22 +134,11 @@ const ModuleCard = ({ module, onDelete, onUpdate, onComplete, courseType = 'open
             {isLocked && <Lock className="h-4 w-4 text-gray-400 ml-auto" />}
           </CardTitle>
           <p className="text-sm text-gray-600">{module.description}</p>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">
-              {module.units} units
+          {courseType === 'sequential' && (
+            <Badge variant="outline" className="text-blue-600 border-blue-300 mt-2 w-fit">
+              Sequential
             </Badge>
-            <Badge variant="outline">
-              {module.assessments} assessments
-            </Badge>
-            <Badge variant="outline">
-              {module.duration}
-            </Badge>
-            {courseType === 'sequential' && (
-              <Badge variant="outline" className="text-blue-600 border-blue-300">
-                Sequential
-              </Badge>
-            )}
-          </div>
+          )}
         </CardHeader>
         
         <CardContent className="pt-0">

@@ -39,7 +39,7 @@ const Courses = () => {
       image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1200&h=800&fit=crop&auto=format",
       archived: false,
       deleted: false,
-      catalog: "Banking"
+      catalog: "Insurance"
     },
     {
       id: 2,
@@ -52,7 +52,7 @@ const Courses = () => {
       image: "/assets/Course2.PNG",
       archived: false,
       deleted: false,
-      catalog: "Banking"
+      catalog: "Insurance"
     },
     {
       id: 3,
@@ -65,7 +65,7 @@ const Courses = () => {
       image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1200&h=800&fit=crop&auto=format",
       archived: false,
       deleted: false,
-      catalog: "Banking"
+      catalog: "Insurance"
     }
   ];
 

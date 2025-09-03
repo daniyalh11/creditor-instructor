@@ -16,26 +16,26 @@ const TaskManagement = () => {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      title: 'Review course materials',
-      description: 'Review and update course materials for next semester',
+      title: 'Review Insurance Sales Materials',
+      description: 'Review and update insurance sales training materials for new agents',
       deadline: 'Today',
       priority: 'high',
       status: 'pending',
-      category: 'Teaching'
+      category: 'Sales Training'
     },
     {
       id: 2,
-      title: 'Grade assignments',
-      description: 'Grade recent assignments and provide feedback',
+      title: 'Grade Sales Technique Assessments',
+      description: 'Evaluate recent sales technique assessments and provide feedback',
       deadline: 'Tomorrow',
       priority: 'medium',
       status: 'in-progress',
-      category: 'Grading'
+      category: 'Assessment'
     },
     {
       id: 3,
-      title: 'Prepare quiz questions',
-      description: 'Create quiz questions for upcoming assessment',
+      title: 'Prepare Insurance License Quiz',
+      description: 'Create quiz questions for upcoming insurance license preparation',
       deadline: 'Next week',
       priority: 'high',
       status: 'pending',
@@ -43,8 +43,8 @@ const TaskManagement = () => {
     },
     {
       id: 4,
-      title: 'Update course syllabus',
-      description: 'Make necessary updates to course syllabus',
+      title: 'Update Sales Training Syllabus',
+      description: 'Make necessary updates to insurance sales training syllabus',
       deadline: 'In 2 weeks',
       priority: 'medium',
       status: 'pending',
@@ -52,8 +52,8 @@ const TaskManagement = () => {
     },
     {
       id: 5,
-      title: 'Schedule office hours',
-      description: 'Set up office hours schedule for students',
+      title: 'Schedule Sales Coaching Sessions',
+      description: 'Set up coaching schedule for sales agents',
       deadline: 'Next month',
       priority: 'low',
       status: 'completed',
@@ -69,7 +69,7 @@ const TaskManagement = () => {
     deadline: '',
     priority: 'medium',
     status: 'pending',
-    category: 'Teaching'
+    category: 'Sales Training'
   });
 
   const addTask = () => {
@@ -89,7 +89,7 @@ const TaskManagement = () => {
     };
 
     setTasks([...tasks, task]);
-    setNewTask({ title: '', description: '', deadline: '', priority: 'medium', status: 'pending', category: 'Teaching' });
+    setNewTask({ title: '', description: '', deadline: '', priority: 'medium', status: 'pending', category: 'Sales Training' });
     setIsAddDialogOpen(false);
     toast.success('Task added successfully');
   };
@@ -145,7 +145,7 @@ const TaskManagement = () => {
 
   const priorities = ['high', 'medium', 'low'];
   const statuses = ['pending', 'in-progress', 'completed'];
-  const categories = ['Teaching', 'Grading', 'Assessment', 'Planning', 'Administration'];
+  const categories = ['Sales Training', 'Assessment', 'Planning', 'Administration', 'Compliance'];
 
   const handleBackToHome = () => {
     navigate('/');
