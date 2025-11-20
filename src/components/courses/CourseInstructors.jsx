@@ -130,6 +130,12 @@ const CourseInstructors = () => {
     setEditDialogOpen(true);
   };
 
+  // Fix: close function for edit dialog
+  const closeEditDialog = () => {
+    setEditDialogOpen(false);
+    setSelectedInstructor(null);
+  };
+
   // Note: This finds the first selected instructor to pass to the message dialog.
   const selectedInstructorData = instructors.find(instructor => 
     selectedInstructors.includes(instructor.id)
@@ -247,12 +253,16 @@ const CourseInstructors = () => {
         onInstructorAdded={handleInstructorAdded}
       />
 
-      <EditInstructorDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        instructor={selectedInstructor}
-        onSave={handleInstructorUpdated}
-      />
+      {/* Only render EditInstructorDialog if open and instructor is set */}
+      {editDialogOpen && selectedInstructor && (
+        <EditInstructorDialog
+          key={selectedInstructor.id}
+          open={editDialogOpen}
+          onOpenChange={closeEditDialog}
+          instructor={selectedInstructor}
+          onSave={handleInstructorUpdated}
+        />
+      )}
 
       <MessageUserDialog
         open={messageDialogOpen}

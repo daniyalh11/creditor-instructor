@@ -37,12 +37,14 @@ export const GroupOptionsMenu = ({ groupId, groupName, onEdit, onDelete }) => {
   };
 
   const handleDelete = () => {
-    onDelete();
     setShowDeleteDialog(false);
-    toast({
-      title: "Group Deleted",
-      description: `${groupName} has been deleted successfully.`,
-    });
+    setTimeout(() => {
+      onDelete();
+      toast({
+        title: "Group Deleted",
+        description: `${groupName} has been deleted successfully.`,
+      });
+    }, 200);
   };
 
   const handleManageMembers = () => {

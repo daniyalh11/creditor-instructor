@@ -48,6 +48,18 @@ export const SettingsTab = ({ settings, onUpdateSettings }) => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="lessonNumber">Lesson Number</Label>
+                  <Input
+                    id="lessonNumber"
+                    type="number"
+                    min="1"
+                    value={settings.lessonNumber || ''}
+                    onChange={(e) => onUpdateSettings({ lessonNumber: e.target.value })}
+                    placeholder="Enter lesson number"
+                  />
+                </div>
+                
+                <div className="space-y-2">
                   <Label htmlFor="title">Lesson Title</Label>
                   <Input
                     id="title"
@@ -142,6 +154,17 @@ export const SettingsTab = ({ settings, onUpdateSettings }) => {
               </CardHeader>
               <CardContent>
                 <div className="p-4 border rounded-lg bg-gray-50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span 
+                      className="text-sm font-medium px-2 py-1 rounded bg-gray-200"
+                      style={{ 
+                        fontFamily: settings.fontFamily,
+                        color: settings.primaryColor 
+                      }}
+                    >
+                      Lesson {settings.lessonNumber || '1'}
+                    </span>
+                  </div>
                   <h3 
                     className="text-lg font-semibold mb-2"
                     style={{ 

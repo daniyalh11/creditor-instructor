@@ -136,6 +136,7 @@ const CourseDetail = () => {
     { name: "Add", onClick: () => navigate('/courses/create') }
   ];
 
+  
   // If we're at the base course URL, show the modules
   if (location.pathname === `/courses/view/${courseId}`) {
     return <CourseModules />;

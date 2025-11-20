@@ -25,6 +25,7 @@ import { useToast } from '@/hooks/use-toast';
  * @param {(instructor: Instructor) => void} props.onSave - Callback function to save the updated instructor.
  */
 export const EditInstructorDialog = ({ open, onOpenChange, instructor, onSave }) => {
+  if (!open) return null;
   const [formData, setFormData] = useState({
     name: '',
     role: ''

@@ -98,6 +98,11 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
   const [saveClicked, setSaveClicked] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [cameraStream, setCameraStream] = useState(null);
+  const [photoCaptured, setPhotoCaptured] = useState(false);
+  const [lastImageSource, setLastImageSource] = useState(null);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [pendingPhoto, setPendingPhoto] = useState(null);
+  const [showRetakeAndSave, setShowRetakeAndSave] = useState(false);
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -113,6 +118,19 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
       stopCamera();
     };
   }, []);
+
+  useEffect(() => {
+    if (isCapturing && cameraStream && videoRef.current) {
+      try {
+        videoRef.current.srcObject = cameraStream;
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play();
+        };
+      } catch (err) {
+        console.error('Error attaching stream to video element:', err);
+      }
+    }
+  }, [isCapturing, cameraStream]);
 
   const handleFileUpload = (event) => {
     const file = event.target.files?.[0];
@@ -131,6 +149,8 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
         const result = e.target?.result;
         setUploadedImage(result);
         setSelectedAvatar(result);
+        setLastImageSource('upload');
+        setShowRetakeAndSave(true);
       };
       reader.readAsDataURL(file);
     }
@@ -145,28 +165,28 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
           facingMode: 'user'
         } 
       });
-      
       setCameraStream(stream);
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play();
-        };
-        setIsCapturing(true);
-      }
-
+      setIsCapturing(true);
+      setPhotoCaptured(false);
       toast({
         title: "Camera started",
         description: "Position yourself in the frame and click capture when ready.",
       });
     } catch (error) {
       console.error('Camera error:', error);
-      toast({
-        title: "Camera Error",
-        description: "Unable to access camera. Please check permissions and try again.",
-        variant: "destructive",
-      });
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        toast({
+          title: "Camera Permission Denied",
+          description: "Please allow camera access in your browser settings and try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Camera Error",
+          description: "Unable to access camera. Please check permissions and try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -179,30 +199,36 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
       videoRef.current.srcObject = null;
     }
     setIsCapturing(false);
+    setPhotoCaptured(false);
   };
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const video = videoRef.current;
-      
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
-      
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
         const imageData = canvas.toDataURL('image/jpeg', 0.8);
-        setUploadedImage(imageData);
-        setSelectedAvatar(imageData);
+        setPendingPhoto(imageData);
+        setShowPhotoModal(true);
+        setLastImageSource('camera');
         stopCamera();
-        
-        toast({
-          title: "Photo captured successfully!",
-          description: "Your photo has been captured and is ready to save.",
-        });
       }
+    }
+  };
+
+  const handleRetakePhoto = () => {
+    setUploadedImage(null);
+    setSelectedAvatar(null);
+    setPhotoCaptured(false);
+    setShowRetakeAndSave(false);
+    if (lastImageSource === 'camera') {
+      startCamera();
+    } else {
+      triggerFileUpload();
     }
   };
 
@@ -237,6 +263,25 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
     ? svgAvatars 
     : svgAvatars.filter(avatar => avatar.gender === genderFilter);
 
+  const handleUsePhoto = () => {
+    setUploadedImage(pendingPhoto);
+    setSelectedAvatar(pendingPhoto);
+    setPhotoCaptured(true);
+    setShowPhotoModal(false);
+    setPendingPhoto(null);
+    setShowRetakeAndSave(false);
+    toast({
+      title: "Photo selected!",
+      description: "You can now save or retake.",
+    });
+  };
+
+  const handleRetakeFromModal = () => {
+    setShowPhotoModal(false);
+    setPendingPhoto(null);
+    setTimeout(() => startCamera(), 200);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
@@ -261,7 +306,7 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
             <div className="flex flex-col items-center space-y-4">
               <p className="text-center text-sm text-muted-foreground">Choose how to add your picture</p>
               
-              {!isCapturing && (
+              {!isCapturing && !uploadedImage && (
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                   <Button 
                     onClick={startCamera} 
@@ -281,17 +326,23 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
                 </div>
               )}
 
-              {isCapturing && (
+              {isCapturing && !photoCaptured && (
                 <div className="space-y-4 w-full max-w-md">
                   <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
-                    <video 
-                      ref={videoRef} 
-                      autoPlay 
-                      playsInline
-                      muted
-                      className="w-full h-64 object-cover rounded-lg border-2 border-dashed border-gray-300"
-                      style={{ transform: 'scaleX(-1)' }}
-                    />
+                    {cameraStream ? (
+                      <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        playsInline
+                        muted
+                        className="w-full h-64 object-cover rounded-lg border-2 border-dashed border-gray-300"
+                        style={{ transform: 'scaleX(-1)' }}
+                      />
+                    ) : (
+                      <div className="w-full h-64 flex items-center justify-center text-gray-400 bg-gray-100">
+                        <span>Camera not available</span>
+                      </div>
+                    )}
                     <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                       LIVE
                     </div>
@@ -326,6 +377,12 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
                       />
                     </div>
                   </div>
+                  {showRetakeAndSave && (
+                    <div className="flex justify-center gap-2 mt-2">
+                      <Button variant="outline" onClick={handleRetakePhoto}>Retake Photo</Button>
+                      <Button className="bg-blue-600 text-white" onClick={handleSave}>Save</Button>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -416,6 +473,26 @@ const AvatarPickerDialog = ({ isOpen, onClose, onSave, currentAvatar }) => {
             {saveClicked ? "Saving..." : "Save"}
           </Button>
         </div>
+
+        {/* Modal for captured photo confirmation */}
+        <Dialog open={showPhotoModal} onOpenChange={setShowPhotoModal}>
+          <DialogContent className="max-w-xs">
+            <DialogHeader>
+              <DialogTitle>Preview Photo</DialogTitle>
+            </DialogHeader>
+            {pendingPhoto && (
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-primary shadow-lg mx-auto">
+                  <img src={pendingPhoto} alt="Captured preview" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex gap-2 justify-center">
+                  <Button variant="outline" onClick={handleRetakeFromModal}>Retake</Button>
+                  <Button className="bg-blue-600 text-white" onClick={handleUsePhoto}>Use</Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );

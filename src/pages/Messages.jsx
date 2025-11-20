@@ -19,7 +19,9 @@ import {
   Square,
   Paperclip,
   Image,
-  FileText
+  FileText,
+  Play,
+  Pause
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -57,6 +59,13 @@ const Messages = () => {
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const imageInputRef = useRef(null);
   const fileInputRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const [pendingVoice, setPendingVoice] = useState(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState(null);
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const previewAudioRef = useRef(null);
+  const chatAudioRefs = useRef({});
+  const [messagesByContact, setMessagesByContact] = useState({});
 
   // Initialize contacts
   useEffect(() => {
@@ -111,6 +120,42 @@ const Messages = () => {
       }
     ];
     setContacts(initialContacts);
+    // Initialize messages for each contact
+    setMessagesByContact({
+      '1': [
+        {
+          id: '1', senderId: '1', content: 'Hey there!', timestamp: '10:30 AM', isRead: true, isDelivered: true
+        },
+        {
+          id: '2', senderId: 'me', content: 'Hi! How are you?', timestamp: '10:31 AM', isRead: true, isDelivered: true
+        },
+        {
+          id: '3', senderId: '1', content: "I'm doing great! Just finished the React module.", timestamp: '10:33 AM', isRead: true, isDelivered: true
+        },
+        {
+          id: '4', senderId: 'me', content: "That's awesome! I'm still working on it.", timestamp: '10:34 AM', isRead: false, isDelivered: true
+        },
+        {
+          id: '5', senderId: '1', content: 'Let me know if you need any help with it.', timestamp: '10:36 AM', isRead: true, isDelivered: true
+        }
+      ],
+      '2': [
+        { id: '1', senderId: '2', content: 'Let\'s catch up later', timestamp: '11:45 AM', isRead: false, isDelivered: true }
+      ],
+      '3': [
+        { id: '1', senderId: '3', content: 'Did you see the new course?', timestamp: '10:20 AM', isRead: false, isDelivered: true }
+      ],
+      '4': [
+        { id: '1', senderId: '4', content: 'Thanks for your help!', timestamp: 'Yesterday', isRead: true, isDelivered: true }
+      ],
+      '5': [
+        { id: '1', senderId: '5', content: 'Are you free tomorrow?', timestamp: 'Yesterday', isRead: false, isDelivered: true },
+        { id: '2', senderId: 'me', content: 'Yes, I am!', timestamp: 'Yesterday', isRead: true, isDelivered: true }
+      ],
+      '6': [
+        { id: '1', senderId: '6', content: "I'll get back to you", timestamp: '2 days ago', isRead: true, isDelivered: true }
+      ]
+    });
   }, []);
 
   const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
@@ -134,49 +179,14 @@ const Messages = () => {
 
   useEffect(() => {
     if (selectedContact) {
-      // Load messages for selected contact
-      setMessages([
-        {
-          id: '1',
-          senderId: selectedContact.id,
-          content: 'Hey there!',
-          timestamp: '10:30 AM',
-          isRead: true,
-          isDelivered: true
-        },
-        {
-          id: '2',
-          senderId: 'me',
-          content: 'Hi! How are you?',
-          timestamp: '10:31 AM',
-          isRead: true,
-          isDelivered: true
-        },
-        {
-          id: '3',
-          senderId: selectedContact.id,
-          content: "I'm doing great! Just finished the React module.",
-          timestamp: '10:33 AM',
-          isRead: true,
-          isDelivered: true
-        },
-        {
-          id: '4',
-          senderId: 'me',
-          content: "That's awesome! I'm still working on it.",
-          timestamp: '10:34 AM',
-          isRead: false,
-          isDelivered: true
-        },
-        {
-          id: '5',
-          senderId: selectedContact.id,
-          content: 'Let me know if you need any help with it.',
-          timestamp: '10:36 AM',
-          isRead: true,
-          isDelivered: true
-        }
-      ]);
+      const contactId = selectedContact.id;
+      const msgs = messagesByContact[contactId] || [];
+      // Mark all as read
+      const updatedMsgs = msgs.map(msg => ({ ...msg, isRead: true }));
+      setMessages(updatedMsgs);
+      setMessagesByContact(prev => ({ ...prev, [contactId]: updatedMsgs }));
+      // Set unreadCount to 0 for this contact
+      setContacts(prev => prev.map(c => c.id === contactId ? { ...c, unreadCount: 0 } : c));
     }
   }, [selectedContact]);
 
@@ -187,19 +197,16 @@ const Messages = () => {
         senderId: 'me',
         content: newMessage.trim(),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isRead: false,
+        isRead: true,
         isDelivered: true
       };
-      
-      setMessages(prev => [...prev, message]);
+      const contactId = selectedContact.id;
+      const updatedMsgs = [...(messagesByContact[contactId] || []), message];
+      setMessages(updatedMsgs);
+      setMessagesByContact(prev => ({ ...prev, [contactId]: updatedMsgs }));
       setNewMessage('');
-      
-      // Simulate message being read after 2 seconds
-      setTimeout(() => {
-        setMessages(prev => prev.map(msg => 
-          msg.id === message.id ? { ...msg, isRead: true } : msg
-        ));
-      }, 2000);
+      // Update lastMessage and timestamp for contact
+      setContacts(prev => prev.map(c => c.id === contactId ? { ...c, lastMessage: message.content, timestamp: message.timestamp } : c));
     }
   };
 
@@ -223,36 +230,20 @@ const Messages = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
-      
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
       setMediaRecorder(recorder);
       setIsRecording(true);
       setRecordingTime(0);
-      
       // Start recording timer
       recordingIntervalRef.current = setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
-      
       recorder.start();
-      
-      recorder.addEventListener('dataavailable', (event) => {
-        if (event.data.size > 0 && selectedContact) {
-          // Create voice message
-          const message = {
-            id: Date.now().toString(),
-            senderId: 'me',
-            content: 'Voice message',
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            isRead: false,
-            isDelivered: true,
-            type: 'voice',
-            duration: recordingTime
-          };
-          
-          setMessages(prev => [...prev, message]);
-        }
-      });
-      
     } catch (error) {
       console.error('Error starting recording:', error);
     }
@@ -260,16 +251,84 @@ const Messages = () => {
 
   const stopRecording = () => {
     if (mediaRecorder && isRecording) {
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setPendingVoice({ audioUrl, duration: recordingTime, blob: audioBlob });
+        audioChunksRef.current = [];
+      };
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks().forEach(track => track.stop());
       setIsRecording(false);
       setRecordingTime(0);
-      
       if (recordingIntervalRef.current) {
         clearInterval(recordingIntervalRef.current);
       }
     }
   };
+
+  // Send the pending voice message
+  const handleSendVoice = () => {
+    if (pendingVoice && selectedContact) {
+      const message = {
+        id: Date.now().toString(),
+        senderId: 'me',
+        content: 'Voice message',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isRead: true,
+        isDelivered: true,
+        type: 'voice',
+        duration: pendingVoice.duration,
+        audioUrl: pendingVoice.audioUrl,
+      };
+      const contactId = selectedContact.id;
+      const updatedMsgs = [...(messagesByContact[contactId] || []), message];
+      setMessages(updatedMsgs);
+      setMessagesByContact(prev => ({ ...prev, [contactId]: updatedMsgs }));
+      setContacts(prev => prev.map(c => c.id === contactId ? { ...c, lastMessage: 'Voice message', timestamp: message.timestamp } : c));
+      setPendingVoice(null);
+      setPreviewPlaying(false);
+    }
+  };
+  const handleCancelVoice = () => {
+    setPendingVoice(null);
+    setPreviewPlaying(false);
+  };
+
+  // Preview play/pause logic
+  useEffect(() => {
+    if (!previewAudioRef.current) return;
+    if (previewPlaying) {
+      previewAudioRef.current.play();
+    } else {
+      previewAudioRef.current.pause();
+    }
+  }, [previewPlaying]);
+
+  // Chat play/pause logic
+  const handleChatPlayPause = (msgId, audioUrl) => {
+    // Pause all others
+    Object.values(chatAudioRefs.current).forEach(audio => {
+      if (audio && !audio.paused) audio.pause();
+    });
+    if (playingVoiceId === msgId) {
+      setPlayingVoiceId(null);
+      if (chatAudioRefs.current[msgId]) chatAudioRefs.current[msgId].pause();
+    } else {
+      setPlayingVoiceId(msgId);
+      if (chatAudioRefs.current[msgId]) chatAudioRefs.current[msgId].play();
+    }
+  };
+  // Reset playingVoiceId when audio ends
+  useEffect(() => {
+    const handleEnded = () => setPlayingVoiceId(null);
+    if (playingVoiceId && chatAudioRefs.current[playingVoiceId]) {
+      chatAudioRefs.current[playingVoiceId].addEventListener('ended', handleEnded);
+      return () => {
+        chatAudioRefs.current[playingVoiceId]?.removeEventListener('ended', handleEnded);
+      };
+    }
+  }, [playingVoiceId]);
 
   const handleContactSelect = (contact) => {
     setSelectedContact(contact);
@@ -560,12 +619,20 @@ const Messages = () => {
                     >
                       {message.type === 'voice' ? (
                         <div className="flex items-center gap-2">
-                          <div className={cn(
-                            "p-2 rounded-full",
-                            message.senderId === 'me' ? "bg-blue-400" : "bg-gray-200"
-                          )}>
-                            <Mic className="h-4 w-4" />
-                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn("text-blue-600", playingVoiceId === message.id && 'bg-blue-100')}
+                            onClick={() => handleChatPlayPause(message.id, message.audioUrl)}
+                          >
+                            {playingVoiceId === message.id ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                          </Button>
+                          <audio
+                            ref={el => (chatAudioRefs.current[message.id] = el)}
+                            src={message.audioUrl}
+                            onEnded={() => setPlayingVoiceId(null)}
+                            style={{ display: 'none' }}
+                          />
                           <div className="flex-1">
                             <div className={cn(
                               "text-xs mb-1",
@@ -632,6 +699,29 @@ const Messages = () => {
 
             {/* Message Input */}
             <div className="p-4 border-t border-gray-100 bg-white">
+              {/* Voice preview UI */}
+              {pendingVoice && (
+                <div className="flex items-center gap-4 mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setPreviewPlaying(p => !p)}
+                    className="text-blue-600"
+                  >
+                    {previewPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+                  </Button>
+                  <audio
+                    ref={previewAudioRef}
+                    src={pendingVoice.audioUrl}
+                    onEnded={() => setPreviewPlaying(false)}
+                    style={{ display: 'none' }}
+                  />
+                  <span className="font-medium">Voice message</span>
+                  <span className="text-xs text-gray-500">{formatTime(pendingVoice.duration)}</span>
+                  <Button variant="outline" onClick={handleCancelVoice}>Cancel</Button>
+                  <Button className="bg-blue-600 text-white" onClick={handleSendVoice}>Send</Button>
+                </div>
+              )}
               <div className="flex items-end space-x-2">
                 {/* Attachment Button */}
                 <Popover open={showAttachmentMenu} onOpenChange={setShowAttachmentMenu}>

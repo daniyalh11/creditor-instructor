@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -6,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { BarChart3, Users, FileText, MessageSquare, TrendingUp } from 'lucide-react';
 
 const CourseScores = () => {
+  const navigate = useNavigate();
+
   // Sample data for the performance overview
   const overallPerformance = {
     courseScore: 65,
@@ -66,6 +69,16 @@ const CourseScores = () => {
     { name: 'Ethics Debate', time: '1 week ago', score: '85/100' }
   ];
 
+  const handleViewDetails = (section) => {
+    // Navigate to the respective section details page
+    const sectionPath = section.title.toLowerCase().replace(' section', '');
+    navigate(`/scores/${sectionPath}`);
+  };
+
+  const handleViewOverallDetails = () => {
+    navigate('/scores/overview');
+  };
+
   return (
     <div className="p-6 space-y-6 animate-fade-in">
       {/* Header */}
@@ -74,7 +87,11 @@ const CourseScores = () => {
           <h1 className="text-2xl font-semibold">Course Performance Overview</h1>
           <p className="text-gray-600">Track your progress across all assessment sections</p>
         </div>
-        <Button variant="outline" className="text-blue-600">
+        <Button 
+          variant="outline" 
+          className="text-blue-600 hover:text-blue-700"
+          onClick={handleViewOverallDetails}
+        >
           <TrendingUp className="h-4 w-4 mr-2" />
           View Details
         </Button>
@@ -154,7 +171,12 @@ const CourseScores = () => {
                 <div className="space-y-2">
                   <Progress value={section.percentage} className="h-2" />
                   <div className="flex justify-end">
-                    <Button variant="ghost" size="sm" className="text-xs text-blue-600">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs text-blue-600 hover:text-blue-700"
+                      onClick={() => handleViewDetails(section)}
+                    >
                       View Details
                     </Button>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Bell, Search, User, Calendar, Inbox, Recycle, ExternalLink } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,6 +26,99 @@ export const Header = ({ onMenuClick }) => {
   const [inboxDialogOpen, setInboxDialogOpen] = useState(false);
   const [recycleBinDialogOpen, setRecycleBinDialogOpen] = useState(false);
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchInputRef = useRef(null);
+
+  // Mock data for demonstration
+  const mockFAQs = [
+    { id: 1, type: 'FAQ', title: 'How to reset my password?', path: '/help' },
+    { id: 2, type: 'FAQ', title: 'How to enroll in a course?', path: '/help' },
+    { id: 3, type: 'FAQ', title: 'How to contact support?', path: '/help' },
+  ];
+  const mockCourses = [
+    { id: 1, type: 'Course', title: 'Advanced Credit Analysis', path: '/courses/1' },
+    { id: 2, type: 'Course', title: 'Risk Assessment', path: '/courses/2' },
+    { id: 3, type: 'Course', title: 'Financial Modeling', path: '/courses/3' },
+  ];
+  // New mock data for users, catalog, and groups
+  const mockUsers = [
+    { id: 1, type: 'User', title: 'Alice Johnson', path: '/users/1' },
+    { id: 2, type: 'User', title: 'Bob Smith', path: '/users/2' },
+    { id: 3, type: 'User', title: 'Charlie Lee', path: '/users/3' },
+  ];
+  const mockCatalog = [
+    { id: 1, type: 'Catalog', title: 'Spring 2024 Course Catalog', path: '/catalog' },
+    { id: 2, type: 'Catalog', title: 'Electives Catalog', path: '/catalog/electives' },
+  ];
+  const mockGroups = [
+    { id: 1, type: 'Group', title: 'Finance Study Group', path: '/groups/1' },
+    { id: 2, type: 'Group', title: 'Project Team Alpha', path: '/groups/2' },
+    { id: 3, type: 'Group', title: 'Research Club', path: '/groups/3' },
+  ];
+
+  // Universal search function (mocked)
+  const handleSearch = (query) => {
+    if (!query) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+    const lower = query.toLowerCase();
+    const faqResults = mockFAQs.filter(faq => faq.title.toLowerCase().includes(lower));
+    const courseResults = mockCourses.filter(course => course.title.toLowerCase().includes(lower));
+    const userResults = mockUsers.filter(user => user.title.toLowerCase().includes(lower));
+    const catalogResults = mockCatalog.filter(cat => cat.title.toLowerCase().includes(lower));
+    const groupResults = mockGroups.filter(group => group.title.toLowerCase().includes(lower));
+    const results = [
+      ...faqResults,
+      ...courseResults,
+      ...userResults,
+      ...catalogResults,
+      ...groupResults,
+    ];
+    setSearchResults(results);
+    setShowSearchDropdown(true);
+  };
+
+  // Handle input change
+  const onSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    handleSearch(value);
+  };
+
+  // Handle Enter key
+  const onSearchInputKeyDown = (e) => {
+    if (e.key === 'Enter' && searchResults.length > 0) {
+      // Navigate to the first result
+      navigate(searchResults[0].path);
+      setShowSearchDropdown(false);
+      setSearchQuery("");
+    }
+  };
+
+  // Hide dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target)
+      ) {
+        setShowSearchDropdown(false);
+      }
+    };
+    if (showSearchDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSearchDropdown]);
 
   useEffect(() => {
     const handleAvatarUpdate = (event) => {
@@ -123,7 +216,7 @@ export const Header = ({ onMenuClick }) => {
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex max-w-sm relative">
+          <div className="hidden md:flex max-w-sm relative" ref={searchInputRef}>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <Search className="w-4 h-4 text-gray-500" />
             </div>
@@ -131,7 +224,33 @@ export const Header = ({ onMenuClick }) => {
               type="search"
               className="w-full py-1.5 pl-10 pr-4 text-sm text-gray-900 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={onSearchInputChange}
+              onKeyDown={onSearchInputKeyDown}
+              onFocus={() => searchQuery && setShowSearchDropdown(true)}
             />
+            {/* Search Results Dropdown */}
+            {showSearchDropdown && searchResults.length > 0 && (
+              <div className="absolute left-0 right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-72 overflow-y-auto">
+                {searchResults.map((result, idx) => (
+                  <div
+                    key={result.type + result.id}
+                    className="px-4 py-2 hover:bg-slate-100 cursor-pointer flex flex-col"
+                    onClick={() => {
+                      navigate(result.path);
+                      setShowSearchDropdown(false);
+                      setSearchQuery("");
+                    }}
+                  >
+                    <span className="font-medium text-sm">{result.title}</span>
+                    <span className="text-xs text-gray-500">{result.type}</span>
+                  </div>
+                ))}
+                {searchResults.length === 0 && (
+                  <div className="px-4 py-2 text-gray-500 text-sm">No results found</div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2 mr-2">
@@ -404,11 +523,6 @@ export const Header = ({ onMenuClick }) => {
                 <p className="text-xs text-gray-600">Live session starts in 30 minutes</p>
                 <span className="text-xs text-yellow-600">30 minutes ago</span>
               </div>
-            </div>
-            <div className="mt-4 pt-3 border-t">
-              <Button variant="outline" size="sm" className="w-full">
-                Mark All as Read
-              </Button>
             </div>
           </div>
         </DialogContent>

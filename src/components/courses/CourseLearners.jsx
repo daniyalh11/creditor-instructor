@@ -3,9 +3,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, Plus, MoreHorizontal, Trash2, Pencil, Mail, UserX } from 'lucide-react';
 import { AddLearnerModal } from './AddLearnerModal';
+
 import { useParams } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 /**
  * @typedef {object} Learner
@@ -21,11 +30,11 @@ import { useParams } from 'react-router-dom';
 const CourseLearners = () => {
   const { courseId } = useParams();
   const [isAddLearnerOpen, setIsAddLearnerOpen] = useState(false);
+  const [isEditLearnerOpen, setIsEditLearnerOpen] = useState(false);
+  const [currentLearner, setCurrentLearner] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Mock data matching the image
-  /** @type {Learner[]} */
-  const learners = [
+  const [selectedLearners, setSelectedLearners] = useState([]);
+  const [learners, setLearners] = useState([
     {
       id: 'JS',
       name: 'John Smith',
@@ -62,19 +71,31 @@ const CourseLearners = () => {
       status: 'Pending',
       enrolled: '2024-01-19'
     }
-  ];
+  ]);
 
   const stats = {
-    totalParticipants: 4,
-    active: 3,
-    pending: 1,
-    avgProgress: 65
+    totalParticipants: learners.length,
+    active: learners.filter(l => l.status === 'Active').length,
+    pending: learners.filter(l => l.status === 'Pending').length,
+    avgProgress: learners.reduce((acc, curr) => acc + curr.progress, 0) / learners.length
   };
 
   const filteredLearners = learners.filter(learner =>
     learner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     learner.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEditLearner = (learner) => {
+    setCurrentLearner(learner);
+    setIsEditLearnerOpen(true);
+  };
+
+  const handleUpdateLearner = (updatedLearner) => {
+    setLearners(learners.map(learner => 
+      learner.id === updatedLearner.id ? updatedLearner : learner
+    ));
+    setIsEditLearnerOpen(false);
+  };
 
   /**
    * Returns the appropriate color classes for a given role.
@@ -108,6 +129,62 @@ const CourseLearners = () => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const handleDeleteLearner = (learnerId, event) => {
+    event.stopPropagation();
+    // In a real app, you would call an API here
+    setLearners(learners.filter(learner => learner.id !== learnerId));
+    
+    // Remove from selected learners if present
+    setSelectedLearners(selectedLearners.filter(id => id !== learnerId));
+    
+    toast.success('Learner removed successfully');
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedLearners.length === 0) {
+      toast.warning('No learners selected');
+      return;
+    }
+    
+    // In a real app, you would call an API here
+    setLearners(learners.filter(learner => !selectedLearners.includes(learner.id)));
+    setSelectedLearners([]);
+    
+    toast.success(`${selectedLearners.length} learner(s) removed successfully`);
+  };
+
+  const [viewProfileLearner, setViewProfileLearner] = useState(null);
+  const [sendMessageLearner, setSendMessageLearner] = useState(null);
+
+  const handleViewProfile = (learnerId) => {
+    const learner = learners.find(l => l.id === learnerId);
+    if (learner) {
+      setViewProfileLearner(learner);
+    }
+  };
+
+  const handleSendMessage = (learnerEmail) => {
+    const learner = learners.find(l => l.email === learnerEmail);
+    if (learner) {
+      setSendMessageLearner(learner);
+    }
+  };
+
+  const handleAddLearner = (newLearner) => {
+    // In a real app, you would call an API here
+    setLearners(prevLearners => [...prevLearners, {
+      id: newLearner.id,
+      name: newLearner.name,
+      email: newLearner.email,
+      role: newLearner.role || 'Learner',
+      progress: 0,
+      status: 'Active',
+      enrolled: new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+    }]);
+    
+    toast.success('Learner added successfully');
   };
 
   return (
@@ -148,11 +225,25 @@ const CourseLearners = () => {
         </Card>
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-purple-600">{stats.avgProgress}%</div>
+            <div className="text-2xl font-bold text-purple-600">{Math.round(stats.avgProgress)}%</div>
             <div className="text-sm text-gray-600">Avg Progress</div>
           </CardContent>
         </Card>
       </div>
+
+      {selectedLearners.length > 0 && (
+        <div className="mb-4 flex justify-end">
+          <Button 
+            variant="destructive" 
+            size="sm" 
+            onClick={handleDeleteSelected}
+            className="flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete Selected ({selectedLearners.length})
+          </Button>
+        </div>
+      )}
 
       {/* Search and Filters */}
       <div className="bg-white rounded-lg shadow-sm border mb-6">
@@ -204,12 +295,31 @@ const CourseLearners = () => {
                 </div>
                 
                 <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    onClick={(e) => handleDeleteLearner(learner.id, e)}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuItem onClick={() => handleViewProfile(learner.id)}>
+                        <UserX className="mr-2 h-4 w-4" />
+                        <span>View Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleSendMessage(learner.email)}>
+                        <Mail className="mr-2 h-4 w-4" />
+                        <span>Send Message</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
@@ -220,8 +330,124 @@ const CourseLearners = () => {
       <AddLearnerModal 
         open={isAddLearnerOpen}
         onOpenChange={setIsAddLearnerOpen}
+        onAddLearner={handleAddLearner}
         courseId={courseId || ''}
       />
+      
+      {currentLearner && (
+        <EditLearnerModal
+          open={isEditLearnerOpen}
+          onOpenChange={setIsEditLearnerOpen}
+          learner={currentLearner}
+          onSave={handleUpdateLearner}
+        />
+      )}
+      {/* View Profile Modal */}
+      {viewProfileLearner && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+            <h2 className="text-xl font-semibold mb-4">Learner Profile</h2>
+            <div className="space-y-2 mb-4">
+              <div><span className="font-medium">Name:</span> {viewProfileLearner.name}</div>
+              <div><span className="font-medium">Email:</span> {viewProfileLearner.email}</div>
+              <div><span className="font-medium">Role:</span> {viewProfileLearner.role}</div>
+              <div><span className="font-medium">Status:</span> {viewProfileLearner.status}</div>
+              <div><span className="font-medium">Progress:</span> {viewProfileLearner.progress}%</div>
+              <div><span className="font-medium">Enrolled:</span> {viewProfileLearner.enrolled}</div>
+            </div>
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => setViewProfileLearner(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Send Message Modal */}
+      {sendMessageLearner && (
+        <SendMessageModal
+          learner={sendMessageLearner}
+          onClose={() => setSendMessageLearner(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+const EditLearnerModal = ({ open, onOpenChange, learner, onSave }) => {
+  const [formData, setFormData] = useState({ ...learner });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    onSave(formData);
+    onOpenChange(false);
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-xl font-semibold mb-4">Edit Learner</h2>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <Input name="name" value={formData.name} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <Input name="email" value={formData.email} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Role</label>
+            <Input name="role" value={formData.role} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Progress (%)</label>
+            <Input type="number" name="progress" value={formData.progress} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Status</label>
+            <Input name="status" value={formData.status} onChange={handleChange} />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 mt-6">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSave} className="bg-blue-600 text-white hover:bg-blue-700">Save</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Add SendMessageModal component
+const SendMessageModal = ({ learner, onClose }) => {
+  const [message, setMessage] = useState("");
+  const handleSend = () => {
+    toast.success(`Message sent to ${learner.email}`);
+    onClose();
+  };
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-xl font-semibold mb-4">Send Message</h2>
+        <div className="mb-2"><span className="font-medium">To:</span> {learner.name} ({learner.email})</div>
+        <textarea
+          className="w-full border rounded p-2 mb-4"
+          rows={4}
+          placeholder="Type your message..."
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSend} className="bg-blue-600 text-white hover:bg-blue-700">Send</Button>
+        </div>
+      </div>
     </div>
   );
 };
